@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.IProductMapper">
+
+	<select id="queryProductBySku" parameterType="String" resultType="Sku">
+		SELECT t.id,
+			   t.m_product_id              AS productId,
+			   t.m_attributesetinstance_id AS asiId,
+			   p.name                      AS productCode,
+			   p.value                     AS productName,
+			   p.priceList,
+			   p.precost                   AS pricecost
+		FROM m_product_alias t,
+			 m_product p
+		WHERE t.m_product_id = p.id
+		  AND t.no = #{sku}
+	</select>
+
+	<select id="queryProductByForCode" parameterType="String" resultType="Sku">
+		SELECT t.id,
+			   t.m_product_id              AS productId,
+			   t.m_attributesetinstance_id AS asiId,
+			   p.name                      AS productCode,
+			   p.value                     AS productName,
+			   p.priceList,
+			   p.precost                   AS pricecost
+		FROM m_product_alias t,
+			 m_product p
+		WHERE t.m_product_id = p.id
+		  AND t.forcode = #{sku}
+		  AND rownum = 1
+	</select>
+
+	<select id="queryProductByProductColorSize" resultType="Sku">
+		SELECT s.id,
+			   s.no          AS sku,
+			   a.id          AS asiId,
+			   a.value1_code AS colorCode,
+			   a.value1      AS colorName,
+			   a.value2_code AS sizeCode,
+			   a.value2      AS sizeName,
+			   p.name        AS productCode,
+			   p.value       AS productName,
+			   p.id          AS productId,
+			   p.pricelist,
+			   p.precost     AS pricecost
+		FROM m_product p,
+			 m_product_alias s,
+			 m_attributesetinstance a
+		WHERE p.id = s.m_product_id
+		  AND s.m_attributesetinstance_id = a.id
+		  AND p.name = #{productCode}
+		  AND a.value1_code = #{colorCode}
+		  AND a.value2_code = #{sizeCode}
+	</select>
+
+	<select id="queryProductByCode" resultType="Product">
+		SELECT t.id, t.m_sizegroup_id AS sizeGroupId FROM m_product t WHERE t.name = #{productCode}
+	</select>
+
+	<select id="querySizeGroupNameBySize" resultType="String">
+		SELECT MAX(t.name)
+		FROM m_attribute t,
+			 m_attributevalue v
+		WHERE t.id = v.m_attribute_id
+		  AND t.clrsize = 2
+		  AND INSTR(t.name, 'BSIJA') > 0
+		  AND INSTR(t.name, 'BSIJA-') = 0
+		  AND v.value = #{sizeCode}
+	</select>
+
+	<select id="queryAttributeId" resultType="Long">
+		SELECT id
+		FROM m_attribute
+		WHERE name = #{attributeName}
+		  AND clrsize = #{clr}
+	</select>
+
+	<select id="queryDimId" resultType="Long">
+		SELECT id
+		FROM m_dim
+		WHERE dimflag = #{dimFlag}
+		  AND (attribcode = #{dim} OR attribname = #{dim})
+	</select>
+
+	<insert id="insertDim" parameterType="Dim" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT get_sequences('m_dim') AS id FROM dual
+		</selectKey>
+		INSERT INTO m_dim(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate, isactive,
+						  dimflag, m_dimdef_id, attribcode, attribname, description)
+		SELECT #{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y', f.dimflag, f.id,
+			   #{code, javaType=String, jdbcType=VARCHAR},
+			   #{name, javaType=String, jdbcType=VARCHAR},
+			   #{name, javaType=String, jdbcType=VARCHAR}
+		FROM m_dimdef f
+		WHERE f.dimflag = #{dimFlag, javaType=String, jdbcType=VARCHAR}
+	</insert>
+
+	<insert id="insertProduct" parameterType="Product" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT get_sequences('m_product') AS id FROM dual
+		</selectKey>
+		INSERT INTO m_product(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate, isactive,
+							  name, value, e_name, m_sizegroup_id, c_supplier_id, m_dim1_id, m_dim2_id, m_dim5_id,
+							  m_dim6_id, m_dim13_id, m_dim14_id, m_dim16_id, m_dim17_id, m_dim18_id, m_dim19_id,
+							  m_dim20_id, imageurl, pricelist, precost)
+		VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
+				#{productCode}, #{productName, javaType=String, jdbcType=VARCHAR},
+				#{productEnName, javaType=String, jdbcType=VARCHAR},
+				#{sizeGroupId, javaType=Long, jdbcType=BIGINT},
+				#{supplierId, javaType=Long, jdbcType=BIGINT},
+				#{brandId, javaType=Long, jdbcType=BIGINT},
+				#{classId, javaType=Long, jdbcType=BIGINT},
+				#{yearId, javaType=Long, jdbcType=BIGINT},
+				#{seasonId, javaType=Long, jdbcType=BIGINT},
+				#{standardId, javaType=Long, jdbcType=BIGINT},
+				#{securityCategoryId, javaType=Long, jdbcType=BIGINT},
+				#{bandId, javaType=Long, jdbcType=BIGINT},
+				#{bigClassId, javaType=Long, jdbcType=BIGINT},
+				#{midClassId, javaType=Long, jdbcType=BIGINT},
+				#{smallClassId, javaType=Long, jdbcType=BIGINT},
+				#{genderId, javaType=Long, jdbcType=BIGINT},
+		    	'/img/' || #{productCode} || '.jpg',
+				#{priceList, javaType=Double, jdbcType=DOUBLE},
+				#{priceList, javaType=Double, jdbcType=DOUBLE})
+	</insert>
+
+	<select id="callProductAc" statementType="CALLABLE">
+		{call m_product_ac(
+				#{id, mode=IN, jdbcType=INTEGER},
+				#{code, mode=OUT, jdbcType=INTEGER},
+				#{message, mode=OUT, jdbcType=VARCHAR}
+			)}
+	</select>
+
+	<insert id="updateProduct">
+		UPDATE m_product t
+		SET t.isactive = 'Y'
+		<if test="classId != null">
+			,t.m_dim2_id = #{classId}
+		</if>
+		<if test="yearId != null">
+			,t.m_dim5_id = #{yearId}
+		</if>
+		<if test="seasonId != null">
+			,t.m_dim6_id = #{seasonId}
+		</if>
+		<if test="standardId != null">
+			,t.m_dim13_id = #{standardId}
+		</if>
+		<if test="securityCategoryId != null">
+			,t.m_dim14_id = #{securityCategoryId}
+		</if>
+		<if test="bandId != null">
+			,t.m_dim16_id = #{bandId}
+		</if>
+		<if test="bigClassId != null">
+			,t.m_dim17_id = #{bigClassId}
+		</if>
+		<if test="midClassId != null">
+			,t.m_dim18_id = #{midClassId}
+		</if>
+		<if test="smallClassId != null">
+			,t.m_dim19_id = #{smallClassId}
+		</if>
+		<if test="genderId != null">
+			,t.m_dim20_id = #{genderId}
+		</if>
+		<if test="supplierId != null">
+			,t.c_supplier_id = #{supplierId}
+		</if>
+		<if test="priceList != null">
+			,t.pricelist = #{priceList}
+		</if>
+		<if test="preCost != null">
+			,t.precost = #{preCost}
+		</if>
+		WHERE t.id = #{id}
+	</insert>
+
+	<update id="updateProductMedia">
+		UPDATE b_pdt_media t
+		SET t.imgurl1 = '/img/' || #{productCode} || '_1.jpg',
+			t.imgurl2 = '/img/' || #{productCode} || '_2.jpg',
+			t.imgurl3 = '/img/' || #{productCode} || '_3.jpg',
+			t.imgurl4 = '/img/' || #{productCode} || '_4.jpg',
+			t.imgurl5 = '/img/' || #{productCode} || '_5.jpg'
+		WHERE t.m_product_id = #{productId}
+	</update>
+
+	<insert id="insertSku">
+		MERGE INTO m_product_alias a
+		USING (
+		<foreach item="sku" index="index" collection="skus" open="" separator="UNION ALL" close="">
+			SELECT #{sku.sku}                                         AS sku,
+				   #{sku.productId}                                   AS productId,
+				   a.id                                               AS asiId,
+				   #{sku.forCode, javaType=String, jdbcType=VARCHAR}  AS forCode,
+				   #{sku.intsCode, javaType=String, jdbcType=VARCHAR} AS intsCode
+			FROM m_attributesetinstance a,
+				 m_attributeset s,
+				 m_attributevalue c,
+				 m_attribute t
+			WHERE a.m_attributeset_id = s.id
+			  AND a.value1_id = c.id
+			  AND t.clrsize = 2
+			  AND s.m_sizegroup_id = t.id
+			  AND t.id = #{sku.sizeGroupId}
+			  AND a.value1_code = #{sku.colorCode}
+			  AND a.value2_code = #{sku.sizeCode}
+			<if test="sku.brandId != null and sku.brandId != ''">
+				AND c.m_dim1_id = #{sku.brandId, javaType=Long, jdbcType=BIGINT}
+			</if>
+		</foreach>
+		) b
+		ON (a.m_product_id = b.productId AND a.m_attributesetinstance_id = b.asiId)
+		WHEN NOT MATCHED THEN
+			INSERT (id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate, isactive, no,
+					m_product_id, m_attributesetinstance_id, forcode, intscode)
+			VALUES (get_sequences('m_product_alias'), 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
+					b.sku, b.productId, b.asiId, b.forCode, b.intsCode)
+		WHEN MATCHED THEN
+			UPDATE
+			SET a.no           = b.sku,
+			    a.intscode     = b.intsCode,
+				a.modifieddate = SYSDATE
+	</insert>
+
+	<select id="queryAttributeValue" resultType="AttributeValue">
+		SELECT t.id, t.name AS code, t.value AS name, t.clrsize AS clr
+		FROM m_attributevalue t
+		WHERE t.clrsize = #{clr}
+		  AND t.value = #{code}
+		  AND t.m_attribute_id = #{attributeId, javaType=Long, jdbcType=BIGINT}
+		<if test="brandId != null and brandId != ''">
+			AND t.m_dim1_id = #{brandId, javaType=Long, jdbcType=BIGINT}
+		</if>
+	</select>
+
+	<insert id="insertAttributeValue" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT get_sequences('m_attributevalue') AS id FROM dual
+		</selectKey>
+		INSERT INTO m_attributevalue(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+									isactive, m_attribute_id, value, name, clrsize, martixcol, m_dim1_id)
+		VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y', #{attributeId}, #{code},
+				#{name, javaType=String, jdbcType=VARCHAR}, #{clr},
+		<if test="clr == 1">
+			'',
+			#{brandId, javaType=Long, jdbcType=BIGINT}
+		</if>
+		<if test="clr == 2">
+			(SELECT COUNT(1) FROM m_attributevalue WHERE m_attribute_id = #{attributeId}),
+			NULL
+		</if>)
+	</insert>
+
+	<select id="callColorAc" statementType="CALLABLE">
+		{call m_color_ac(
+				#{colorId, mode=IN, jdbcType=BIGINT}
+			)}
+	</select>
+
+	<select id="callSizeAc" statementType="CALLABLE">
+		{call m_size_ac(
+				#{sizeId, mode=IN, jdbcType=BIGINT}
+			)}
+	</select>
+
+</mapper>

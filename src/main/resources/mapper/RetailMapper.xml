@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.IRetailMapper">
+
+    <select id="queryRetailList" resultType="Retail">
+        SELECT t.id,
+               t.docno AS sourceNo,
+               t.billdate,
+               s.name  AS storeName,
+               t.doctype,
+               t.description
+        FROM m_retail t,
+             c_store s
+        WHERE t.c_store_id = s.id
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_retail r,
+                                  m_retailitem ri,
+                                  c_store rs,
+                                  m_dim m1,
+                                  m_product rp,
+                                  m_dim m18
+                             WHERE r.c_store_id = rs.id
+                               AND rs.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'B'
+                               AND rs.is_to_scm = 'Y'
+                               AND r.status = 2
+                               AND r.id = ri.m_retail_id
+                               AND ri.m_product_id = rp.id
+                               AND rp.m_dim18_id = m18.id
+                               AND m18.attribcode <![CDATA[ <> '0777' ]]>
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.to_scm_status = 'N'
+                                </if>
+                            ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <select id="queryRetailItemList" resultType="Item">
+        SELECT a.no             AS sku,
+               i.qty            AS qty,
+               i.priceactual,
+               i.discount,
+               i.tot_amt_actual AS amtActual
+        FROM m_retailitem i,
+             m_product p,
+             m_dim m18,
+             m_product_alias a
+        WHERE i.m_product_id = p.id
+          AND p.m_dim18_id = m18.id
+          AND m18.attribcode <![CDATA[ <> '0777' ]]>
+          AND i.m_productalias_id = a.id
+          AND i.m_retail_id = #{retailId}
+    </select>
+
+    <select id="queryRetailPayItemList" resultType="PayItem">
+        SELECT a.name      AS payWayName,
+               i.payamount AS payAmount
+        FROM m_retailpayitem i,
+             c_payway a
+        WHERE i.c_payway_id = a.id
+          AND i.m_retail_id = #{retailId}
+    </select>
+
+    <update id="updateRetailSyncStatus">
+        UPDATE m_retail t
+        SET t.to_scm_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.scm_no         = #{bsijaNo, javaType=String, jdbcType=VARCHAR},
+            t.to_scm_message = #{message, javaType=String, jdbcType=VARCHAR}
+        WHERE t.id = #{retailId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+</mapper>

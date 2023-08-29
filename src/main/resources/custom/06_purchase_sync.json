@@ -1,0 +1,12 @@
+{
+  "name": "根据毕厶迦销售单号同步至采购单",
+  "url": "/Rest/Purchase/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "docNo",
+      "description": "单号",
+      "type": "String"
+    }
+  ]
+}

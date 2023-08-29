@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.IPurchaseMapper">
+
+    <select id="queryPurchaseIdBySourceNo" resultType="Long">
+        SELECT t.id
+        FROM m_purchase t
+        WHERE t.sourceno = #{sourceNo}
+          AND t.isactive = 'Y'
+          AND rownum = 1
+    </select>
+
+    <select id="queryPOSupplierStore" resultType="Purchase">
+        SELECT t.id, t.c_supplier_id AS supplierId, t.c_store_id AS storeId
+        FROM b_po t
+        WHERE t.docno = #{poDocno, javaType=String, jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertPurchase" parameterType="Purchase" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT get_sequences('m_purchase') AS id FROM dual
+        </selectKey>
+        INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+                               isactive, docno, doctype, billdate, c_store_id, c_supplier_id, b_po_id, tax_dis,
+                               sourceno, datein, description)
+        VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
+                #{docNo, javaType=String, jdbcType=VARCHAR},
+                #{docType, javaType=String, jdbcType=VARCHAR},
+                #{billDate, javaType=Integer, jdbcType=INTEGER},
+                #{storeId, javaType=Long, jdbcType=BIGINT},
+                #{supplierId, javaType=Long, jdbcType=BIGINT},
+                #{poId, javaType=Long, jdbcType=BIGINT},
+                #{tax, javaType=Double, jdbcType=DOUBLE},
+                #{sourceNo, javaType=String, jdbcType=VARCHAR},
+                #{inDate, javaType=Integer, jdbcType=INTEGER},
+                #{description, javaType=String, jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertPurchaseItem" parameterType="Item" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT get_sequences('m_purchaseitem') AS id FROM dual
+        </selectKey>
+        INSERT INTO m_purchaseitem(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate,
+                                   modifieddate, isactive, m_purchase_id, m_product_id, m_productalias_id,
+                                   m_attributesetinstance_id, qty, qtyin, priceactual)
+        VALUES (#{id, javaType=Long, jdbcType=BIGINT}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
+                #{mainId, javaType=Long, jdbcType=BIGINT},
+                #{productId, javaType=Long, jdbcType=BIGINT},
+                #{skuId, javaType=Long, jdbcType=BIGINT},
+                #{asiId, javaType=Long, jdbcType=BIGINT},
+                #{qty, javaType=Integer, jdbcType=INTEGER},
+                #{qtyIn, javaType=Integer, jdbcType=INTEGER},
+                #{priceActual, javaType=Double, jdbcType=DOUBLE})
+    </insert>
+
+    <select id="callPurchaseItemAm" statementType="CALLABLE">
+        {call m_purchaseitem_am(
+                #{itemId, mode=IN, jdbcType=BIGINT}
+            )}
+    </select>
+
+    <select id="callPurchaseAm" statementType="CALLABLE">
+        {call m_purchase_am(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callPurchaseSubmit" statementType="CALLABLE">
+        {call m_purchase_submit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callPurchaseUnSubmit" statementType="CALLABLE">
+        {call m_purchase_unsubmit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callPurchaseInQtyCop" statementType="CALLABLE">
+        {call m_purchase_qtycop(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{userId, mode=IN, jdbcType=INTEGER},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callPurchaseInSubmit" statementType="CALLABLE">
+        {call m_purchasein_submit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="queryPurchaseInList" resultType="Purchase">
+        SELECT t.id, t.sourceno, t.datein AS inDate, s.src_customercode AS customerCode
+        FROM m_purchase t, c_store s
+        WHERE t.c_store_id = s.id
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_purchase r,
+                                  c_store rs,
+                                  m_dim m1
+                             WHERE r.c_supplier_id = 1
+                               AND r.c_store_id = rs.id
+                               AND rs.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'NE'
+                               /*AND rs.src_code IS NOT NULL*/
+                               AND r.in_status = 2
+                               AND r.sourceno IS NOT NULL
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.toscm_status = 'N'
+                                </if>
+                           ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <update id="updatePurchaseSyncStatus">
+        UPDATE m_purchase t
+        SET t.toscm_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.toscm_message = #{message, javaType=String, jdbcType=VARCHAR}
+        WHERE t.id = #{purchaseId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+    <select id="queryPurchaseReturnBySourceNo" resultType="PurchaseReturn">
+        SELECT id, out_status AS outStatus
+        FROM m_ret_pur
+        WHERE sourceno = #{sourceNo, javaType=String, jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertRetPur" parameterType="PurchaseReturn" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT get_sequences('m_ret_pur') AS id FROM dual
+        </selectKey>
+        INSERT INTO m_ret_pur(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+                              isactive, docno, billdate, c_store_id, c_supplier_id, tax_dis, sourceno, dateout,
+                              m_ret_pur_order_id, description)
+        VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',
+                #{docNo, javaType=String, jdbcType=VARCHAR},
+                #{billDate, javaType=Integer, jdbcType=INTEGER},
+                #{storeId, javaType=Long, jdbcType=BIGINT},
+                #{supplierId, javaType=Long, jdbcType=BIGINT},
+                #{tax, javaType=Double, jdbcType=DOUBLE},
+                #{sourceNo, javaType=String, jdbcType=VARCHAR},
+                #{outDate, javaType=Integer, jdbcType=INTEGER},
+                #{purchaseReturnOrderId, javaType=Long, jdbcType=BIGINT},
+                #{description, javaType=String, jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertRetPurItem" parameterType="Item" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT get_sequences('m_ret_puritem') AS id FROM dual
+        </selectKey>
+        INSERT INTO m_ret_puritem(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate,
+                                  modifieddate, isactive, m_ret_pur_id, m_product_id, m_productalias_id,
+                                  m_attributesetinstance_id, qty, qtyout, priceactual)
+        VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',
+                #{mainId, javaType=Long, jdbcType=BIGINT},
+                #{productId, javaType=Long, jdbcType=BIGINT},
+                #{skuId, javaType=Long, jdbcType=BIGINT},
+                #{asiId, javaType=Long, jdbcType=BIGINT},
+                #{qty, javaType=Integer, jdbcType=INTEGER},
+                #{qtyOut, javaType=Integer, jdbcType=INTEGER},
+                #{priceActual, javaType=Double, jdbcType=DOUBLE})
+    </insert>
+
+    <select id="callRetPurItemAcm" statementType="CALLABLE">
+        {call m_ret_puritem_acm(
+                #{itemId, mode=IN, jdbcType=BIGINT}
+            )}
+    </select>
+
+    <select id="callRetPurAm" statementType="CALLABLE">
+        {call m_ret_pur_am(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callRetPurSubmit" statementType="CALLABLE">
+        {call m_ret_pur_submit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callRetPurUnSubmit" statementType="CALLABLE">
+        {call m_ret_pur_unsubmit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <update id="updateRetPurOutItem">
+        UPDATE m_ret_puritem t
+        SET t.qtyout         = #{qtyOut},
+            t.tot_amt_actual = t.priceactual * #{qtyOut},
+            t.tot_amt_list   = t.pricelist * #{qtyOut}
+        WHERE t.m_ret_pur_id = #{mainId}
+          AND t.m_productalias_id = #{skuId}
+    </update>
+
+    <select id="callRetPurOutQtyCop" statementType="CALLABLE">
+        {call m_ret_purout_qtycop(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{userId, mode=IN, jdbcType=INTEGER},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <select id="callRetPurOutSubmit" statementType="CALLABLE">
+        {call m_ret_purout_submit(
+                #{id, mode=IN, jdbcType=BIGINT},
+                #{code, mode=OUT, jdbcType=INTEGER},
+                #{message, mode=OUT, jdbcType=VARCHAR}
+            )}
+    </select>
+
+    <resultMap id="PurchaseReturnMap" type="PurchaseReturn">
+        <id property="id" column="id"/>
+        <result property="docNo" column="docno"/>
+        <result property="billDate" column="billdate"/>
+        <result property="storeCode" column="storeCode"/>
+        <result property="storeName" column="storeName"/>
+        <result property="customerCode" column="customerCode"/>
+        <result property="supplierCode" column="supplierCode"/>
+        <result property="supplierName" column="supplierName"/>
+        <result property="sourceNo" column="sourceNo"/>
+        <result property="outDate" column="outDate"/>
+        <result property="outTime" column="outTime"/>
+        <result property="description" column="description"/>
+        <collection property="items" ofType="Item">
+            <result property="id" column="itemId"/>
+            <result property="sku" column="sku"/>
+            <result property="product" column="product"/>
+            <result property="colorCode" column="colorCode"/>
+            <result property="sizeCode" column="sizeCode"/>
+            <result property="qty" column="qty"/>
+            <result property="qtyOut" column="qtyOut"/>
+            <result property="priceList" column="priceList"/>
+            <result property="priceActual" column="priceActual"/>
+            <result property="discount" column="discount"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryPurchaseReturnList" resultMap="PurchaseReturnMap">
+        SELECT t.id,
+               t.docno,
+               t.billdate,
+               s.code    AS storeCode,
+               s.name    AS storeName,
+               p.code    AS supplierCode,
+               p.name    AS supplierName,
+               t.dateout AS outDate,
+               t.outtime,
+               t.description,
+               i.id      AS itemId,
+               a.no      AS sku,
+               i.qty,
+               i.qtyout,
+               i.priceactual
+        FROM m_ret_pur t,
+             c_store s,
+             c_supplier p,
+             m_ret_puritem i,
+             m_product_alias a,
+             m_product pdt,
+             m_dim m18
+        WHERE t.c_store_id = s.id
+          AND t.c_supplier_id = p.id
+          AND t.id = i.m_ret_pur_id
+          AND i.m_productalias_id = a.id
+          AND i.m_product_id = pdt.id
+          AND pdt.m_dim18_id = m18.id
+          AND m18.attribcode <![CDATA[ <> '0777' ]]>
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_ret_pur r,
+                                  m_ret_puritem ri,
+                                  c_store rs,
+                                  m_dim m1,
+                                  m_product rp,
+                                  m_dim rm18
+                             WHERE r.c_store_id = rs.id
+                               AND rs.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'B'
+                               AND r.sourceno IS NULL
+                               AND r.status = 2
+                               AND r.out_status = 1
+                               AND r.id = ri.m_ret_pur_id
+                               AND ri.m_product_id = rp.id
+                               AND rp.m_dim18_id = rm18.id
+                               AND rm18.attribcode <![CDATA[ <> '0777' ]]>
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.to_scm_status = 'N'
+                                </if>
+                            ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <update id="updatePurchaseReturnSyncStatus">
+        UPDATE m_ret_pur t
+        SET t.to_scm_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.to_scm_message = #{message, javaType=String, jdbcType=VARCHAR}
+            <if test="bsijaNo != null">
+                , t.sourceno = #{bsijaNo}
+            </if>
+        WHERE t.id = #{purchaseReturnId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+    <select id="queryPurchaseReturnOutList" resultMap="PurchaseReturnMap">
+        SELECT t.id,
+               t.docno,
+               t.billdate,
+               s.code    AS storeCode,
+               s.name    AS storeName,
+               p.code    AS supplierCode,
+               p.name    AS supplierName,
+               t.sourceno,
+               t.dateout AS outDate,
+               t.outtime,
+               t.description,
+               i.id      AS itemId,
+               a.no      AS sku,
+               i.qty,
+               i.qtyout,
+               i.priceactual
+        FROM m_ret_pur t,
+             c_store s,
+             c_supplier p,
+             m_ret_puritem i,
+             m_product_alias a,
+             m_product pdt,
+             m_dim m18
+        WHERE t.c_store_id = s.id
+          AND t.c_supplier_id = p.id
+          AND t.id = i.m_ret_pur_id
+          AND i.m_productalias_id = a.id
+          AND i.m_product_id = pdt.id
+          AND pdt.m_dim18_id = m18.id
+          AND m18.attribcode <![CDATA[ <> '0777' ]]>
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_ret_pur r,
+                                  m_ret_puritem ri,
+                                  c_store rs,
+                                  m_dim m1,
+                                  m_product rp,
+                                  m_dim rm18
+                             WHERE r.c_store_id = rs.id
+                               AND rs.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'B'
+                               AND r.sourceno IS NOT NULL
+                               AND r.out_status = 2
+                               AND r.id = ri.m_ret_pur_id
+                               AND ri.m_product_id = rp.id
+                               AND rp.m_dim18_id = rm18.id
+                               AND rm18.attribcode <![CDATA[ <> '0777' ]]>
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.to_scmout_status = 'N'
+                                </if>
+                            ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <update id="updatePurchaseReturnOutSyncStatus">
+        UPDATE m_ret_pur t
+        SET t.to_scmout_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.to_scmout_message = #{message, javaType=String, jdbcType=VARCHAR}
+        WHERE t.id = #{purchaseReturnId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+    <select id="queryPurchaseReturnOrderIdByDocno" resultType="Long">
+        SELECT t.id
+        FROM m_ret_pur_order t
+        WHERE t.docno = #{purchaseReturnOrderNo}
+    </select>
+
+    <select id="queryPurchaseReturnOrderList" resultMap="PurchaseReturnMap">
+        SELECT t.id,
+               t.docno,
+               t.billdate,
+               s.name  AS storeName,
+               sp.name AS supplierName,
+               t.description,
+               i.id    AS itemId,
+               a.no    AS sku,
+               i.qty,
+               i.priceactual
+        FROM m_ret_pur_order t,
+             m_ret_pur_orderitem i,
+             c_store s,
+             c_supplier sp,
+             m_product_alias a,
+             m_product p,
+             m_dim m18
+        WHERE t.c_store_id = s.id
+          AND t.c_supplier_id = sp.id
+          AND t.id = i.m_ret_pur_order_id
+          AND i.m_productalias_id = a.id
+          AND i.m_product_id = p.id
+          AND p.m_dim18_id = m18.id
+          AND m18.attribcode <![CDATA[ <> '0777' ]]>
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_ret_pur_order r,
+                                  m_ret_pur_orderitem ri,
+                                  c_store rs,
+                                  m_dim m1,
+                                  m_product rp,
+                                  m_dim rm18
+                             WHERE r.c_store_id = rs.id
+                               AND rs.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'B'
+                               AND rs.is_to_scm = 'Y'
+                               AND r.status = 2
+                               AND r.id = ri.m_ret_pur_order_id
+                               AND ri.m_product_id = rp.id
+                               AND rp.m_dim18_id = rm18.id
+                               AND rm18.attribcode <![CDATA[ <> '0777' ]]>
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.to_scm_status = 'N'
+                                </if>
+                            ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <update id="updatePurchaseReturnOrderSyncStatus">
+        UPDATE m_ret_pur_order t
+        SET t.to_scm_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.scm_no         = #{bsijaNo, javaType=String, jdbcType=VARCHAR},
+            t.to_scm_message = #{message, javaType=String, jdbcType=VARCHAR}
+        WHERE t.id = #{purchaseReturnOrderId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+</mapper>

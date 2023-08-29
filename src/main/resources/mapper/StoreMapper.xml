@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.IStoreMapper">
+
+    <select id="queryStoreByCode" parameterType="String" resultType="Store">
+        SELECT t.id,
+               t.code                            AS storeCode,
+               t.name                            AS storeName,
+               c.id                              AS customerId,
+               c.code                            AS customerCode,
+               c.name                            AS customerName
+        FROM c_store t,
+             c_customer c
+        WHERE t.c_customer_id = c.id
+          AND t.code = #{storeCode}
+    </select>
+
+    <select id="queryStoreBySrcCode" parameterType="String" resultType="Store">
+        SELECT t.id,
+               t.code                            AS storeCode,
+               t.name                            AS storeName,
+               c.id                              AS customerId,
+               c.code                            AS customerCode,
+               c.name                            AS customerName
+        FROM c_store t,
+             c_customer c
+        WHERE t.c_customer_id = c.id
+          AND t.src_code = #{storeCode}
+    </select>
+
+    <insert id="insertStore" parameterType="Store" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT get_sequences('c_store') AS id FROM dual
+        </selectKey>
+        INSERT INTO c_store(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate, isactive,
+                            code, name, c_customer_id, src_code, src_customercode, pur_store_code, m_dim1_id,
+                            c_province_id, c_city_id, c_district_id, address, contactor, mobil, phone, iscenter,
+                            isretail, isnegative)
+        SELECT #{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
+               #{storeCode, javaType=String, jdbcType=VARCHAR},
+               #{storeName, javaType=String, jdbcType=VARCHAR},
+               1,
+               #{storeCode, javaType=String, jdbcType=VARCHAR},
+               #{customerCode, javaType=String, jdbcType=VARCHAR},
+               #{storeCode, javaType=String, jdbcType=VARCHAR},
+               m.id,
+               #{provinceId, javaType=Long, jdbcType=BIGINT},
+               #{cityId, javaType=Long, jdbcType=BIGINT},
+               #{districtId, javaType=Long, jdbcType=BIGINT},
+               #{address, javaType=String, jdbcType=VARCHAR},
+               #{contractor, javaType=String, jdbcType=VARCHAR},
+               #{mobile, javaType=String, jdbcType=VARCHAR},
+               #{phone, javaType=String, jdbcType=VARCHAR},
+               'Y', 'N', 'Y'
+        FROM m_dim m
+        WHERE m.dimflag = 'DIM1'
+          AND m.attribcode = #{brandCode}
+    </insert>
+
+    <select id="callStoreAc" statementType="CALLABLE">
+        {call c_store_ac(
+                #{storeId, mode=IN, jdbcType=BIGINT}
+            )}
+    </select>
+
+    <update id="updateStore">
+        UPDATE c_store t
+        SET t.modifierid   = ${userId},
+            t.modifieddate = SYSDATE
+        WHERE t.id = #{id}
+    </update>
+
+    <select id="queryEmployeeIdByName" resultType="Long">
+        SELECT id
+        FROM hr_employee
+        WHERE name = #{employeeName, javaType=String, jdbcType=VARCHAR}
+          AND c_store_id = #{storeId, javaType=Long, jdbcType=BIGINT}
+    </select>
+
+</mapper>

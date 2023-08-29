@@ -1,0 +1,12 @@
+{
+  "name": "根据单号同步调拨单",
+  "url": "/Rest/Transfer/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "docNo",
+      "description": "单号",
+      "type": "String"
+    }
+  ]
+}

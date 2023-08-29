@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.IBaseMapper">
+
+	<select id="getNewId" parameterType="String" resultType="Integer">
+		SELECT get_sequences(#{tableName}) FROM dual
+	</select>
+
+	<select id="getNewDocno" parameterType="String" resultType="String">
+		SELECT get_sequenceno(#{seqName}, 37) FROM dual
+	</select>
+	
+	<select id="getParamValue" resultType="String">
+		SELECT ad_param_value(37, #{name}, NULL) FROM dual
+	</select>
+
+	<select id="queryStore" parameterType="String" resultType="Store">
+		SELECT t.id, t.code, t.name, c.id AS customerId,
+			   c.code AS customerCode, c.name AS customerName
+		FROM c_store t, c_customer c
+		<where>
+			<if test="store != null">
+				t.code = #{store}
+			</if>
+			AND t.c_customer_id = c.id
+			AND rownum = 1
+		</where>
+	</select>
+
+	<select id="queryPayWay" parameterType="String" resultType="PayWay">
+		SELECT t.id, t.code, t.name FROM c_payway t WHERE t.code = #{payWay} AND rownum <![CDATA[ < ${dataCount}]]>
+	</select>
+	
+	<select id="queryVipType" parameterType="String" resultType="VIPType">
+		SELECT t.id, t.code, t.name FROM c_viptype t WHERE t.code = #{vipType}
+	</select>
+	
+	<update id="initSql" parameterType="String" statementType="STATEMENT">
+		${sql}
+	</update>
+	
+	<select id="queryThirdTimeId" resultType="Integer">
+		SELECT t.id FROM e_third_time t
+		WHERE t.TYPE = #{type, javaType=String, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryThirdTime" resultType="String">
+		SELECT to_char(t.propel_time, 'yyyy-mm-dd hh24:mi:ss')
+		FROM e_third_time t
+		WHERE t.TYPE = #{type, javaType=String, jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="initThirdTime" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="int">
+			SELECT get_sequences('e_third_time') AS id FROM dual
+		</selectKey>
+		INSERT INTO e_third_time(id, TYPE, propel_time, remark)
+		VALUES(#{id}, #{type, javaType=String, jdbcType=VARCHAR},
+     	to_date('2019-01-01 08:00:00', 'yyyy-mm-dd hh24:mi:ss'), 
+     	<choose>
+     		<when test="type == 'StoragePropelTime'">
+     			'推送库存时间'
+     		</when>
+     		<when test="type == 'StoreStoragePropelTime'">
+   				'推送门店库存时间'
+   			</when>
+   			<when test="type == 'ProductPropelTime'">
+				'商品推送时间'
+ 			</when>
+ 			<otherwise>
+ 				'推送时间'
+ 			</otherwise>
+     	</choose>)
+	</insert>
+	
+	<insert id="insertThirdTime" parameterType="ThirdTime" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+			SELECT get_sequences('e_third_time') AS id FROM dual
+		</selectKey>
+		INSERT INTO e_third_time(id, TYPE, propel_time, remark)
+		VALUES (#{id}, #{type, javaType=String, jdbcType=VARCHAR},
+				to_date(#{time}, 'yyyy-mm-dd hh24:mi:ss'),
+				#{description, javaType=String, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateThirdTime">
+		UPDATE e_third_time t SET t.propel_time = #{date} 
+		WHERE t.type = #{type}
+	</update>
+	
+	<select id="queryScheduleJobs" resultType="ScheduleJob">
+		SELECT t.id, t.jobname, t.groupname, t.cronexpression, t.status, 
+			 t.runStatus, t.description
+		FROM e_schedulejob t
+		WHERE t.isactive = 'Y'
+		<if test="groupName != 'DEFAULT'">
+			AND t.groupname = #{groupName}
+		</if>
+		ORDER BY t.id ASC
+	</select>
+	
+	<select id="queryScheduleJob" parameterType="String" resultType="ScheduleJob">
+		SELECT t.id, t.jobname, t.groupname, t.cronexpression, t.status, 
+			t.runStatus, t.description
+		FROM e_schedulejob t
+		WHERE t.isactive = 'Y'
+		AND t.jobname = #{jobName}
+		AND t.groupname = #{groupName}
+	</select>
+	
+	<select id="queryScheduleJobById" parameterType="Integer" resultType="ScheduleJob">
+		SELECT t.id, t.jobname, t.groupname, t.cronexpression, t.status, 
+			t.runStatus, t.description
+		FROM e_schedulejob t
+		WHERE t.isactive = 'Y'
+		AND t.id = #{jobId}
+	</select>
+
+	<insert id="insertScheduleJob" parameterType="ScheduleJob" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+			SELECT get_sequences('e_schedulejob') AS id FROM dual
+		</selectKey>
+		INSERT INTO e_schedulejob(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+								  isactive, jobname, groupname, cronexpression, status, description)
+		VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',
+		        #{jobName, javaType=String, jdbcType=VARCHAR}, #{groupName, javaType=String, jdbcType=VARCHAR},
+		        #{cronExpression, javaType=String, jdbcType=VARCHAR}, 'Y',
+		        #{description, javaType=String, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateScheduleJob">
+		UPDATE e_schedulejob t
+		SET t.status         = #{job.status, javaType=String, jdbcType=VARCHAR},
+			t.runstatus      = #{job.runStatus, javaType=String, jdbcType=VARCHAR},
+			t.jobname        = #{job.jobName, javaType=String, jdbcType=VARCHAR},
+			t.groupname      = #{job.groupName, javaType=String, jdbcType=VARCHAR},
+			t.cronexpression = #{job.cronExpression, javaType=String, jdbcType=VARCHAR},
+			t.description    = #{job.description, javaType=String, jdbcType=VARCHAR}
+		WHERE t.id = #{job.id}
+	</update>
+	
+	<select id="testProcedure" statementType="CALLABLE">
+		{call test_procedure(#{id, mode=IN, jdbcType=INTEGER},
+			#{code, mode=OUT, jdbcType=INTEGER}, 
+			#{message, mode=OUT, jdbcType=VARCHAR})}
+	</select>
+
+	<insert id="insertInterfaceLog" parameterType="InterfaceLog" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT
+			<if test="type == 'SEND'">
+				get_sequences('c_interface_sendlog')
+			</if>
+			<if test="type == 'RECEIVE'">
+				get_sequences('c_interface_receivelog')
+			</if>
+			AS id FROM dual
+		</selectKey>
+		INSERT INTO
+		<if test="type == 'SEND'">
+			c_interface_sendlog
+		</if>
+		<if test="type == 'RECEIVE'">
+			c_interface_receivelog
+		</if>
+		(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+			isactive, application, name, url, method, dealdate, dealtime, source, source_id,
+			request_id, data, result, result_message, error_message)
+		VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',
+			#{application, javaType=String, jdbcType=VARCHAR},
+			#{name, javaType=String, jdbcType=VARCHAR},
+			#{url, javaType=String, jdbcType=VARCHAR},
+			#{method, javaType=String, jdbcType=VARCHAR},
+			#{dealDate, javaType=Integer, jdbcType=INTEGER},
+			#{dealTime, javaType=Date, jdbcType=DATE},
+			#{source, javaType=String, jdbcType=VARCHAR},
+			#{sourceId, javaType=Long, jdbcType=BIGINT},
+			#{requestId, javaType=String, jdbcType=VARCHAR},
+			#{data, javaType=String, jdbcType=CLOB},
+			#{result, javaType=String, jdbcType=VARCHAR},
+			#{resultMessage, javaType=String, jdbcType=CLOB},
+			#{errorMessage, javaType=String, jdbcType=CLOB}
+		)
+	</insert>
+
+	<select id="queryInterfaceResendId" resultType="Long">
+		SELECT t.id
+		FROM c_interface_resend t
+		WHERE t.name = #{name, javaType=String, jdbcType=VARCHAR}
+		  AND t.source_id = #{sourceId, javaType=Long, jdbcType=BIGINT}
+	</select>
+
+	<insert id="insertInterfaceResend">
+		INSERT INTO c_interface_resend(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+									   isactive, application, name, url, method, dealdate, dealtime, source, source_id,
+		                               request_id, data, result, result_message, error_message, send_count)
+		VALUES (#{id, javaType=Long, jdbcType=BIGINT}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',
+		        #{application, javaType=String, jdbcType=VARCHAR},
+		        #{name, javaType=String, jdbcType=VARCHAR},
+				#{url, javaType=String, jdbcType=VARCHAR},
+				#{method, javaType=String, jdbcType=VARCHAR},
+				#{dealDate, javaType=Integer, jdbcType=INTEGER},
+				#{dealTime, javaType=Date, jdbcType=DATE},
+				#{source, javaType=String, jdbcType=VARCHAR},
+				#{sourceId, javaType=Long, jdbcType=BIGINT},
+				#{requestId, javaType=String, jdbcType=VARCHAR},
+				#{data, javaType=String, jdbcType=CLOB},
+				#{result, javaType=String, jdbcType=VARCHAR},
+				#{resultMessage, javaType=String, jdbcType=CLOB},
+				#{errorMessage, javaType=String, jdbcType=CLOB}, 1)
+	</insert>
+
+	<update id="updateInterfaceResend">
+		UPDATE c_interface_resend a
+		SET a.dealdate       = #{dealDate, javaType=Integer, jdbcType=INTEGER},
+			a.dealtime       = #{dealTime, javaType=Date, jdbcType=DATE},
+			a.request_id     = #{requestId, javaType=String, jdbcType=VARCHAR},
+			a.data           = #{data, javaType=String, jdbcType=CLOB},
+			a.result         = #{result, javaType=String, jdbcType=VARCHAR},
+			a.result_message = #{resultMessage, javaType=String, jdbcType=CLOB},
+			a.error_message  = #{errorMessage, javaType=String, jdbcType=CLOB},
+			a.modifieddate   = SYSDATE,
+			a.send_count     = nvl(a.send_count, 0) + 1
+		WHERE a.id = #{id, javaType=Long, jdbcType=BIGINT}
+	</update>
+
+	<select id="queryResendInterfaceLogs" resultType="InterfaceResendLog">
+		SELECT h.*
+		FROM (SELECT rownum AS rn, t.name, t.source_id AS sourceId, t.send_count AS sendCount
+			  FROM c_interface_resend t
+			  WHERE t.result = 'F'
+				AND t.source_id IS NOT NULL
+				AND t.send_count <![CDATA[ <= #{count} ]]>) h
+		WHERE h.rn BETWEEN #{beg} AND #{end}
+	</select>
+
+	<select id="queryAccessToken" resultType="AccessToken">
+		SELECT t.id,
+			   t.app_id       AS appId,
+			   t.app_secret   AS appSecret,
+			   t.access_token AS accessToken,
+			   t.expire_in   AS expireIn,
+			   t.date_begin   AS dateBegin,
+			   t.date_end     AS dateEnd
+		FROM e_access_token t
+		WHERE t.app_id = #{appId, javaType=String, jdbcType=VARCHAR}
+		  AND rownum = 1
+	</select>
+
+	<update id="insertAccessToken">
+		MERGE INTO e_access_token a
+		USING (
+			SELECT #{appId}       AS appId,
+				   #{appSecret}   AS appSecret,
+				   #{accessToken} AS accessToken,
+				   #{expireIn}    AS expireIn,
+				   #{dateBegin}   AS dateBegin,
+				   #{dateEnd}     AS dateEnd
+			FROM dual
+		) b
+		ON (a.app_id = b.appId)
+		WHEN NOT MATCHED THEN
+			INSERT(id, app_id, app_secret, access_token, expire_in, date_begin, date_end)
+			VALUES (get_sequences('e_access_token'), b.appId, b.appSecret, b.accessToken,
+					b.expireIn, b.dateBegin, b.dateEnd)
+		WHEN MATCHED THEN
+			UPDATE
+			SET a.app_secret   = b.appSecret,
+				a.access_token = b.accessToken,
+				a.expire_in    = b.expireIn,
+				a.date_begin   = b.dateBegin,
+				a.date_end     = b.dateEnd
+	</update>
+	
+	<resultMap id="ProductMap" type="Product">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="no" property="no" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="unit1" property="unit1" jdbcType="VARCHAR" />
+		<result column="unit2" property="unit2" jdbcType="VARCHAR" />
+		<result column="weight" property="weight" jdbcType="VARCHAR" />
+		<result column="shelflife" property="shelflife" jdbcType="VARCHAR" />
+		<result column="marketdate" property="marketdate" jdbcType="VARCHAR" />
+		<result column="pricelist" property="pricelist" jdbcType="DOUBLE" />
+	</resultMap>
+	 
+	<resultMap id="ProductMapWithJSON" type="Product" extends="ProductMap">
+		<result column="brand" property="brand"  javaType="com.alibaba.fastjson.JSONObject"
+			typeHandler="com.sungeon.bos.expand.JSONObjectTypeHandler" />
+		<result column="classvalue" property="classvalue"  javaType="com.alibaba.fastjson.JSONArray"
+			typeHandler="com.sungeon.bos.expand.JSONArrayTypeHandler" />
+		<result column="colorvalue" property="colorvalue"  javaType="com.alibaba.fastjson.JSONArray"
+			typeHandler="com.sungeon.bos.expand.JSONArrayTypeHandler" />
+		<result column="sizevalue" property="sizevalue"  javaType="com.alibaba.fastjson.JSONArray"
+			typeHandler="com.sungeon.bos.expand.JSONArrayTypeHandler" />
+		<result column="dim2" property="dim2"  javaType="com.alibaba.fastjson.JSONArray"
+			typeHandler="com.sungeon.bos.expand.JSONArrayTypeHandler" />
+		<result column="dim9" property="dim9"  javaType="com.alibaba.fastjson.JSONArray"
+			typeHandler="com.sungeon.bos.expand.JSONArrayTypeHandler" />
+	</resultMap>
+
+</mapper>

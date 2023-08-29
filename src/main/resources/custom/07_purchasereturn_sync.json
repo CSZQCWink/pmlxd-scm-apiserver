@@ -1,0 +1,12 @@
+{
+  "name": "根据毕厶迦销售退货单号同步至采购退货单",
+  "url": "/Rest/Purchase/Return/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "docNo",
+      "description": "单号",
+      "type": "String"
+    }
+  ]
+}

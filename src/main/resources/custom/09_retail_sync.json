@@ -1,0 +1,12 @@
+{
+  "name": "根据单号同步零售单",
+  "url": "/Rest/Retail/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "docNo",
+      "description": "单号",
+      "type": "String"
+    }
+  ]
+}

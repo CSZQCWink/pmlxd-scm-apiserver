@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_FILE_PATH">../logs/zijinghai-scm-apiserver</Property>
+        <Property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %c{1.}.%M(Line:%L) - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+        </Console>
+
+        <RollingFile name="RollingFileInfo" fileName="${LOG_FILE_PATH}/info.log"
+                     filePattern="${LOG_FILE_PATH}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="150 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20">
+                <Delete basePath="${LOG_FILE_PATH}" maxDepth="2">
+                    <IfFileName glob="*/info-*.log">
+                        <IfLastModified age="P60D">
+                            <IfAny>
+                                <IfAccumulatedFileSize exceeds="10 GB" />
+                                <IfAccumulatedFileCount exceeds="60" />
+                            </IfAny>
+                        </IfLastModified>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.mybatis" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.beans" level="INFO"/>
+        <logger name="org.springframework.context" level="INFO"/>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springframework.jndi" level="INFO"/>
+        <logger name="org.mybatis.spring" level="INFO"/>
+        <logger name="org.apache.ibatis" level="INFO"/>
+        <logger name="org.apache.cxf" level="INFO"/>
+        <logger name="org.apache.commons" level="INFO"/>
+        <logger name="org.apache.http" level="WARN"/>
+        <logger name="org.jboss.netty" level="WARN"/>
+        <logger name="org.quartz" level="INFO"/>
+
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFileInfo"/>
+        </root>
+    </Loggers>
+
+</Configuration>

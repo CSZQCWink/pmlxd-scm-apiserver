@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sungeon.bos.mapper.ITransferMapper">
+
+    <resultMap id="TransferMap" type="Transfer">
+        <id property="id" column="id"/>
+        <result property="sourceNo" column="sourceNo"/>
+        <result property="billDate" column="billdate"/>
+        <result property="origName" column="origName"/>
+        <result property="origKind" column="origKind"/>
+        <result property="destName" column="destName"/>
+        <result property="destKind" column="destKind"/>
+        <result property="customerCode" column="customerCode"/>
+        <result property="outDate" column="outDate"/>
+        <result property="inDate" column="inDate"/>
+        <result property="description" column="description"/>
+        <collection property="items" ofType="Item">
+            <result property="id" column="itemId"/>
+            <result property="sku" column="sku"/>
+            <result property="product" column="product"/>
+            <result property="colorCode" column="colorCode"/>
+            <result property="sizeCode" column="sizeCode"/>
+            <result property="qty" column="qty"/>
+            <result property="qtyOut" column="qtyOut"/>
+            <result property="qtyIn" column="qtyIn"/>
+            <result property="priceList" column="priceList"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryTransferOutList" resultMap="TransferMap">
+        SELECT t.id,
+               t.docno   AS sourceNo,
+               t.billdate,
+               o.name    AS origName,
+               ok.name   AS origKind,
+               d.name    AS destName,
+               dk.name   AS destKind,
+               t.dateout AS outDate,
+               t.datein  AS inDate,
+               t.description,
+               i.id      AS itemId,
+               a.no      AS sku,
+               i.qty,
+               i.qtyout,
+               i.qtyin
+        FROM m_transfer t,
+             c_store o,
+             c_store d,
+             c_storekind ok,
+             c_storekind dk,
+             m_transferitem i,
+             m_product_alias a,
+             m_product p,
+             m_dim m18
+        WHERE t.c_orig_id = o.id
+          AND t.c_dest_id = d.id
+          AND o.c_storekind_id = ok.id
+          AND d.c_storekind_id = dk.id
+          AND t.id = i.m_transfer_id
+          AND i.m_productalias_id = a.id
+          AND i.m_product_id = p.id
+          AND p.m_dim18_id = m18.id
+          AND m18.attribcode <![CDATA[ <> '0777' ]]>
+          AND t.id IN (SELECT w.id
+                       FROM (SELECT r.id, row_number() over (ORDER BY r.id) AS rn
+                             FROM m_transfer r,
+                                  m_transferitem ri,
+                                  c_store ro,
+                                  c_store rd,
+                                  m_dim m1,
+                                  m_product rp,
+                                  m_dim rm18
+                             WHERE r.c_orig_id = ro.id
+                               AND ro.m_dim1_id = m1.id
+                               AND r.c_dest_id = rd.id
+                               AND rd.m_dim1_id = m1.id
+                               AND m1.dimflag = 'DIM1'
+                               AND m1.attribcode = 'B'
+                               AND ro.is_to_scm = 'Y'
+                               AND rd.is_to_scm = 'Y'
+                               AND r.in_status = 2
+                               AND r.id = ri.m_transfer_id
+                               AND ri.m_product_id = rp.id
+                               AND rp.m_dim18_id = rm18.id
+                               AND rm18.attribcode <![CDATA[ <> '0777' ]]>
+                                <if test="docNo != null">
+                                    AND r.docno = #{docNo}
+                                </if>
+                                <if test="docNo == null">
+                                    AND r.to_scm_status = 'N'
+                                </if>
+                            ) w
+                       WHERE w.rn BETWEEN #{beg} AND #{end})
+    </select>
+
+    <update id="updateTransferSyncStatus">
+        UPDATE m_transfer t
+        SET t.to_scm_status  = #{status, javaType=String, jdbcType=VARCHAR},
+            t.scm_no         = #{bsijaNo, javaType=String, jdbcType=VARCHAR},
+            t.to_scm_message = #{message, javaType=String, jdbcType=VARCHAR}
+        WHERE t.id = #{transferId, javaType=Long, jdbcType=BIGINT}
+    </update>
+
+</mapper>

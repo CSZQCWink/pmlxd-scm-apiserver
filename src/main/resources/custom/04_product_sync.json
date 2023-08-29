@@ -1,0 +1,12 @@
+{
+  "name": "根据款号同步商品",
+  "url": "/Rest/Product/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "productCode",
+      "description": "款号",
+      "type": "String"
+    }
+  ]
+}
