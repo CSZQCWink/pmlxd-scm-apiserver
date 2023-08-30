@@ -11,30 +11,30 @@ import java.io.Serializable;
 public class BosResult implements Serializable {
 
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private int code;
-    private String message = "OK";
+	private int code;
+	private String message = "OK";
 
-    public int getCode() {
-        return code;
-    }
+	public int getCode() {
+		return code;
+	}
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+	public void setCode(int code) {
+		this.code = code;
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

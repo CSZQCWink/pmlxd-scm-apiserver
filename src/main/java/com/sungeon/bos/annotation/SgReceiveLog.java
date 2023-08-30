@@ -15,10 +15,10 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD})
 public @interface SgReceiveLog {
 
-    String name();
+	String name();
 
-    String contentType() default "JSON";
+	String contentType() default "JSON";
 
-    String sourceColumn() default "docNo";
+	String sourceColumn() default "docNo";
 
 }

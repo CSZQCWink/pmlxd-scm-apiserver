@@ -16,38 +16,38 @@ import java.util.List;
 @Repository
 public interface IProductDao {
 
-    SkuEntity queryProductBySku(String sku);
+	SkuEntity queryProductBySku(String sku);
 
-    SkuEntity queryProductByForCode(String sku);
+	SkuEntity queryProductByForCode(String sku);
 
-    SkuEntity queryProductByProductColorSize(String productCode, String colorCode, String sizeCode);
+	SkuEntity queryProductByProductColorSize(String productCode, String colorCode, String sizeCode);
 
-    ProductEntity queryProductByCode(String productCode);
+	ProductEntity queryProductByCode(String productCode);
 
-    String querySizeGroupNameBySize(String sizeCode);
+	String querySizeGroupNameBySize(String sizeCode);
 
-    Long queryAttributeId(int clr, String attributeName);
+	Long queryAttributeId(int clr, String attributeName);
 
-    Long queryDimId(String dimFlag, String dim);
+	Long queryDimId(String dimFlag, String dim);
 
-    Integer insertDim(DimEntity dim);
+	Integer insertDim(DimEntity dim);
 
-    Integer insertProduct(ProductEntity product);
+	Integer insertProduct(ProductEntity product);
 
-    BosResult callProductAc(Long productId);
+	BosResult callProductAc(Long productId);
 
-    Integer updateProduct(ProductEntity product);
+	Integer updateProduct(ProductEntity product);
 
-    Integer updateProductMedia(Long productId, String productCode);
+	Integer updateProductMedia(Long productId, String productCode);
 
-    Integer insertSku(List<SkuEntity> skus);
+	Integer insertSku(List<SkuEntity> skus);
 
-    AttributeValueEntity queryAttributeValue(int clr, String code, Long attributeId, Long brandId);
+	AttributeValueEntity queryAttributeValue(int clr, String code, Long attributeId, Long brandId);
 
-    Integer insertAttributeValue(AttributeValueEntity attributeValue);
+	Integer insertAttributeValue(AttributeValueEntity attributeValue);
 
-    BosResult callColorAc(Long colorId);
+	BosResult callColorAc(Long colorId);
 
-    BosResult callSizeAc(Long sizeId);
+	BosResult callSizeAc(Long sizeId);
 
 }

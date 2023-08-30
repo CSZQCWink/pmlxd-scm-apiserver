@@ -11,27 +11,27 @@ import com.alibaba.fastjson.JSONObject;
 @Alias("VIP")
 public class VipEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private Integer eVipId;
-    private String cardNo;
-    private String vipName;
-    private String password;
-    private String mobile;
-    private String store;
-    private String customer;
-    private String gender;
-    private Integer birthday;
-    private String email;
-    private String vipType;
-    private Integer openDate;
-    private Integer integral;
-    private String description;
+	private Long id;
+	private Integer eVipId;
+	private String cardNo;
+	private String vipName;
+	private String password;
+	private String mobile;
+	private String store;
+	private String customer;
+	private String gender;
+	private Integer birthday;
+	private String email;
+	private String vipType;
+	private Integer openDate;
+	private Integer integral;
+	private String description;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

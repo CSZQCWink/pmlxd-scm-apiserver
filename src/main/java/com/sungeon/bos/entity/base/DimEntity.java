@@ -9,14 +9,14 @@ import org.apache.ibatis.type.Alias;
 @Alias("Dim")
 public class DimEntity {
 
-    private Long id;
-    private String code;
-    private String name;
-    private String dimFlag;
+	private Long id;
+	private String code;
+	private String name;
+	private String dimFlag;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

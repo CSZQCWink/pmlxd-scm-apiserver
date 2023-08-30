@@ -15,35 +15,36 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * @author 刘国帅
- * @date 2019-10-9
+ * @title: 采购单Controller
+ * @author: 陈苏洲
+ * @date: 2023/8/30 9:35
  **/
 @Slf4j
 @Controller
 @RequestMapping("/Purchase")
 public class PurchaseController extends SungeonBaseController {
 
-    @Autowired
-    private ISaleService saleService;
-    @Autowired
-    private IPurchaseService purchaseService;
+	@Autowired
+	private ISaleService saleService;
+	@Autowired
+	private IPurchaseService purchaseService;
 
-    @RequestMapping("/Sync")
-    @ResponseBody
-    public ValueHolder<List<PurchaseEntity>> syncPurchase(String docNo) {
-        return ValueHolder.ok(saleService.syncBsijaSale(null, docNo, 1, 1));
-    }
+	@RequestMapping("/Sync")
+	@ResponseBody
+	public ValueHolder<List<PurchaseEntity>> syncPurchase(String docNo) {
+		return ValueHolder.ok(saleService.syncBsijaSale(null, docNo, 1, 1));
+	}
 
-    @RequestMapping("/Return/Sync")
-    @ResponseBody
-    public ValueHolder<List<PurchaseReturnEntity>> syncPurchaseReturn(String docNo) {
-        return ValueHolder.ok(saleService.syncBsijaSaleReturn(null, docNo, 1, 1));
-    }
+	@RequestMapping("/Return/Sync")
+	@ResponseBody
+	public ValueHolder<List<PurchaseReturnEntity>> syncPurchaseReturn(String docNo) {
+		return ValueHolder.ok(saleService.syncBsijaSaleReturn(null, docNo, 1, 1));
+	}
 
-    @RequestMapping("/ReturnOrder/Sync")
-    @ResponseBody
-    public ValueHolder<List<PurchaseReturnEntity>> syncPurchaseReturnOrder(String docNo) {
-        return ValueHolder.ok(purchaseService.syncBsijaPurchaseReturnOrder(docNo, 1, 1));
-    }
+	@RequestMapping("/ReturnOrder/Sync")
+	@ResponseBody
+	public ValueHolder<List<PurchaseReturnEntity>> syncPurchaseReturnOrder(String docNo) {
+		return ValueHolder.ok(purchaseService.syncBsijaPurchaseReturnOrder(docNo, 1, 1));
+	}
 
 }

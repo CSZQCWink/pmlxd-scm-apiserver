@@ -14,12 +14,12 @@ import java.math.BigDecimal;
 @Data
 public class InterfaceResendLog {
 
-    private String name;
-    private BigDecimal sourceId;
-    private BigDecimal count;
+	private String name;
+	private BigDecimal sourceId;
+	private BigDecimal count;
 
-    public String toJSONString() {
-        return JSONObject.toJSONString(this);
-    }
+	public String toJSONString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

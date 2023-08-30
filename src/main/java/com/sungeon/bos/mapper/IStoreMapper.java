@@ -11,16 +11,16 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface IStoreMapper {
 
-    StoreEntity queryStoreByCode(String storeCode);
+	StoreEntity queryStoreByCode(String storeCode);
 
-    StoreEntity queryStoreBySrcCode(String storeCode);
+	StoreEntity queryStoreBySrcCode(String storeCode);
 
-    Integer insertStore(StoreEntity store);
+	Integer insertStore(StoreEntity store);
 
-    void callStoreAc(Long storeId);
+	void callStoreAc(Long storeId);
 
-    Integer updateStore(StoreEntity store);
+	Integer updateStore(StoreEntity store);
 
-    Long queryEmployeeIdByName(@Param("employeeName") String employeeName, @Param("storeId") Long storeId);
+	Long queryEmployeeIdByName(@Param("employeeName") String employeeName, @Param("storeId") Long storeId);
 
 }

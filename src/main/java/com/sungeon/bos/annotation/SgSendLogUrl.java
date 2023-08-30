@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.FIELD})
 public @interface SgSendLogUrl {
 
-    String name() default "";
+	String name() default "";
 
 }

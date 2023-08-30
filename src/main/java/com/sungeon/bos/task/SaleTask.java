@@ -22,39 +22,39 @@ import java.util.List;
 @Component
 public class SaleTask extends BaseTask {
 
-    @Autowired
-    private ISaleService saleService;
+	@Autowired
+	private ISaleService saleService;
 
-    public void syncBsijaSale() {
-        try {
-            List<PurchaseEntity> purchases;
-            String startTime = baseService.getThirdTime("BSIJA_SALE_SYNC_TIME");
-            Date now = new Date();
-            int page = 1;
-            int pageSize = 30;
-            do {
-                purchases = saleService.syncBsijaSale(startTime, null, page++, pageSize);
-            } while (purchases.size() == pageSize);
-            baseService.updateThirdTime("BSIJA_SALE_SYNC_TIME", now);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+	public void syncBsijaSale() {
+		try {
+			List<PurchaseEntity> purchases;
+			String startTime = baseService.getThirdTime("BSIJA_SALE_SYNC_TIME");
+			Date now = new Date();
+			int page = 1;
+			int pageSize = 30;
+			do {
+				purchases = saleService.syncBsijaSale(startTime, null, page++, pageSize);
+			} while (purchases.size() == pageSize);
+			baseService.updateThirdTime("BSIJA_SALE_SYNC_TIME", now);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
-    public void syncBsijaSaleReturn() {
-        try {
-            List<PurchaseReturnEntity> purchases;
-            String startTime = baseService.getThirdTime("BSIJA_SALE_RETURN_SYNC_TIME");
-            Date now = new Date();
-            int page = 1;
-            int pageSize = 30;
-            do {
-                purchases = saleService.syncBsijaSaleReturn(startTime, null, page++, pageSize);
-            } while (purchases.size() == pageSize);
-            baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+	public void syncBsijaSaleReturn() {
+		try {
+			List<PurchaseReturnEntity> purchases;
+			String startTime = baseService.getThirdTime("BSIJA_SALE_RETURN_SYNC_TIME");
+			Date now = new Date();
+			int page = 1;
+			int pageSize = 30;
+			do {
+				purchases = saleService.syncBsijaSaleReturn(startTime, null, page++, pageSize);
+			} while (purchases.size() == pageSize);
+			baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
 }

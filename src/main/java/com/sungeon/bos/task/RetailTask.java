@@ -22,19 +22,19 @@ import java.util.List;
 @Component
 public class RetailTask extends BaseTask {
 
-    @Autowired
-    private IRetailService retailService;
+	@Autowired
+	private IRetailService retailService;
 
-    public void syncBsijaRetail() {
-        try {
-            List<RetailEntity> retails;
-            int page = 1;
-            do {
-                retails = retailService.syncBsijaRetail(null, page++, SystemProperties.ParamDataCount);
-            } while (!CollectionUtils.isEmpty(retails));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+	public void syncBsijaRetail() {
+		try {
+			List<RetailEntity> retails;
+			int page = 1;
+			do {
+				retails = retailService.syncBsijaRetail(null, page++, SystemProperties.ParamDataCount);
+			} while (!CollectionUtils.isEmpty(retails));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
 }

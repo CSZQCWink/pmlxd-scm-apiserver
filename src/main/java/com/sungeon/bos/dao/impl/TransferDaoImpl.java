@@ -19,19 +19,19 @@ import java.util.List;
 @Repository("transferDao")
 public class TransferDaoImpl extends BaseDaoImpl implements ITransferDao {
 
-    @Autowired
-    private ITransferMapper transferMapper;
+	@Autowired
+	private ITransferMapper transferMapper;
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public List<TransferEntity> queryTransferOutList(String docNo, int beg, int end) {
-        return transferMapper.queryTransferOutList(docNo, beg, end);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public List<TransferEntity> queryTransferOutList(String docNo, int beg, int end) {
+		return transferMapper.queryTransferOutList(docNo, beg, end);
+	}
 
-    @SgExceptionField(exception = UpdateFailException.class)
-    @Override
-    public Integer updateTransferSyncStatus(Long transferId, String status, String bsijaNo, String message) {
-        return transferMapper.updateTransferSyncStatus(transferId, status, bsijaNo, message);
-    }
+	@SgExceptionField(exception = UpdateFailException.class)
+	@Override
+	public Integer updateTransferSyncStatus(Long transferId, String status, String bsijaNo, String message) {
+		return transferMapper.updateTransferSyncStatus(transferId, status, bsijaNo, message);
+	}
 
 }

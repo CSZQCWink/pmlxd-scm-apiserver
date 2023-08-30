@@ -22,19 +22,19 @@ import java.util.List;
 @Component
 public class TransferTask extends BaseTask {
 
-    @Autowired
-    private ITransferService transferService;
+	@Autowired
+	private ITransferService transferService;
 
-    public void syncBsijaTransfer() {
-        try {
-            List<TransferEntity> transfers;
-            int page = 1;
-            do {
-                transfers = transferService.syncBsijaTransfer(null, page++, SystemProperties.ParamDataCount);
-            } while (!CollectionUtils.isEmpty(transfers));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+	public void syncBsijaTransfer() {
+		try {
+			List<TransferEntity> transfers;
+			int page = 1;
+			do {
+				transfers = transferService.syncBsijaTransfer(null, page++, SystemProperties.ParamDataCount);
+			} while (!CollectionUtils.isEmpty(transfers));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
 }

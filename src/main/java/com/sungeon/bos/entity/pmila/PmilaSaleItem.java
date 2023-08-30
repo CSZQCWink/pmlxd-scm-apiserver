@@ -16,36 +16,36 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @RestTable(tableName = "M_SALEITEM", refTableName = "M_SALEITEM", description = "销售单明细",
-        defaultQueryFilter = "M_SALEITEM.ISACTIVE = 'Y'")
+		defaultQueryFilter = "M_SALEITEM.ISACTIVE = 'Y'")
 public class PmilaSaleItem extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "M_SALE_ID", valuePraser = LongParser.class)
-    private Long saleId;
-    @RestColumn(name = "M_PRODUCTALIAS_ID;NO")
-    private String sku;
-    @RestColumn(name = "M_PRODUCT_ID;NAME")
-    private String product;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID", valuePraser = LongParser.class)
-    private Long asiId;
-    @RestColumn(name = "QTY")
-    private Integer qty;
-    @RestColumn(name = "QTYOUT")
-    private Integer qtyOut;
-    @RestColumn(name = "QTYIN")
-    private Integer qtyIn;
-    @RestColumn(name = "PRICEACTUAL", valuePraser = DoubleParser.class)
-    private Double priceActual;
-    @RestColumn(name = "DISCOUNT", valuePraser = DoubleParser.class)
-    private Double discount;
-    @RestColumn(name = "TOT_AMT_ACTUAL", valuePraser = DoubleParser.class)
-    private Double totAmtActual;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "M_SALE_ID", valuePraser = LongParser.class)
+	private Long saleId;
+	@RestColumn(name = "M_PRODUCTALIAS_ID;NO")
+	private String sku;
+	@RestColumn(name = "M_PRODUCT_ID;NAME")
+	private String product;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID", valuePraser = LongParser.class)
+	private Long asiId;
+	@RestColumn(name = "QTY")
+	private Integer qty;
+	@RestColumn(name = "QTYOUT")
+	private Integer qtyOut;
+	@RestColumn(name = "QTYIN")
+	private Integer qtyIn;
+	@RestColumn(name = "PRICEACTUAL", valuePraser = DoubleParser.class)
+	private Double priceActual;
+	@RestColumn(name = "DISCOUNT", valuePraser = DoubleParser.class)
+	private Double discount;
+	@RestColumn(name = "TOT_AMT_ACTUAL", valuePraser = DoubleParser.class)
+	private Double totAmtActual;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 
 }

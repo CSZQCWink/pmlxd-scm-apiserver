@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.PARAMETER})
 public @interface SgSendLogBean {
 
-    String name() default "";
+	String name() default "";
 
 }

@@ -12,21 +12,21 @@ import com.alibaba.fastjson.JSONObject;
 @Alias("Storage")
 public class StorageEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long skuId;
-    private String sku;
-    private Long productId;
-    private String product;
-    private Integer storeId;
-    private String storeCode;
-    private String storeName;
-    private Integer qty;
-    private Integer qtyCan;
+	private Long skuId;
+	private String sku;
+	private Long productId;
+	private String product;
+	private Integer storeId;
+	private String storeCode;
+	private String storeName;
+	private Integer qty;
+	private Integer qtyCan;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

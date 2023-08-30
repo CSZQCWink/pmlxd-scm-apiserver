@@ -22,19 +22,19 @@ import java.util.List;
 @Component
 public class StockTask extends BaseTask {
 
-    @Autowired
-    private IStockService stockService;
+	@Autowired
+	private IStockService stockService;
 
-    public void syncBsijaInventory() {
-        try {
-            List<InventoryEntity> inventories;
-            int page = 1;
-            do {
-                inventories = stockService.syncBsijaInventory(null, page++, SystemProperties.ParamDataCount);
-            } while (!CollectionUtils.isEmpty(inventories));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+	public void syncBsijaInventory() {
+		try {
+			List<InventoryEntity> inventories;
+			int page = 1;
+			do {
+				inventories = stockService.syncBsijaInventory(null, page++, SystemProperties.ParamDataCount);
+			} while (!CollectionUtils.isEmpty(inventories));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
 }

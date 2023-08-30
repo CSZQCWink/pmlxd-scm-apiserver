@@ -14,10 +14,10 @@ import java.util.List;
 @Service
 public interface IStockService {
 
-    ObjectSubmitResponse dealBsijaOut(String bsijaDocNo, String billType, List<ItemEntity> items);
+	ObjectSubmitResponse dealBsijaOut(String bsijaDocNo, String billType, List<ItemEntity> items);
 
-    ObjectSubmitResponse dealBsijaIn(String bsijaDocNo, String billType);
+	ObjectSubmitResponse dealBsijaIn(String bsijaDocNo, String billType);
 
-    List<InventoryEntity> syncBsijaInventory(String docNo, int page, int pageSize);
+	List<InventoryEntity> syncBsijaInventory(String docNo, int page, int pageSize);
 
 }

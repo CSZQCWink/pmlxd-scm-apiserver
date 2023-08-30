@@ -16,24 +16,24 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @RestTable(tableName = "M_RETAILPAYITEM", refTableName = "M_RETAILPAYITEM", description = "零售单付款明细",
-        defaultQueryFilter = "M_RETAILPAYITEM.ISACTIVE = 'Y'")
+		defaultQueryFilter = "M_RETAILPAYITEM.ISACTIVE = 'Y'")
 public class PmilaRetailPayItem extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "M_RETAIL_ID", valuePraser = LongParser.class)
-    private Long retailId;
-    @RestColumn(name = "C_PAYWAY_ID__NAME", isRestSave = true, isRestQuery = false)
-    private String payWayName = "现金";
-    @RestColumn(name = "PAYAMOUNT", valuePraser = DoubleParser.class, isRestSave = true)
-    private Double payAmount;
-    @RestColumn(name = "BASE_PAYAMOUNT", valuePraser = DoubleParser.class, isRestSave = true)
-    private Double basePayAmount;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "M_RETAIL_ID", valuePraser = LongParser.class)
+	private Long retailId;
+	@RestColumn(name = "C_PAYWAY_ID__NAME", isRestSave = true, isRestQuery = false)
+	private String payWayName = "现金";
+	@RestColumn(name = "PAYAMOUNT", valuePraser = DoubleParser.class, isRestSave = true)
+	private Double payAmount;
+	@RestColumn(name = "BASE_PAYAMOUNT", valuePraser = DoubleParser.class, isRestSave = true)
+	private Double basePayAmount;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 
 }

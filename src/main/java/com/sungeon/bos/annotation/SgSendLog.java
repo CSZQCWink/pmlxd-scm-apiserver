@@ -15,12 +15,12 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD})
 public @interface SgSendLog {
 
-    String name() default "";
+	String name() default "";
 
-    String contentType() default "JSON";
+	String contentType() default "JSON";
 
-    String successName() default "";
+	String successName() default "";
 
-    String successValue() default "";
+	String successValue() default "";
 
 }

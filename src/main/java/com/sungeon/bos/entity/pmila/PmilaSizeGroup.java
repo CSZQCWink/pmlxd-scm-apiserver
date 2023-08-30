@@ -18,20 +18,20 @@ import lombok.EqualsAndHashCode;
 @RestTable(tableName = "M_SIZEGROUP", description = "尺寸组", defaultQueryFilter = "ISACTIVE = 'Y'")
 public class PmilaSizeGroup extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "NAME")
-    private String name;
-    @RestColumn(name = "CLRSIZE")
-    private Integer clr;
-    @RestColumn(name = "MODIFIEDDATE")
-    private String modifiedDate;
-    @RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
-    private Boolean isActive;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "NAME")
+	private String name;
+	@RestColumn(name = "CLRSIZE")
+	private Integer clr;
+	@RestColumn(name = "MODIFIEDDATE")
+	private String modifiedDate;
+	@RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
+	private Boolean isActive;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

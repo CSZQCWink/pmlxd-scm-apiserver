@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-<!--  禁用缓存功能  -->
+    <!--  禁用缓存功能  -->
     <settings>
         <setting name="cacheEnabled" value="false"/>
     </settings>
-<!--  将该包中的实体类作为类型别名注册 -->
+    <!--  将该包中的实体类作为类型别名注册 -->
     <typeAliases>
         <package name="com.sungeon.bos.entity"/>
     </typeAliases>

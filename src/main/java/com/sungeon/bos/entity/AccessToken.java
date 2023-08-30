@@ -15,75 +15,75 @@ import java.util.Date;
 public class AccessToken implements Serializable {
 
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String appId;
-    private String appSecret;
-    private String accessToken;
-    private Integer expireIn;
-    private Date dateBegin;
-    private Date dateEnd;
+	private Long id;
+	private String appId;
+	private String appSecret;
+	private String accessToken;
+	private Integer expireIn;
+	private Date dateBegin;
+	private Date dateEnd;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getAppId() {
-        return appId;
-    }
+	public String getAppId() {
+		return appId;
+	}
 
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
-    public String getAppSecret() {
-        return appSecret;
-    }
+	public String getAppSecret() {
+		return appSecret;
+	}
 
-    public void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
-    }
+	public void setAppSecret(String appSecret) {
+		this.appSecret = appSecret;
+	}
 
-    public String getAccessToken() {
-        return accessToken;
-    }
+	public String getAccessToken() {
+		return accessToken;
+	}
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
-    public Integer getExpireIn() {
-        return expireIn;
-    }
+	public Integer getExpireIn() {
+		return expireIn;
+	}
 
-    public void setExpireIn(Integer expireIn) {
-        this.expireIn = expireIn;
-    }
+	public void setExpireIn(Integer expireIn) {
+		this.expireIn = expireIn;
+	}
 
-    public Date getDateBegin() {
-        return dateBegin;
-    }
+	public Date getDateBegin() {
+		return dateBegin;
+	}
 
-    public void setDateBegin(Date dateBegin) {
-        this.dateBegin = dateBegin;
-    }
+	public void setDateBegin(Date dateBegin) {
+		this.dateBegin = dateBegin;
+	}
 
-    public Date getDateEnd() {
-        return dateEnd;
-    }
+	public Date getDateEnd() {
+		return dateEnd;
+	}
 
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
-    }
+	public void setDateEnd(Date dateEnd) {
+		this.dateEnd = dateEnd;
+	}
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

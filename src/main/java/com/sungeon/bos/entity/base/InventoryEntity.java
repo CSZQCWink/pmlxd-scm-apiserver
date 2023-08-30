@@ -11,28 +11,25 @@ import java.util.List;
 @Alias("Inventory")
 public class InventoryEntity {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String docNo;
-    private String sourceNo;
-    private Integer billDate;
-    private String customerCode;
-    private String storeCode;
-    private String storeName;
-    private String docType;
-    private String diffReason;
-    private String description;
-    private List<ItemEntity> items;
+	private Long id;
+	private String docNo;
+	private String sourceNo;
+	private Integer billDate;
+	private String customerCode;
+	private String storeCode;
+	private String storeName;
+	private String docType;
+	private String diffReason;
+	private String description;
+	private List<ItemEntity> items;
 
-    private Long storeId;
+	private Long storeId;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

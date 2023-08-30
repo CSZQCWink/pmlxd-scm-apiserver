@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ISupplierDao {
 
-    Long querySupplierIdByCode(String supplierCode);
+	Long querySupplierIdByCode(String supplierCode);
 
 }

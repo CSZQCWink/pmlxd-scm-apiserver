@@ -20,47 +20,47 @@ import javax.annotation.Resource;
 @Repository("storeDao")
 public class StoreDaoImpl implements IStoreDao {
 
-    @Resource
-    private IStoreMapper storeMapper;
+	@Resource
+	private IStoreMapper storeMapper;
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public StoreEntity queryStoreByCode(String storeCode) {
-        return storeMapper.queryStoreByCode(storeCode);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public StoreEntity queryStoreByCode(String storeCode) {
+		return storeMapper.queryStoreByCode(storeCode);
+	}
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public StoreEntity queryStoreBySrcCode(String storeCode) {
-        return storeMapper.queryStoreBySrcCode(storeCode);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public StoreEntity queryStoreBySrcCode(String storeCode) {
+		return storeMapper.queryStoreBySrcCode(storeCode);
+	}
 
-    @SgExceptionField(exception = InsertFailException.class)
-    @Override
-    public Integer insertStore(StoreEntity store) {
-        return storeMapper.insertStore(store);
-    }
+	@SgExceptionField(exception = InsertFailException.class)
+	@Override
+	public Integer insertStore(StoreEntity store) {
+		return storeMapper.insertStore(store);
+	}
 
-    @SgExceptionField(exception = ProcedureErrorException.class)
-    @Override
-    public BosResult callStoreAc(Long storeId) {
-        BosResult result = new BosResult();
-        storeMapper.callStoreAc(storeId);
-        result.setCode(1);
-        result.setMessage("SUCCESS");
-        return result;
-    }
+	@SgExceptionField(exception = ProcedureErrorException.class)
+	@Override
+	public BosResult callStoreAc(Long storeId) {
+		BosResult result = new BosResult();
+		storeMapper.callStoreAc(storeId);
+		result.setCode(1);
+		result.setMessage("SUCCESS");
+		return result;
+	}
 
-    @SgExceptionField(exception = UpdateFailException.class)
-    @Override
-    public Integer updateStore(StoreEntity store) {
-        return storeMapper.updateStore(store);
-    }
+	@SgExceptionField(exception = UpdateFailException.class)
+	@Override
+	public Integer updateStore(StoreEntity store) {
+		return storeMapper.updateStore(store);
+	}
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public Long queryEmployeeIdByName(String employeeName, Long storeId) {
-        return storeMapper.queryEmployeeIdByName(employeeName, storeId);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public Long queryEmployeeIdByName(String employeeName, Long storeId) {
+		return storeMapper.queryEmployeeIdByName(employeeName, storeId);
+	}
 
 }

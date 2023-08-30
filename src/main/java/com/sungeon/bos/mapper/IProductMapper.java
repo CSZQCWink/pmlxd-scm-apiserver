@@ -17,41 +17,41 @@ import java.util.Map;
 @Mapper
 public interface IProductMapper {
 
-    SkuEntity queryProductBySku(String sku);
+	SkuEntity queryProductBySku(String sku);
 
-    SkuEntity queryProductByForCode(String sku);
+	SkuEntity queryProductByForCode(String sku);
 
-    SkuEntity queryProductByProductColorSize(@Param("productCode") String productCode,
-                                             @Param("colorCode") String colorCode,
-                                             @Param("sizeCode") String sizeCode);
+	SkuEntity queryProductByProductColorSize(@Param("productCode") String productCode,
+	                                         @Param("colorCode") String colorCode,
+	                                         @Param("sizeCode") String sizeCode);
 
-    ProductEntity queryProductByCode(String productCode);
+	ProductEntity queryProductByCode(String productCode);
 
-    String querySizeGroupNameBySize(String sizeCode);
+	String querySizeGroupNameBySize(String sizeCode);
 
-    Long queryAttributeId(@Param("clr") int clr, @Param("attributeName") String attributeName);
+	Long queryAttributeId(@Param("clr") int clr, @Param("attributeName") String attributeName);
 
-    Long queryDimId(@Param("dimFlag") String dimFlag, @Param("dim") String dim);
+	Long queryDimId(@Param("dimFlag") String dimFlag, @Param("dim") String dim);
 
-    Integer insertDim(DimEntity dim);
+	Integer insertDim(DimEntity dim);
 
-    Integer insertProduct(ProductEntity product);
+	Integer insertProduct(ProductEntity product);
 
-    void callProductAc(Map<String, Object> map);
+	void callProductAc(Map<String, Object> map);
 
-    Integer updateProduct(ProductEntity product);
+	Integer updateProduct(ProductEntity product);
 
-    Integer updateProductMedia(@Param("productId") Long productId, @Param("productCode") String productCode);
+	Integer updateProductMedia(@Param("productId") Long productId, @Param("productCode") String productCode);
 
-    Integer insertSku(@Param("skus") List<SkuEntity> skus);
+	Integer insertSku(@Param("skus") List<SkuEntity> skus);
 
-    AttributeValueEntity queryAttributeValue(@Param("clr") int clr, @Param("code") String code,
-                                             @Param("attributeId") Long attributeId, @Param("brandId") Long brandId);
+	AttributeValueEntity queryAttributeValue(@Param("clr") int clr, @Param("code") String code,
+	                                         @Param("attributeId") Long attributeId, @Param("brandId") Long brandId);
 
-    Integer insertAttributeValue(AttributeValueEntity attributeValue);
+	Integer insertAttributeValue(AttributeValueEntity attributeValue);
 
-    void callColorAc(Long colorId);
+	void callColorAc(Long colorId);
 
-    void callSizeAc(Long sizeId);
+	void callSizeAc(Long sizeId);
 
 }

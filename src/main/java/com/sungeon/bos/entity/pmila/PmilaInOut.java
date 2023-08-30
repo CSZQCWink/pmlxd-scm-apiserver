@@ -20,26 +20,26 @@ import java.util.List;
 @RestTable(tableName = "M_OTHER_INOUT", description = "物理调整单", defaultQueryFilter = "M_OTHER_INOUT.ISACTIVE = 'Y'", isNeedSubmit = true)
 public class PmilaInOut extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "DOCNO")
-    private String docNo;
-    @RestColumn(name = "BILLDATE", isRestSave = true)
-    private Integer billDate;
-    @RestColumn(name = "C_STORE_ID__NAME", isRestSave = true)
-    private String storeName;
-    @RestColumn(name = "C_OTHER_INOUTTYPE_ID__NAME", isRestSave = true, isRestQuery = false)
-    private String transferType = "正常调整";
-    @RestColumn(name = "SOURCENO", isRestSave = true)
-    private String sourceNo;
-    @RestColumn(name = "DESCRIPTION", isRestSave = true)
-    private String description;
-    @RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "otherInOutId", childBeanClass = PmilaInOutItem.class)
-    private List<PmilaInOutItem> items;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "DOCNO")
+	private String docNo;
+	@RestColumn(name = "BILLDATE", isRestSave = true)
+	private Integer billDate;
+	@RestColumn(name = "C_STORE_ID__NAME", isRestSave = true)
+	private String storeName;
+	@RestColumn(name = "C_OTHER_INOUTTYPE_ID__NAME", isRestSave = true, isRestQuery = false)
+	private String transferType = "正常调整";
+	@RestColumn(name = "SOURCENO", isRestSave = true)
+	private String sourceNo;
+	@RestColumn(name = "DESCRIPTION", isRestSave = true)
+	private String description;
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "otherInOutId", childBeanClass = PmilaInOutItem.class)
+	private List<PmilaInOutItem> items;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

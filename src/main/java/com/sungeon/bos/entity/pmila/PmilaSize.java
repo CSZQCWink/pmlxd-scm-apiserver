@@ -19,26 +19,26 @@ import lombok.EqualsAndHashCode;
 @RestTable(tableName = "M_SIZE", description = "尺寸", defaultQueryFilter = "ISACTIVE = 'Y'")
 public class PmilaSize extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "VALUE")
-    private String code;
-    @RestColumn(name = "NAME")
-    private String name;
-    @RestColumn(name = "M_ATTRIBUTE_ID", valuePraser = LongParser.class)
-    private Long sizeGroupId;
-    @RestOneToOne(fkParentColumnName = "sizeGroupId", fkChildColumnName = "id", childBeanClass = PmilaSizeGroup.class)
-    private PmilaSizeGroup sizeGroup;
-    @RestColumn(name = "CLRSIZE")
-    private Integer clr;
-    @RestColumn(name = "MODIFIEDDATE")
-    private String modifiedDate;
-    @RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
-    private Boolean isActive;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "VALUE")
+	private String code;
+	@RestColumn(name = "NAME")
+	private String name;
+	@RestColumn(name = "M_ATTRIBUTE_ID", valuePraser = LongParser.class)
+	private Long sizeGroupId;
+	@RestOneToOne(fkParentColumnName = "sizeGroupId", fkChildColumnName = "id", childBeanClass = PmilaSizeGroup.class)
+	private PmilaSizeGroup sizeGroup;
+	@RestColumn(name = "CLRSIZE")
+	private Integer clr;
+	@RestColumn(name = "MODIFIEDDATE")
+	private String modifiedDate;
+	@RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
+	private Boolean isActive;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

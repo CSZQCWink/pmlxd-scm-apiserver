@@ -15,32 +15,32 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @RestTable(tableName = "M_PRODUCT_ALIAS", refTableName = "M_PRODUCT_ALIAS", description = "条码",
-        defaultQueryFilter = "M_PRODUCT_ALIAS.ISACTIVE = 'Y'")
+		defaultQueryFilter = "M_PRODUCT_ALIAS.ISACTIVE = 'Y'")
 public class PmilaProductAliasItem extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "M_PRODUCT_ID", valuePraser = LongParser.class)
-    private Long productId;
-    @RestColumn(name = "NO")
-    private String sku;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE1_CODE")
-    private String colorCode;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE1")
-    private String colorName;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE2_CODE")
-    private String sizeCode;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE2")
-    private String sizeName;
-    @RestColumn(name = "INTSCODE")
-    private String intsCode;
-    @RestColumn(name = "FORCODE")
-    private String forCode;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "M_PRODUCT_ID", valuePraser = LongParser.class)
+	private Long productId;
+	@RestColumn(name = "NO")
+	private String sku;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE1_CODE")
+	private String colorCode;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE1")
+	private String colorName;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE2_CODE")
+	private String sizeCode;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID;VALUE2")
+	private String sizeName;
+	@RestColumn(name = "INTSCODE")
+	private String intsCode;
+	@RestColumn(name = "FORCODE")
+	private String forCode;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 
 }

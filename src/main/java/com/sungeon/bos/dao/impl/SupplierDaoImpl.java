@@ -13,12 +13,12 @@ import javax.annotation.Resource;
 @Repository("supplierDao")
 public class SupplierDaoImpl extends BaseDaoImpl implements ISupplierDao {
 
-    @Resource
-    private ISupplierMapper supplierMapper;
+	@Resource
+	private ISupplierMapper supplierMapper;
 
-    @Override
-    public Long querySupplierIdByCode(String supplierCode) {
-        return supplierMapper.querySupplierIdByCode(supplierCode);
-    }
+	@Override
+	public Long querySupplierIdByCode(String supplierCode) {
+		return supplierMapper.querySupplierIdByCode(supplierCode);
+	}
 
 }

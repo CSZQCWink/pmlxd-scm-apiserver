@@ -13,21 +13,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * @author 刘国帅
- * @date 2019-10-9
+ * @title: 调拨单Controller
+ * @author: 陈苏洲
+ * @date: 2023/8/30 9:33
  **/
 @Slf4j
 @Controller
 @RequestMapping("/Transfer")
 public class TransferController extends SungeonBaseController {
 
-    @Autowired
-    private ITransferService transferService;
+	@Autowired
+	private ITransferService transferService;
 
-    @RequestMapping("/Sync")
-    @ResponseBody
-    public ValueHolder<List<TransferEntity>> syncTransfer(String docNo) {
-        return ValueHolder.ok(transferService.syncBsijaTransfer(docNo, 1, 1));
-    }
+	@RequestMapping("/Sync")
+	@ResponseBody
+	public ValueHolder<List<TransferEntity>> syncTransfer(String docNo) {
+		return ValueHolder.ok(transferService.syncBsijaTransfer(docNo, 1, 1));
+	}
 
 }

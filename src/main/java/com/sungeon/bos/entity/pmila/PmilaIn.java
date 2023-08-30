@@ -17,16 +17,16 @@ import lombok.EqualsAndHashCode;
 @RestTable(tableName = "M_IN", description = "入库单", defaultQueryFilter = "M_IN.ISACTIVE = 'Y'")
 public class PmilaIn extends BaseRestBean {
 
-    @RestColumn(name = "ID", valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "DOCNO", isAkField = true)
-    private String docNo;
-    @RestColumn(name = "BILLTYPE")
-    private String billType;
+	@RestColumn(name = "ID", valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "DOCNO", isAkField = true)
+	private String docNo;
+	@RestColumn(name = "BILLTYPE")
+	private String billType;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

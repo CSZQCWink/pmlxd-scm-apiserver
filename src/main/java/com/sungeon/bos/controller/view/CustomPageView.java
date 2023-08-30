@@ -24,34 +24,33 @@ import java.util.stream.Collectors;
 @Controller
 public class CustomPageView {
 
-    @RequestMapping("/list")
-    public String index(HttpServletRequest req) {
-        String filePath = req.getServletContext().getRealPath("/WEB-INF/classes/custom/");
-        List<File> files = FileUtils.listFiles(filePath, false);
-        files = files.stream().sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
-        JSONObject json;
-        JSONArray resp = new JSONArray();
-        JSONObject one;
-        for (File file : files) {
-            if (file.getName().endsWith(".json")) {
-                json = JSONObject.parseObject(FileUtils.readFileByChar(file, Constants.CHARSET_UTF8));
-                one = new JSONObject();
-                one.put("name", json.getString("name"));
-                one.put("url", "View/custom/page/" + file.getName().substring(0, file.getName().length() - 5));
-                resp.add(one);
-            }
-        }
-        req.setAttribute("resp", resp);
-        return "/custom/index";
-    }
+	@RequestMapping("/list")
+	public String index(HttpServletRequest req) {
+		String filePath = req.getServletContext().getRealPath("/WEB-INF/classes/custom/");
+		List<File> files = FileUtils.listFiles(filePath, false);
+		files = files.stream().sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+		JSONObject json;
+		JSONArray resp = new JSONArray();
+		JSONObject one;
+		for (File file : files) {
+			if (file.getName().endsWith(".json")) {
+				json = JSONObject.parseObject(FileUtils.readFileByChar(file, Constants.CHARSET_UTF8));
+				one = new JSONObject();
+				one.put("name", json.getString("name"));
+				one.put("url", "View/custom/page/" + file.getName().substring(0, file.getName().length() - 5));
+				resp.add(one);
+			}
+		}
+		req.setAttribute("resp", resp);
+		return "/custom/index";
+	}
 
-    @RequestMapping("/page/{page}")
-    public String page(@PathVariable("page") String page, HttpServletRequest req) {
-        String filePath = req.getServletContext().getRealPath("/WEB-INF/classes/custom/" + page + ".json");
-        JSONObject json = JSONObject.parseObject(FileUtils.readFileByChar(FileUtils.getFile(filePath), Constants.CHARSET_UTF8));
+	@RequestMapping("/page/{page}")
+	public String page(@PathVariable("page") String page, HttpServletRequest req) {
+		String filePath = req.getServletContext().getRealPath("/WEB-INF/classes/custom/" + page + ".json");
+		JSONObject json = JSONObject.parseObject(FileUtils.readFileByChar(FileUtils.getFile(filePath), Constants.CHARSET_UTF8));
 
-        req.setAttribute("json", json);
-        return "/custom/page";
-    }
-
+		req.setAttribute("json", json);
+		return "/custom/page";
+	}
 }

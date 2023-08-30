@@ -14,12 +14,12 @@ import java.util.List;
 @Repository
 public interface IRetailDao {
 
-    List<RetailEntity> queryRetailList(String docNo, int beg, int end);
+	List<RetailEntity> queryRetailList(String docNo, int beg, int end);
 
-    List<ItemEntity> queryRetailItemList(Long retailId);
+	List<ItemEntity> queryRetailItemList(Long retailId);
 
-    List<PayItemEntity> queryRetailPayItemList(Long retailId);
+	List<PayItemEntity> queryRetailPayItemList(Long retailId);
 
-    Integer updateRetailSyncStatus(Long retailId, String status, String bsijaNo, String message);
+	Integer updateRetailSyncStatus(Long retailId, String status, String bsijaNo, String message);
 
 }

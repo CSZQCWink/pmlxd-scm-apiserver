@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface ITransferDao {
 
-    List<TransferEntity> queryTransferOutList(String docNo, int beg, int end);
+	List<TransferEntity> queryTransferOutList(String docNo, int beg, int end);
 
-    Integer updateTransferSyncStatus(Long transferId, String status, String bsijaNo, String message);
+	Integer updateTransferSyncStatus(Long transferId, String status, String bsijaNo, String message);
 
 }

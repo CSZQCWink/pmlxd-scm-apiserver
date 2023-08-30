@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface IStockMapper {
 
-    List<InventoryEntity> queryInventoryList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
+	List<InventoryEntity> queryInventoryList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
 
-    Integer updateInventorySyncStatus(@Param("inventoryId") Long inventoryId, @Param("status") String status,
-                                      @Param("bsijaNo") String bsijaNo, @Param("message") String message);
+	Integer updateInventorySyncStatus(@Param("inventoryId") Long inventoryId, @Param("status") String status,
+	                                  @Param("bsijaNo") String bsijaNo, @Param("message") String message);
 
 }

@@ -11,16 +11,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IStoreDao {
 
-    StoreEntity queryStoreByCode(String storeCode);
+	StoreEntity queryStoreByCode(String storeCode);
 
-    StoreEntity queryStoreBySrcCode(String storeCode);
+	StoreEntity queryStoreBySrcCode(String storeCode);
 
-    Integer insertStore(StoreEntity store);
+	Integer insertStore(StoreEntity store);
 
-    BosResult callStoreAc(Long storeId);
+	BosResult callStoreAc(Long storeId);
 
-    Integer updateStore(StoreEntity store);
+	Integer updateStore(StoreEntity store);
 
-    Long queryEmployeeIdByName(String employeeName, Long storeId);
+	Long queryEmployeeIdByName(String employeeName, Long storeId);
 
 }

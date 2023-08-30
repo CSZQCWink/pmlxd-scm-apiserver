@@ -12,6 +12,6 @@ import java.util.List;
 @Service
 public interface ITransferService {
 
-    List<TransferEntity> syncBsijaTransfer(String docNo, int page, int pageSize);
+	List<TransferEntity> syncBsijaTransfer(String docNo, int page, int pageSize);
 
 }

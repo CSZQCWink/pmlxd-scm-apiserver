@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-4.3.xsd
@@ -11,55 +12,56 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 
-	<!-- 配置自动扫描的包 -->
-	<context:component-scan base-package="com.sungeon.bos">
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-		<!-- 必须要包括ControllerAdvice才能处理全局异常。 -->
-		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
-		<!-- !!!最好加上这句让SpringMVC管理的时候排除Service层，避免事务失效的问题。 -->
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
-	</context:component-scan>
+    <!-- 配置自动扫描的包 -->
+    <context:component-scan base-package="com.sungeon.bos">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <!-- 必须要包括ControllerAdvice才能处理全局异常。 -->
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+        <!-- !!!最好加上这句让SpringMVC管理的时候排除Service层，避免事务失效的问题。 -->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
 
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-	<!-- 自动注册DefaultAnnotationHandlerMapping与AnnotationMethodHandlerAdapter -->
-	<mvc:annotation-driven>
-		<mvc:message-converters register-defaults="true">
-			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
-				<constructor-arg value="UTF-8" />
-				<property name="writeAcceptCharset" value="false" />
-				<property name="supportedMediaTypes">
-					<list>
-						<value>text/html;charset=UTF-8</value>
-						<!--<value>application/json;charset=UTF-8</value>
+    <!-- 自动注册DefaultAnnotationHandlerMapping与AnnotationMethodHandlerAdapter -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+                <property name="writeAcceptCharset" value="false"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <!--<value>application/json;charset=UTF-8</value>
                         <value>text/xml;charset=UTF-8</value>
                         <value>text/plain;charset=UTF-8</value>-->
-					</list>
-				</property>
-			</bean>
-		</mvc:message-converters>
-	</mvc:annotation-driven>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
-	<!--避免IE执行AJAX时，返回JSON出现下载文件 -->
-	<bean id="mappingJacksonHttpMessageConverter"
-		  class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-		<property name="supportedMediaTypes">
-			<list>
-				<value>text/html;charset=UTF-8</value>
-			</list>
-		</property>
-	</bean>
+    <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/html;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
 
-	<context:property-placeholder location="classpath:system.properties" />
+    <context:property-placeholder location="classpath:system.properties"/>
 
-	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀。prefix：前缀， suffix：后缀 -->
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/views/" />
-		<property name="suffix" value=".jsp" />
-	</bean>
+    <!-- 对模型视图名称的解析，即在模型视图名称添加前后缀。prefix：前缀， suffix：后缀 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
 
-	<mvc:resources location="/WEB-INF/resource/js/" mapping="/js/**" />
-	<mvc:resources location="/WEB-INF/resource/css/" mapping="/css/**" />
-	<mvc:resources location="/WEB-INF/resource/image/" mapping="/image/**" />
-	<!--<mvc:resources location="${catalina.home}/logs/${webAppRootKey}/" mapping="/logs/**" />-->
+    <mvc:resources location="/WEB-INF/resource/js/" mapping="/js/**"/>
+    <mvc:resources location="/WEB-INF/resource/css/" mapping="/css/**"/>
+    <mvc:resources location="/WEB-INF/resource/image/" mapping="/image/**"/>
+    <!--<mvc:resources location="${catalina.home}/logs/${webAppRootKey}/" mapping="/logs/**" />-->
 </beans>

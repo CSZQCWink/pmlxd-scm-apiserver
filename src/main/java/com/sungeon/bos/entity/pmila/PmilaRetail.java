@@ -20,26 +20,26 @@ import java.util.List;
 @RestTable(tableName = "M_RETAIL", description = "零售单", defaultQueryFilter = "M_RETAIL.ISACTIVE = 'Y'", isNeedSubmit = true)
 public class PmilaRetail extends BaseRestBean {
 
-    @RestColumn(name = "ID", valuePraser = LongParser.class, isRestSave = true)
-    private Long id;
-    @RestColumn(name = "DOCNO", isAkField = true)
-    private String docNo;
-    @RestColumn(name = "BILLDATE", isRestSave = true)
-    private Integer billDate;
-    @RestColumn(name = "C_STORE_ID__NAME", isRestSave = true, isRestQuery = false)
-    private String storeName;
-    @RestColumn(name = "REFNO", isRestSave = true)
-    private String sourceNo;
-    @RestColumn(name = "DESCRIPTION", isRestSave = true)
-    private String description;
-    @RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retailId", childBeanClass = PmilaRetailItem.class)
-    private List<PmilaRetailItem> items;
-    @RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retailId", childBeanClass = PmilaRetailPayItem.class)
-    private List<PmilaRetailPayItem> payItems;
+	@RestColumn(name = "ID", valuePraser = LongParser.class, isRestSave = true)
+	private Long id;
+	@RestColumn(name = "DOCNO", isAkField = true)
+	private String docNo;
+	@RestColumn(name = "BILLDATE", isRestSave = true)
+	private Integer billDate;
+	@RestColumn(name = "C_STORE_ID__NAME", isRestSave = true, isRestQuery = false)
+	private String storeName;
+	@RestColumn(name = "REFNO", isRestSave = true)
+	private String sourceNo;
+	@RestColumn(name = "DESCRIPTION", isRestSave = true)
+	private String description;
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retailId", childBeanClass = PmilaRetailItem.class)
+	private List<PmilaRetailItem> items;
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retailId", childBeanClass = PmilaRetailPayItem.class)
+	private List<PmilaRetailPayItem> payItems;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

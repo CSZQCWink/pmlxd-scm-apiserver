@@ -12,6 +12,6 @@ import java.util.List;
 @Service
 public interface IRetailService {
 
-    List<RetailEntity> syncBsijaRetail(String docNo, int page, int pageSize);
+	List<RetailEntity> syncBsijaRetail(String docNo, int page, int pageSize);
 
 }

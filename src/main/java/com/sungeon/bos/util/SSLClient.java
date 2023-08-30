@@ -26,41 +26,41 @@ import java.security.cert.X509Certificate;
  */
 public class SSLClient {
 
-    private static final String HTTP = "http";
-    private static final String HTTPS = "https";
-    private static SSLConnectionSocketFactory sslConnectionSocketFactory = null;
-    // 连接池管理类
-    private static PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = null;
-    // 管理Https连接的上下文类
-    private static SSLContextBuilder sslContextBuilder = null;
+	private static final String HTTP = "http";
+	private static final String HTTPS = "https";
+	private static SSLConnectionSocketFactory sslConnectionSocketFactory = null;
+	// 连接池管理类
+	private static PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = null;
+	// 管理Https连接的上下文类
+	private static SSLContextBuilder sslContextBuilder = null;
 
-    static {
-        try {
-            sslContextBuilder = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    // 信任所有站点 直接返回true
-                    return true;
-                }
-            });
-            sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build(),
-                    new String[]{"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2"}, null, NoopHostnameVerifier.INSTANCE);
-            Registry<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register(HTTP, new PlainConnectionSocketFactory()).register(HTTPS, sslConnectionSocketFactory)
-                    .build();
-            poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager(registryBuilder);
-            poolingHttpClientConnectionManager.setMaxTotal(200);
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            e.printStackTrace();
-        }
-    }
+	static {
+		try {
+			sslContextBuilder = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				@Override
+				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					// 信任所有站点 直接返回true
+					return true;
+				}
+			});
+			sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build(),
+					new String[]{"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2"}, null, NoopHostnameVerifier.INSTANCE);
+			Registry<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create()
+					.register(HTTP, new PlainConnectionSocketFactory()).register(HTTPS, sslConnectionSocketFactory)
+					.build();
+			poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager(registryBuilder);
+			poolingHttpClientConnectionManager.setMaxTotal(200);
+		} catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * 获取连接
-     */
-    public static CloseableHttpClient getHttpClient() {
-        return HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory)
-                .setConnectionManager(poolingHttpClientConnectionManager).setConnectionManagerShared(true).build();
-    }
+	/**
+	 * 获取连接
+	 */
+	public static CloseableHttpClient getHttpClient() {
+		return HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory)
+				.setConnectionManager(poolingHttpClientConnectionManager).setConnectionManagerShared(true).build();
+	}
 
 }

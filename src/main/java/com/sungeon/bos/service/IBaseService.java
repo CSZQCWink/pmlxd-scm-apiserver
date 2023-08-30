@@ -15,52 +15,52 @@ import java.util.List;
 @Service
 public interface IBaseService {
 
-    Integer getNewId(String tableName);
+	Integer getNewId(String tableName);
 
-    String getNewDocno(String seqName);
+	String getNewDocno(String seqName);
 
-    String getParamValue(String name);
+	String getParamValue(String name);
 
-    StoreEntity getStore(String store);
+	StoreEntity getStore(String store);
 
-    PayWay getPayWay(String payway);
+	PayWay getPayWay(String payway);
 
-    VipType getVipType(String viptype);
+	VipType getVipType(String viptype);
 
-    Integer initSql(List<String> sqls);
+	Integer initSql(List<String> sqls);
 
-    Integer initProcedure(List<File> files);
+	Integer initProcedure(List<File> files);
 
-    Integer getThirdTimeId(String type);
+	Integer getThirdTimeId(String type);
 
-    String getThirdTime(String type);
+	String getThirdTime(String type);
 
-    Integer initThirdTime(String type);
+	Integer initThirdTime(String type);
 
-    Integer insertThirdTime(ThirdTime thirdTime);
+	Integer insertThirdTime(ThirdTime thirdTime);
 
-    Integer updateThirdTime(String type, Date date);
+	Integer updateThirdTime(String type, Date date);
 
-    List<ScheduleJob> getScheduleJobs();
+	List<ScheduleJob> getScheduleJobs();
 
-    ScheduleJob getScheduleJob(String jobName, String groupName);
+	ScheduleJob getScheduleJob(String jobName, String groupName);
 
-    ScheduleJob getScheduleJobById(Integer jobId);
+	ScheduleJob getScheduleJobById(Integer jobId);
 
-    Integer addScheduleJob(ScheduleJob scheduleJob);
+	Integer addScheduleJob(ScheduleJob scheduleJob);
 
-    Integer updateScheduleJob(ScheduleJob scheduleJob);
+	Integer updateScheduleJob(ScheduleJob scheduleJob);
 
-    Integer addInterfaceLog(InterfaceLog log);
+	Integer addInterfaceLog(InterfaceLog log);
 
-    AccessToken getAccessToken(String appId);
+	AccessToken getAccessToken(String appId);
 
-    Integer addAccessToken(AccessToken accessToken);
+	Integer addAccessToken(AccessToken accessToken);
 
-    boolean verifyAccessToken(String appId, String accessToken);
+	boolean verifyAccessToken(String appId, String accessToken);
 
-    BosResult testProcedure(int id);
+	BosResult testProcedure(int id);
 
-    void testSw();
+	void testSw();
 
 }

@@ -15,29 +15,29 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @RestTable(tableName = "M_OUTITEM", refTableName = "M_OUTITEM", description = "出库单明细",
-        defaultQueryFilter = "M_OUTITEM.ISACTIVE = 'Y'")
+		defaultQueryFilter = "M_OUTITEM.ISACTIVE = 'Y'")
 public class PmilaOutItem extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "M_OUT_ID", valuePraser = LongParser.class)
-    private Long outId;
-    @RestColumn(name = "M_PRODUCTALIAS_ID;NO")
-    private String sku;
-    @RestColumn(name = "M_PRODUCT_ID;NAME")
-    private String product;
-    @RestColumn(name = "M_PRODUCT_ID__NAME", isRestSave = true, isRestQuery = false)
-    private String productAdd;
-    @RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID", valuePraser = LongParser.class)
-    private Long asiId;
-    @RestColumn(name = "QTY")
-    private Integer qty;
-    @RestColumn(name = "QTYOUT", isRestSave = true)
-    private Integer qtyOut;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "M_OUT_ID", valuePraser = LongParser.class)
+	private Long outId;
+	@RestColumn(name = "M_PRODUCTALIAS_ID;NO")
+	private String sku;
+	@RestColumn(name = "M_PRODUCT_ID;NAME")
+	private String product;
+	@RestColumn(name = "M_PRODUCT_ID__NAME", isRestSave = true, isRestQuery = false)
+	private String productAdd;
+	@RestColumn(name = "M_ATTRIBUTESETINSTANCE_ID", valuePraser = LongParser.class)
+	private Long asiId;
+	@RestColumn(name = "QTY")
+	private Integer qty;
+	@RestColumn(name = "QTYOUT", isRestSave = true)
+	private Integer qtyOut;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

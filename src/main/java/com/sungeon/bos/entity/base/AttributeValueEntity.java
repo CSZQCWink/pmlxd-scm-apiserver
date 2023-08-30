@@ -11,21 +11,18 @@ import java.io.Serializable;
 @Alias("AttributeValue")
 public class AttributeValueEntity implements Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String code;
-    private String name;
-    private Integer clr;
-    private Long attributeId;
-    private Long brandId;
+	private Long id;
+	private String code;
+	private String name;
+	private Integer clr;
+	private Long attributeId;
+	private Long brandId;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

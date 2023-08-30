@@ -15,13 +15,13 @@ import java.util.List;
 @Mapper
 public interface IRetailMapper {
 
-    List<RetailEntity> queryRetailList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
+	List<RetailEntity> queryRetailList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
 
-    List<ItemEntity> queryRetailItemList(Long retailId);
+	List<ItemEntity> queryRetailItemList(Long retailId);
 
-    List<PayItemEntity> queryRetailPayItemList(Long retailId);
+	List<PayItemEntity> queryRetailPayItemList(Long retailId);
 
-    Integer updateRetailSyncStatus(@Param("retailId") Long retailId, @Param("status") String status,
-                                   @Param("bsijaNo") String bsijaNo, @Param("message") String message);
+	Integer updateRetailSyncStatus(@Param("retailId") Long retailId, @Param("status") String status,
+	                               @Param("bsijaNo") String bsijaNo, @Param("message") String message);
 
 }

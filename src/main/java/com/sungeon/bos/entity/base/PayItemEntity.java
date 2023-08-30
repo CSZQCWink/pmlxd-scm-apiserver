@@ -11,16 +11,16 @@ import java.io.Serializable;
 @Alias("PayItem")
 public class PayItemEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private String payWayCode;
-    private String payWayName;
-    private Double payAmount;
+	private Integer id;
+	private String payWayCode;
+	private String payWayName;
+	private Double payAmount;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

@@ -13,14 +13,14 @@ import java.util.List;
 @Service
 public interface IPurchaseService {
 
-    Integer addPurchase(PurchaseEntity purchase);
+	Integer addPurchase(PurchaseEntity purchase);
 
-    Integer addPurchaseReturn(PurchaseReturnEntity purchaseReturn);
+	Integer addPurchaseReturn(PurchaseReturnEntity purchaseReturn);
 
-    List<PurchaseReturnEntity> syncBsijaPurchaseReturn(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncBsijaPurchaseReturn(String docNo, int page, int pageSize);
 
-    List<PurchaseReturnEntity> syncBsijaPurchaseReturnOut(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncBsijaPurchaseReturnOut(String docNo, int page, int pageSize);
 
-    List<PurchaseReturnEntity> syncBsijaPurchaseReturnOrder(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncBsijaPurchaseReturnOrder(String docNo, int page, int pageSize);
 
 }

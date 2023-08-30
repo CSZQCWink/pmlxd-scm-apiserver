@@ -6,7 +6,7 @@ package com.sungeon.bos.entity;
  **/
 public class InterfaceType {
 
-    public final static String SEND = "SEND";
-    public final static String RECEIVE = "RECEIVE";
+	public final static String SEND = "SEND";
+	public final static String RECEIVE = "RECEIVE";
 
 }

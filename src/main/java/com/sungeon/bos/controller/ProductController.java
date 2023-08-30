@@ -13,21 +13,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * @author 刘国帅
- * @date 2019-10-9
+ * @title: 款号档案Controller
+ * @author: 陈苏洲
+ * @date: 2023/8/30 9:35
  **/
 @Slf4j
 @Controller
 @RequestMapping("/Product")
 public class ProductController extends SungeonBaseController {
 
-    @Autowired
-    private IProductService productService;
+	@Autowired
+	private IProductService productService;
 
-    @RequestMapping("/Sync")
-    @ResponseBody
-    public ValueHolder<List<ProductEntity>> syncProduct(String productCode) {
-        return ValueHolder.ok(productService.syncBsijaProduct(null, productCode, 1, 1));
-    }
+	@RequestMapping("/Sync")
+	@ResponseBody
+	public ValueHolder<List<ProductEntity>> syncProduct(String productCode) {
+		return ValueHolder.ok(productService.syncBsijaProduct(null, productCode, 1, 1));
+	}
 
 }

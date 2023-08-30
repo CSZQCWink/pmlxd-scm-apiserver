@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface ITransferMapper {
 
-    List<TransferEntity> queryTransferOutList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
+	List<TransferEntity> queryTransferOutList(@Param("docNo") String docNo, @Param("beg") int beg, @Param("end") int end);
 
-    Integer updateTransferSyncStatus(@Param("transferId") Long transferId, @Param("status") String status,
-                                     @Param("bsijaNo") String bsijaNo, @Param("message") String message);
+	Integer updateTransferSyncStatus(@Param("transferId") Long transferId, @Param("status") String status,
+	                                 @Param("bsijaNo") String bsijaNo, @Param("message") String message);
 
 }

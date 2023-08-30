@@ -13,8 +13,8 @@ import java.util.List;
 @Service
 public interface ISaleService {
 
-    List<PurchaseEntity> syncBsijaSale(String startTime, String docNo, int page, int pageSize);
+	List<PurchaseEntity> syncBsijaSale(String startTime, String docNo, int page, int pageSize);
 
-    List<PurchaseReturnEntity> syncBsijaSaleReturn(String startTime, String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncBsijaSaleReturn(String startTime, String docNo, int page, int pageSize);
 
 }

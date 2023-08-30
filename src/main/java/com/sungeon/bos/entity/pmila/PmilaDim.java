@@ -18,22 +18,22 @@ import lombok.EqualsAndHashCode;
 @RestTable(tableName = "M_DIM", description = "属性值", defaultQueryFilter = "ISACTIVE = 'Y'")
 public class PmilaDim extends BaseRestBean {
 
-    @RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
-    private Long id;
-    @RestColumn(name = "ATTRIBCODE")
-    private String code;
-    @RestColumn(name = "ATTRIBNAME")
-    private String name;
-    @RestColumn(name = "DIMFLAG")
-    private String dimFlag;
-    @RestColumn(name = "MODIFIEDDATE")
-    private String modifiedDate;
-    @RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
-    private Boolean isActive;
+	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
+	private Long id;
+	@RestColumn(name = "ATTRIBCODE")
+	private String code;
+	@RestColumn(name = "ATTRIBNAME")
+	private String name;
+	@RestColumn(name = "DIMFLAG")
+	private String dimFlag;
+	@RestColumn(name = "MODIFIEDDATE")
+	private String modifiedDate;
+	@RestColumn(name = "ISACTIVE", valuePraser = BooleanParser.class)
+	private Boolean isActive;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+	@Override
+	public String toString() {
+		return JSONObject.toJSONString(this);
+	}
 
 }

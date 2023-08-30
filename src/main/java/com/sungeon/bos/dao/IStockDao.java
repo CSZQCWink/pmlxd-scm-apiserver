@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface IStockDao {
 
-    List<InventoryEntity> queryInventoryList(String docNo, int beg, int end);
+	List<InventoryEntity> queryInventoryList(String docNo, int beg, int end);
 
-    Integer updateInventorySyncStatus(Long inventoryId, String status, String bsijaNo, String message);
+	Integer updateInventorySyncStatus(Long inventoryId, String status, String bsijaNo, String message);
 
 }

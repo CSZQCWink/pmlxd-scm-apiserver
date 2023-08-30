@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 public class OrderEntity implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6937393310805654706L;
 

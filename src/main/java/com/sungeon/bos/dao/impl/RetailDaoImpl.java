@@ -20,31 +20,31 @@ import java.util.List;
 @Repository("retailDao")
 public class RetailDaoImpl implements IRetailDao {
 
-    @Autowired
-    private IRetailMapper retailMapper;
+	@Autowired
+	private IRetailMapper retailMapper;
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public List<RetailEntity> queryRetailList(String docNo, int beg, int end) {
-        return retailMapper.queryRetailList(docNo, beg, end);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public List<RetailEntity> queryRetailList(String docNo, int beg, int end) {
+		return retailMapper.queryRetailList(docNo, beg, end);
+	}
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public List<ItemEntity> queryRetailItemList(Long retailId) {
-        return retailMapper.queryRetailItemList(retailId);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public List<ItemEntity> queryRetailItemList(Long retailId) {
+		return retailMapper.queryRetailItemList(retailId);
+	}
 
-    @SgExceptionField(exception = QueryFailException.class)
-    @Override
-    public List<PayItemEntity> queryRetailPayItemList(Long retailId) {
-        return retailMapper.queryRetailPayItemList(retailId);
-    }
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
+	public List<PayItemEntity> queryRetailPayItemList(Long retailId) {
+		return retailMapper.queryRetailPayItemList(retailId);
+	}
 
-    @SgExceptionField(exception = UpdateFailException.class)
-    @Override
-    public Integer updateRetailSyncStatus(Long retailId, String status, String bsijaNo, String message) {
-        return retailMapper.updateRetailSyncStatus(retailId, status, bsijaNo, message);
-    }
+	@SgExceptionField(exception = UpdateFailException.class)
+	@Override
+	public Integer updateRetailSyncStatus(Long retailId, String status, String bsijaNo, String message) {
+		return retailMapper.updateRetailSyncStatus(retailId, status, bsijaNo, message);
+	}
 
 }

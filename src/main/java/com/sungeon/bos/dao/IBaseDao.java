@@ -14,56 +14,56 @@ import java.util.List;
 @Repository
 public interface IBaseDao {
 
-    Integer getNewId(String tableName);
+	Integer getNewId(String tableName);
 
-    String getNewDocno(String seqName);
+	String getNewDocno(String seqName);
 
-    String getParamValue(String name);
+	String getParamValue(String name);
 
-    StoreEntity queryStore(String store);
+	StoreEntity queryStore(String store);
 
-    PayWay queryPayWay(String payWay);
+	PayWay queryPayWay(String payWay);
 
-    VipType queryVipType(String vipType);
+	VipType queryVipType(String vipType);
 
-    Integer initSql(String sql);
+	Integer initSql(String sql);
 
-    Integer initProcedure(String name, String sql);
+	Integer initProcedure(String name, String sql);
 
-    Integer queryThirdTimeId(String type);
+	Integer queryThirdTimeId(String type);
 
-    String queryThirdTime(String type);
+	String queryThirdTime(String type);
 
-    Integer initThirdTime(String type);
+	Integer initThirdTime(String type);
 
-    Integer insertThirdTime(ThirdTime thirdTime);
+	Integer insertThirdTime(ThirdTime thirdTime);
 
-    Integer updateThirdTime(String type, Date date);
+	Integer updateThirdTime(String type, Date date);
 
-    List<ScheduleJob> queryScheduleJobs();
+	List<ScheduleJob> queryScheduleJobs();
 
-    ScheduleJob queryScheduleJob(String jobName, String groupName);
+	ScheduleJob queryScheduleJob(String jobName, String groupName);
 
-    ScheduleJob queryScheduleJobById(Integer jobId);
+	ScheduleJob queryScheduleJobById(Integer jobId);
 
-    Integer insertScheduleJob(ScheduleJob scheduleJob);
+	Integer insertScheduleJob(ScheduleJob scheduleJob);
 
-    Integer updateScheduleJob(ScheduleJob scheduleJob);
+	Integer updateScheduleJob(ScheduleJob scheduleJob);
 
-    Integer insertInterfaceLog(InterfaceLog log);
+	Integer insertInterfaceLog(InterfaceLog log);
 
-    Long queryInterfaceResendId(InterfaceLog log);
+	Long queryInterfaceResendId(InterfaceLog log);
 
-    Integer insertInterfaceResend(InterfaceLog log);
+	Integer insertInterfaceResend(InterfaceLog log);
 
-    Integer updateInterfaceResend(InterfaceLog log);
+	Integer updateInterfaceResend(InterfaceLog log);
 
-    List<InterfaceResendLog> queryResendInterfaceLogs(Integer count);
+	List<InterfaceResendLog> queryResendInterfaceLogs(Integer count);
 
-    AccessToken queryAccessToken(String appId);
+	AccessToken queryAccessToken(String appId);
 
-    Integer insertAccessToken(AccessToken accessToken);
+	Integer insertAccessToken(AccessToken accessToken);
 
-    BosResult testProcedure(int id);
+	BosResult testProcedure(int id);
 
 }
