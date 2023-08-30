@@ -1,5 +1,5 @@
 {
-  "name": "根据毕厶迦销售单号同步至采购单",
+  "name": "根据帕米拉销售单号同步至采购单",
   "url": "/Rest/Purchase/Sync",
   "type": "JSON",
   "params": [

@@ -25,7 +25,7 @@ public class RetailTask extends BaseTask {
 	@Autowired
 	private IRetailService retailService;
 
-	public void syncBsijaRetail() {
+	public void syncPmilaRetail() {
 		try {
 			List<RetailEntity> retails;
 			int page = 1;

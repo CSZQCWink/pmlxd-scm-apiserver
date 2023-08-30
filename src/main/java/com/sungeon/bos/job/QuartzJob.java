@@ -49,34 +49,34 @@ public class QuartzJob implements InterruptableJob {
 		if (scheduleJob.getStatus().equals(Constants.BURGEON_YES) && scheduleGroup.equals(scheduleJob.getGroupName())) {
 			switch (scheduleJob.getJobName()) {
 				case "SyncBsijaDim":
-					productTask.syncBsijaDim();
+					productTask.syncPmilaDim();
 					break;
 				case "SyncBsijaColor":
-					productTask.syncBsijaColor();
+					productTask.syncPmilaColor();
 					break;
 				case "SyncBsijaSize":
-					productTask.syncBsijaSize();
+					productTask.syncPmilaSize();
 					break;
 				case "SyncBsijaProduct":
-					productTask.syncBsijaProduct();
+					productTask.syncPmilaProduct();
 					break;
 				case "SyncBsijaPurchaseReturn":
-					purchaseTask.syncBsijaPurchaseReturn();
+					purchaseTask.syncPmilaPurchaseReturn();
 					break;
 				case "SyncBsijaSale":
-					saleTask.syncBsijaSale();
+					saleTask.syncPmilaSale();
 					break;
 				case "SyncBsijaSaleReturn":
-					saleTask.syncBsijaSaleReturn();
+					saleTask.syncPmilaSaleReturn();
 					break;
 				case "SyncBsijaTransfer":
-					transferTask.syncBsijaTransfer();
+					transferTask.syncPmilaTransfer();
 					break;
 				case "SyncBsijaRetail":
-					retailTask.syncBsijaRetail();
+					retailTask.syncPmilaRetail();
 					break;
 				case "SyncBsijaInventory":
-					stockTask.syncBsijaInventory();
+					stockTask.syncPmilaInventory();
 					break;
 				default:
 					break;

@@ -1,0 +1,12 @@
+{
+  "name": "根据供应商id同步供应商档案",
+  "url": "/Rest/Supplier/Sync",
+  "type": "JSON",
+  "params": [
+    {
+      "name": "code",
+      "description": "编号",
+      "type": "String"
+    }
+  ]
+}

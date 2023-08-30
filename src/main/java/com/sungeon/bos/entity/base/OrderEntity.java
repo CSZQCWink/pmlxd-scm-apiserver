@@ -1,6 +1,4 @@
-/**
- * Created by GuoS on 2016/12/3.
- */
+
 package com.sungeon.bos.entity.base;
 
 import java.io.Serializable;
@@ -13,9 +11,6 @@ import com.alibaba.fastjson.JSONObject;
 @Alias("Order")
 public class OrderEntity implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 6937393310805654706L;
 
 	private String orderid = null; // 电商单号ID

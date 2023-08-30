@@ -25,7 +25,7 @@ public class TransferTask extends BaseTask {
 	@Autowired
 	private ITransferService transferService;
 
-	public void syncBsijaTransfer() {
+	public void syncPmilaTransfer() {
 		try {
 			List<TransferEntity> transfers;
 			int page = 1;

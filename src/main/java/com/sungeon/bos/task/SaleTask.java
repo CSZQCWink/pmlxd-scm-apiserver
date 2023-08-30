@@ -25,7 +25,7 @@ public class SaleTask extends BaseTask {
 	@Autowired
 	private ISaleService saleService;
 
-	public void syncBsijaSale() {
+	public void syncPmilaSale() {
 		try {
 			List<PurchaseEntity> purchases;
 			String startTime = baseService.getThirdTime("BSIJA_SALE_SYNC_TIME");
@@ -41,7 +41,7 @@ public class SaleTask extends BaseTask {
 		}
 	}
 
-	public void syncBsijaSaleReturn() {
+	public void syncPmilaSaleReturn() {
 		try {
 			List<PurchaseReturnEntity> purchases;
 			String startTime = baseService.getThirdTime("BSIJA_SALE_RETURN_SYNC_TIME");

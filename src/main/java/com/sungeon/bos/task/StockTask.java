@@ -25,7 +25,7 @@ public class StockTask extends BaseTask {
 	@Autowired
 	private IStockService stockService;
 
-	public void syncBsijaInventory() {
+	public void syncPmilaInventory() {
 		try {
 			List<InventoryEntity> inventories;
 			int page = 1;

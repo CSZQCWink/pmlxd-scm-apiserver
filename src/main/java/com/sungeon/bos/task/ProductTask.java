@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author : 刘国帅
@@ -29,7 +28,15 @@ public class ProductTask extends BaseTask {
 	@Autowired
 	private IProductService productService;
 
-	public void syncBsijaDim() {
+	/**
+	 * @title: syncPmilaDim
+	 * @author: 陈苏洲
+	 * @description: 同步属性
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/8/30 11:31
+	 **/
+	public void syncPmilaDim() {
 		try {
 			List<DimEntity> dims;
 			String startTime = baseService.getThirdTime("BSIJA_DIM_SYNC_TIME");
@@ -38,73 +45,55 @@ public class ProductTask extends BaseTask {
 			int pageSize = 200;
 			do {
 				// 年份
-				dims = productService.syncBsijaDim("DIM2", "DIM5", false, startTime,
+				dims = productService.syncPmilaDim("DIM2", "DIM5", false, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			page = 1;
 			do {
 				// 季节
-				dims = productService.syncBsijaDim("DIM3", "DIM6", true, startTime,
+				dims = productService.syncPmilaDim("DIM3", "DIM6", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			page = 1;
 			do {
 				// 性别
-				dims = productService.syncBsijaDim("DIM4", "DIM20", false, startTime,
+				dims = productService.syncPmilaDim("DIM4", "DIM20", false, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			page = 1;
 			do {
 				// 大类
-				dims = productService.syncBsijaDim("DIM10", "DIM17", true, startTime,
+				dims = productService.syncPmilaDim("DIM10", "DIM17", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			page = 1;
 			do {
 				// 中类
-				dims = productService.syncBsijaDim("DIM6", "DIM18", true, startTime,
+				dims = productService.syncPmilaDim("DIM6", "DIM18", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
-			// page = 1;
-			// do {
-			//     // 小类
-			//     dims = productService.syncBsijaDim("DIM11", "DIM19", true, startTime,
-			//             null, page++, pageSize);
-			// } while (dims.size() == pageSize);
 			page = 1;
 			do {
-				// 品类——毕厶迦-小类
-				dims = productService.syncBsijaDim("DIM8", "DIM19", true, startTime,
+				// 品类——帕米拉-小类
+				dims = productService.syncPmilaDim("DIM8", "DIM19", true, startTime,
 						null, page, pageSize);
 			} while (dims.size() == pageSize);
-			// do {
-			//     // 产品风格
-			//     dims = productService.syncBsijaDim("DIM9", "DIM8", true, startTime, null);
-			// } while (CollectionUtils.isNotEmpty(dims));
 			page = 1;
 			do {
 				// 波段
-				dims = productService.syncBsijaDim("DIM7", "DIM16", true, startTime,
+				dims = productService.syncPmilaDim("DIM7", "DIM16", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
-			// do {
-			//     // 价格段
-			//     dims = productService.syncBsijaDim("DIM12", "", true, startTime, null);
-			// } while (CollectionUtils.isNotEmpty(dims));
-			// do {
-			//     // 货品类型
-			//     dims = productService.syncBsijaDim("DIM17", "", true, startTime, null);
-			// } while (CollectionUtils.isNotEmpty(dims));
 			page = 1;
 			do {
 				// 执行标准
-				dims = productService.syncBsijaDim("DIM15", "DIM13", true, startTime,
+				dims = productService.syncPmilaDim("DIM15", "DIM13", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			page = 1;
 			do {
 				// 安全类别
-				dims = productService.syncBsijaDim("DIM16", "DIM14", true, startTime,
+				dims = productService.syncPmilaDim("DIM16", "DIM14", true, startTime,
 						null, page++, pageSize);
 			} while (dims.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_DIM_SYNC_TIME", now);
@@ -113,7 +102,15 @@ public class ProductTask extends BaseTask {
 		}
 	}
 
-	public void syncBsijaColor() {
+	/**
+	 * @title: syncPmilaColor
+	 * @author: 陈苏洲
+	 * @description: 同步颜色信息
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/8/30 11:29
+	 **/
+	public void syncPmilaColor() {
 		try {
 			List<AttributeValueEntity> attributes;
 			String startTime = baseService.getThirdTime("BSIJA_COLOR_SYNC_TIME");
@@ -121,7 +118,7 @@ public class ProductTask extends BaseTask {
 			int page = 1;
 			int pageSize = 100;
 			do {
-				attributes = productService.syncBsijaColor(startTime, null, page++, pageSize);
+				attributes = productService.syncPmilaColor(startTime, null, page++, pageSize);
 			} while (attributes.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_COLOR_SYNC_TIME", now);
 		} catch (Exception e) {
@@ -129,7 +126,15 @@ public class ProductTask extends BaseTask {
 		}
 	}
 
-	public void syncBsijaSize() {
+	/**
+	 * @title: syncPmilaSize
+	 * @author: 陈苏洲
+	 * @description: 同步尺寸组
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/8/30 11:30
+	 **/
+	public void syncPmilaSize() {
 		try {
 			List<AttributeValueEntity> attributes;
 			String startTime = baseService.getThirdTime("BSIJA_SIZE_SYNC_TIME");
@@ -137,7 +142,7 @@ public class ProductTask extends BaseTask {
 			int page = 1;
 			int pageSize = 100;
 			do {
-				attributes = productService.syncBsijaSize(startTime, null, page++, pageSize);
+				attributes = productService.syncPmilaSize(startTime, null, page++, pageSize);
 			} while (attributes.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_SIZE_SYNC_TIME", now);
 		} catch (Exception e) {
@@ -145,7 +150,15 @@ public class ProductTask extends BaseTask {
 		}
 	}
 
-	public void syncBsijaProduct() {
+	/**
+	 * @title: syncPmilaProduct
+	 * @author: 陈苏洲
+	 * @description: 同步款号档案
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/8/30 11:30
+	 **/
+	public void syncPmilaProduct() {
 		Date now = new Date();
 		try {
 			List<ProductEntity> products;
@@ -155,7 +168,7 @@ public class ProductTask extends BaseTask {
 			List<String> productCodes = new ArrayList<>();
 			boolean be = false;
 			do {
-				products = productService.syncBsijaProduct(startTime, null, page++, pageSize);
+				products = productService.syncPmilaProduct(startTime, null, page++, pageSize);
 				if (CollectionUtils.isNotEmpty(products)) {
 					for (ProductEntity product : products) {
 						boolean exists = productCodes.stream().anyMatch(code -> product.getProductCode().equals(code));

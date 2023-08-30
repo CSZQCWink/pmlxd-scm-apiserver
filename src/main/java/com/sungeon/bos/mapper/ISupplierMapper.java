@@ -1,6 +1,9 @@
 package com.sungeon.bos.mapper;
 
+import com.sungeon.bos.entity.base.SupplierEntity;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author 刘国帅
@@ -9,6 +12,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ISupplierMapper {
 
-	Long querySupplierIdByCode(String supplierCode);
+	SupplierEntity querySupplierByCode(String supplierCode);
 
+	Long querySupplierIdByCode(String supplierCode);
+	Long addSupplier(SupplierEntity supplierEntity);
+
+	Long addSupplierList(List<SupplierEntity> supplierEntityList);
 }

@@ -28,7 +28,7 @@ public class ProductController extends SungeonBaseController {
 	@RequestMapping("/Sync")
 	@ResponseBody
 	public ValueHolder<List<ProductEntity>> syncProduct(String productCode) {
-		return ValueHolder.ok(productService.syncBsijaProduct(null, productCode, 1, 1));
+		return ValueHolder.ok(productService.syncPmilaProduct(null, productCode, 1, 1));
 	}
 
 }

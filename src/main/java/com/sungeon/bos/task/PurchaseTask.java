@@ -25,18 +25,10 @@ public class PurchaseTask extends BaseTask {
 	@Autowired
 	private IPurchaseService purchaseService;
 
-	public void syncBsijaPurchaseReturn() {
+	public void syncPmilaPurchaseReturn() {
 		try {
 			List<PurchaseReturnEntity> purchases;
 			int page = 1;
-			// do {
-			//     purchases = purchaseService.syncBsijaPurchaseReturn(null, page++, SystemProperties.ParamDataCount);
-			// } while (!CollectionUtils.isEmpty(purchases));
-			// page = 1;
-			// do {
-			//     purchases = purchaseService.syncBsijaPurchaseReturnOut(null, page++, SystemProperties.ParamDataCount);
-			// } while (!CollectionUtils.isEmpty(purchases));
-			// page = 1;
 			do {
 				purchases = purchaseService.syncBsijaPurchaseReturnOrder(null, page++, SystemProperties.ParamDataCount);
 			} while (!CollectionUtils.isEmpty(purchases));

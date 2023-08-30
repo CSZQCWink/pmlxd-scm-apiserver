@@ -187,7 +187,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public List<DimEntity> syncBsijaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime,
+	public List<DimEntity> syncPmilaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime,
 	                                    String dimName, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
@@ -228,7 +228,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public List<AttributeValueEntity> syncBsijaColor(String startTime, String colorName, int page, int pageSize) {
+	public List<AttributeValueEntity> syncPmilaColor(String startTime, String colorName, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		if (StringUtils.isNotEmpty(colorName)) {
@@ -245,7 +245,7 @@ public class ProductServiceImpl implements IProductService {
 				orderByParamList);
 		List<AttributeValueEntity> colorList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(colors)) {
-			log.info("获取毕厶迦颜色响应：{}", colors);
+			log.info("获取帕米拉颜色响应：{}", colors);
 			Long brandId = productDao.queryDimId("DIM1", "B");
 			colors.forEach(d -> {
 				AttributeValueEntity attributeValue = getAttributeValue(1, d.getCode(), d.getName(), brandId, 1498L);
@@ -256,7 +256,7 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public List<AttributeValueEntity> syncBsijaSize(String startTime, String sizeName, int page, int pageSize) {
+	public List<AttributeValueEntity> syncPmilaSize(String startTime, String sizeName, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		if (StringUtils.isNotEmpty(sizeName)) {
@@ -279,7 +279,7 @@ public class ProductServiceImpl implements IProductService {
 				if ("均码".equals(d.getSizeGroup().getName()) || "00".equals(d.getSizeGroup().getName())) {
 					sizeGroupId = productDao.queryAttributeId(2, "均码");
 				} else {
-					sizeGroupId = productDao.queryAttributeId(2, "BSIJA-" + d.getSizeGroup().getName());
+					sizeGroupId = productDao.queryAttributeId(2, "pmila-" + d.getSizeGroup().getName());
 				}
 				AttributeValueEntity attributeValue = getAttributeValue(2, d.getCode(), d.getName(), null,
 						sizeGroupId);
@@ -289,14 +289,14 @@ public class ProductServiceImpl implements IProductService {
 		return sizeList;
 	}
 
-	@Value("${Scm.Bsija.Api.Url}")
-	private String bsijaUrl;
+	@Value("${Scm.Pmila.Api.Url}")
+	private String pmilaUrl;
 	@Value("${Portal.Product.Image.Path}")
 	private String productImagePath;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public List<ProductEntity> syncBsijaProduct(String startTime, String productCode, int page, int pageSize) {
+	public List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		if (StringUtils.isNotEmpty(productCode)) {
@@ -309,17 +309,17 @@ public class ProductServiceImpl implements IProductService {
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 
-		List<PmilaProduct> bsijaProducts = burgeonRestClient.query(PmilaProduct.class, start, pageSize,
+		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, start, pageSize,
 				filterParamList, orderByParamList);
 		List<ProductEntity> productList = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(bsijaProducts)) {
-			log.info("获取毕厶迦商品响应：{}", bsijaProducts);
-			bsijaProducts.forEach(p -> {
+		if (CollectionUtils.isNotEmpty(pmilaProducts)) {
+			log.info("获取帕米拉商品响应：{}", pmilaProducts);
+			pmilaProducts.forEach(p -> {
 				ProductEntity product = new ProductEntity();
 				BeanUtils.copyProperties(p, product);
 				product.setId(null);
-				product.setBrandCode("B");
-				product.setBrandName("毕厶迦");
+				product.setBrandCode("P");
+				product.setBrandName("帕米拉");
 				product.setYearCode(p.getYearName());
 				product.setGenderCode(p.getGenderName());
 				product.setSmallClassCode(p.getClassCode());
@@ -327,7 +327,7 @@ public class ProductServiceImpl implements IProductService {
 				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
 					product.setSizeGroupName("均码");
 				} else {
-					product.setSizeGroupName("BSIJA-" + p.getSizeGroupName());
+					product.setSizeGroupName("pmila-" + p.getSizeGroupName());
 				}
 				product.setSupplierCode("005");
 				List<SkuEntity> skus = new ArrayList<>();
@@ -346,42 +346,42 @@ public class ProductServiceImpl implements IProductService {
 				if (StringUtils.isNotEmpty(p.getImageUrl())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + ".jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getImageUrl(),
+						HttpUtils.doDownload(pmilaUrl + p.getImageUrl(),
 								productImagePath + p.getProductCode() + ".jpg");
 					}
 				}
 				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl1())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_1.jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getMedia().getImgUrl1(),
+						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl1(),
 								productImagePath + p.getProductCode() + "_1.jpg");
 					}
 				}
 				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl2())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_2.jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getMedia().getImgUrl2(),
+						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl2(),
 								productImagePath + p.getProductCode() + "_2.jpg");
 					}
 				}
 				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl3())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_3.jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getMedia().getImgUrl3(),
+						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl3(),
 								productImagePath + p.getProductCode() + "_3.jpg");
 					}
 				}
 				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl4())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_4.jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getMedia().getImgUrl4(),
+						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl4(),
 								productImagePath + p.getProductCode() + "_4.jpg");
 					}
 				}
 				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl5())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_5.jpg");
 					if (!img.exists()) {
-						HttpUtils.doDownload(bsijaUrl + p.getMedia().getImgUrl5(),
+						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl5(),
 								productImagePath + p.getProductCode() + "_5.jpg");
 					}
 				}

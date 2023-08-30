@@ -16,13 +16,13 @@ public interface IProductService {
 
 	Integer addProduct(List<ProductEntity> products);
 
-	List<DimEntity> syncBsijaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime, String dimName,
+	List<DimEntity> syncPmilaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime, String dimName,
 	                             int page, int pageSize);
 
-	List<AttributeValueEntity> syncBsijaColor(String startTime, String colorName, int page, int pageSize);
+	List<AttributeValueEntity> syncPmilaColor(String startTime, String colorName, int page, int pageSize);
 
-	List<AttributeValueEntity> syncBsijaSize(String startTime, String sizeName, int page, int pageSize);
+	List<AttributeValueEntity> syncPmilaSize(String startTime, String sizeName, int page, int pageSize);
 
-	List<ProductEntity> syncBsijaProduct(String startTime, String productCode, int page, int pageSize);
+	List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize);
 
 }

@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sungeon.bos.mapper.ISupplierMapper">
+    <insert id="addSupplier" parameterType="Supplier" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT get_sequences('c_supplier') AS id FROM dual
+		</selectKey>
+		insert into c_supplier(id,code,name,feermain,account,email,mobil)
+		values (#{id},#{supplierCode},#{supplierName},#{supplierFeerPrice},#{supplierAccount},#{supplierEmail},#{supplierPhone})
+	</insert>
 
-	<select id="querySupplierIdByCode" resultType="Long">
+	<insert id="addSupplierList" parameterType="java.util.List">
+		insert into c_supplier(id,code,name,feermain,account,email,mobil)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{id},#{supplierCode},#{supplierName},#{supplierFeerPrice},#{supplierAccount},#{supplierEmail},#{supplierPhone})
+		</foreach>
+	</insert>
+
+	<select id="querySupplierByCode" resultType="Supplier">
+		SELECT t.id,t.code,t.name,t.ACCOUNT,t.FEEREMAIN,t.EMAIL,t.MOBIL
+		FROM c_supplier t
+		WHERE t.code = #{supplierCode, javaType=String, jdbcType=VARCHAR}
+	</select>
+
+	<select id="querySupplierIdByCode" resultType="java.lang.Long">
 		SELECT t.id
 		FROM c_supplier t
 		WHERE t.code = #{supplierCode, javaType=String, jdbcType=VARCHAR}
-		   OR t.name = #{supplierCode, javaType=String, jdbcType=VARCHAR}
 	</select>
 
 </mapper>
