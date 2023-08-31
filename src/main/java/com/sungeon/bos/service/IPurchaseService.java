@@ -2,6 +2,7 @@ package com.sungeon.bos.service;
 
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,13 @@ public interface IPurchaseService {
 
 	Integer addPurchaseReturn(PurchaseReturnEntity purchaseReturn);
 
-	List<PurchaseReturnEntity> syncBsijaPurchaseReturn(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncPmilaPurchaseReturn(String docNo, int page, int pageSize);
 
-	List<PurchaseReturnEntity> syncBsijaPurchaseReturnOut(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncPmilaPurchaseReturnOut(String docNo, int page, int pageSize);
 
-	List<PurchaseReturnEntity> syncBsijaPurchaseReturnOrder(String docNo, int page, int pageSize);
+	List<PurchaseReturnEntity> syncPmilaPurchaseReturnOrder(String docNo, int page, int pageSize);
+
+	// 根据单据编号查询
+	List<PmilaCuspurchase> syncPmilaWbCuspurchase();
 
 }

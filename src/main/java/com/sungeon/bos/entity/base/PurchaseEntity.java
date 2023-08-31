@@ -1,5 +1,7 @@
 package com.sungeon.bos.entity.base;
 
+import com.burgeon.framework.restapi.model.BaseRestBean;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
@@ -8,7 +10,7 @@ import java.util.List;
 
 @Alias("Purchase")
 @Data
-public class PurchaseEntity {
+public class PurchaseEntity  {
 
 	private Long id;
 	private String docNo;

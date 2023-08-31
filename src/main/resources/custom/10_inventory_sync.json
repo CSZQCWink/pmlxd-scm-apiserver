@@ -1,5 +1,5 @@
 {
-  "name": "根据单号同步盘点单",
+  "name": "根据单号同步盘点单（目前此系统未使用）",
   "url": "/Rest/Stock/Inventory/Sync",
   "type": "JSON",
   "params": [

@@ -36,5 +36,4 @@ public class TransferTask extends BaseTask {
 			log.error(e.getMessage(), e);
 		}
 	}
-
 }

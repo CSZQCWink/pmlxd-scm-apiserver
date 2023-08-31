@@ -1,6 +1,6 @@
 {
-  "name": "根据帕米拉销售单号同步至采购单",
-  "url": "/Rest/Purchase/Sync",
+  "name": "根据经销商采购单单号号同步采购单",
+  "url": "/Rest/Purchase/Cuspurchase",
   "type": "JSON",
   "params": [
     {

@@ -33,7 +33,7 @@ public class SaleTask extends BaseTask {
 			int page = 1;
 			int pageSize = 30;
 			do {
-				purchases = saleService.syncBsijaSale(startTime, null, page++, pageSize);
+				purchases = saleService.syncPmilaSale(startTime, null, page++, pageSize);
 			} while (purchases.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_SALE_SYNC_TIME", now);
 		} catch (Exception e) {
@@ -49,7 +49,7 @@ public class SaleTask extends BaseTask {
 			int page = 1;
 			int pageSize = 30;
 			do {
-				purchases = saleService.syncBsijaSaleReturn(startTime, null, page++, pageSize);
+				purchases = saleService.syncPmilaSaleReturn(startTime, null, page++, pageSize);
 			} while (purchases.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
 		} catch (Exception e) {

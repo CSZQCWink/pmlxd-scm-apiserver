@@ -30,7 +30,7 @@ public class PurchaseTask extends BaseTask {
 			List<PurchaseReturnEntity> purchases;
 			int page = 1;
 			do {
-				purchases = purchaseService.syncBsijaPurchaseReturnOrder(null, page++, SystemProperties.ParamDataCount);
+				purchases = purchaseService.syncPmilaPurchaseReturnOrder(null, page++, SystemProperties.ParamDataCount);
 			} while (!CollectionUtils.isEmpty(purchases));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

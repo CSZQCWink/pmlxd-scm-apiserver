@@ -11,6 +11,7 @@ import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.ItemEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
 import com.sungeon.bos.entity.pmila.PmilaSale;
 import com.sungeon.bos.entity.pmila.PmilaSaleReturn;
 import com.sungeon.bos.service.IPurchaseService;
@@ -24,10 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author 刘国帅
- * @date 2019-10-9
- **/
 @Slf4j
 @Service("saleService")
 public class SaleServiceImpl implements ISaleService {
@@ -40,7 +37,66 @@ public class SaleServiceImpl implements ISaleService {
 	private BurgeonRestClient burgeonRestClient;
 
 	@Override
-	public List<PurchaseEntity> syncBsijaSale(String startTime, String docNo, int page, int pageSize) {
+	public List<PurchaseEntity> syncPmilaCuspurchase(String startTime, String docNo, int page, int pageSize) {
+		int start = (page - 1) * pageSize;
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("C_DEST_ID","445",QueryFilterCombine.AND));
+		if (StringUtils.isNotEmpty(docNo)) {
+			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
+		}
+		if (StringUtils.isNotEmpty(startTime)) {
+			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
+			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.OUTTIME > to_date('"
+					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		}
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+
+		// 获取品牌方的经销商采购单
+		List<PmilaCuspurchase> cuspurchaseList = burgeonRestClient.query(PmilaCuspurchase.class, start, pageSize, filterParamList, orderByParamList);
+		// 创建帕米拉的经销商采购单list用于接受被同步的经销商采购单
+		List<PurchaseEntity> purchaseList = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(cuspurchaseList)) {
+			log.info("获取帕米拉销售单响应：{}", cuspurchaseList);
+			for (PmilaCuspurchase pmilaCuspurchase : cuspurchaseList) {
+				// 根据第三方平台单号获取采购单id
+				Long purchaseId = purchaseDao.queryPurchaseIdBySourceNo(pmilaCuspurchase.getDocNo());
+				if (null != purchaseId) {
+					continue;
+				}
+				PurchaseEntity purchase = new PurchaseEntity();
+				purchase.setSourceNo(pmilaCuspurchase.getDocNo());
+				purchase.setBillDate(pmilaCuspurchase.getBillDate());
+				purchase.setSupplierCode(pmilaCuspurchase.getOrigCode());
+				purchase.setStoreCode(pmilaCuspurchase.getDestCode());
+				purchase.setInDate(pmilaCuspurchase.getInDate());
+				purchase.setIsAutoIn(false);
+				purchase.setDescription(pmilaCuspurchase.getDescription());
+				List<ItemEntity> items = new ArrayList<>();
+				pmilaCuspurchase.getItems().forEach(i -> {
+					ItemEntity item = new ItemEntity();
+					item.setSku(i.getSku());
+					item.setQty(i.getQtyOut());
+					item.setQtyIn(i.getQtyIn());
+					item.setPriceActual(i.getPriceActual());
+					items.add(item);
+				});
+				purchase.setItems(items);
+				try {
+					purchaseService.addPurchase(purchase);
+				} catch (Exception e) {
+					log.info(e.getMessage());
+				}
+				purchaseList.add(purchase);
+			}
+		}
+		return purchaseList;
+	}
+
+	@Override
+	public List<PurchaseEntity> syncPmilaSale(String startTime, String docNo, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
@@ -59,7 +115,7 @@ public class SaleServiceImpl implements ISaleService {
 				orderByParamList);
 		List<PurchaseEntity> purchaseList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(purchases)) {
-			log.info("获取毕厶迦销售单响应：{}", purchases);
+			log.info("获取帕米拉销售单响应：{}", purchases);
 			for (PmilaSale bsijaSale : purchases) {
 				Long purchaseId = purchaseDao.queryPurchaseIdBySourceNo(bsijaSale.getDocNo());
 				if (null != purchaseId) {
@@ -95,7 +151,7 @@ public class SaleServiceImpl implements ISaleService {
 	}
 
 	@Override
-	public List<PurchaseReturnEntity> syncBsijaSaleReturn(String startTime, String docNo, int page, int pageSize) {
+	public List<PurchaseReturnEntity> syncPmilaSaleReturn(String startTime, String docNo, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
@@ -117,7 +173,7 @@ public class SaleServiceImpl implements ISaleService {
 				filterParamList, orderByParamList);
 		List<PurchaseReturnEntity> purchaseReturnList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(purchases)) {
-			log.info("获取毕厶迦销售退货单响应：{}", purchases);
+			log.info("获取帕米拉销售退货单响应：{}", purchases);
 			for (PmilaSaleReturn bsijaSaleReturn : purchases) {
 				PurchaseReturnEntity retPur = purchaseDao.queryPurchaseReturnBySourceNo(bsijaSaleReturn.getDocNo());
 				if (null != retPur) {
@@ -155,5 +211,4 @@ public class SaleServiceImpl implements ISaleService {
 		}
 		return purchaseReturnList;
 	}
-
 }

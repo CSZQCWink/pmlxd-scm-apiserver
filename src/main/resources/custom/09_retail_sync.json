@@ -1,5 +1,5 @@
 {
-  "name": "根据单号同步零售单",
+  "name": "根据单号同步零售单（目前此系统未使用）",
   "url": "/Rest/Retail/Sync",
   "type": "JSON",
   "params": [

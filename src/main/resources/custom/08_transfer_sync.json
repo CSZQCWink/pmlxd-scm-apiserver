@@ -1,5 +1,5 @@
 {
-  "name": "根据单号同步调拨单",
+  "name": "根据单号同步调拨单（目前此系统未使用）",
   "url": "/Rest/Transfer/Sync",
   "type": "JSON",
   "params": [

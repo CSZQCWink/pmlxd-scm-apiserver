@@ -243,4 +243,10 @@ public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 		return purchaseMapper.updatePurchaseReturnOrderSyncStatus(purchaseReturnOrderId, status, bsijaNo, message);
 	}
 
+	@SgExceptionField(exception = UpdateFailException.class)
+	@Override
+	public List<PurchaseEntity> queryPurchaseIdBydocNo() {
+		return purchaseMapper.queryPurchaseIdBydoceNo();
+	}
+
 }

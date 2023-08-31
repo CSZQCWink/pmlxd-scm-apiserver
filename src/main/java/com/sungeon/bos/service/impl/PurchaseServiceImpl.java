@@ -16,6 +16,8 @@ import com.sungeon.bos.core.utils.DateTimeUtils;
 import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.*;
 import com.sungeon.bos.entity.base.*;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchaseItem;
 import com.sungeon.bos.entity.pmila.PmilaSaleReturn;
 import com.sungeon.bos.entity.pmila.PmilaSaleReturnItem;
 import com.sungeon.bos.service.IPurchaseService;
@@ -184,7 +186,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	private BurgeonRestClient burgeonRestClient;
 
 	@Override
-	public List<PurchaseReturnEntity> syncBsijaPurchaseReturn(String docNo, int page, int pageSize) {
+	public List<PurchaseReturnEntity> syncPmilaPurchaseReturn(String docNo, int page, int pageSize) {
 		int beg = (page - 1) * pageSize + 1;
 		int end = page * pageSize;
 		List<PurchaseReturnEntity> purchases = purchaseDao.queryPurchaseReturnList(docNo, beg, end);
@@ -226,7 +228,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	}
 
 	@Override
-	public List<PurchaseReturnEntity> syncBsijaPurchaseReturnOut(String docNo, int page, int pageSize) {
+	public List<PurchaseReturnEntity> syncPmilaPurchaseReturnOut(String docNo, int page, int pageSize) {
 		int beg = (page - 1) * pageSize + 1;
 		int end = page * pageSize;
 		List<PurchaseReturnEntity> purchases = purchaseDao.queryPurchaseReturnOutList(docNo, beg, end);
@@ -241,42 +243,42 @@ public class PurchaseServiceImpl implements IPurchaseService {
 
 	@Deprecated
 	@Override
-	public List<PurchaseReturnEntity> syncBsijaPurchaseReturnOrder(String docNo, int page, int pageSize) {
+	public List<PurchaseReturnEntity> syncPmilaPurchaseReturnOrder(String docNo, int page, int pageSize) {
 		int beg = (page - 1) * pageSize + 1;
 		int end = page * pageSize;
 		List<PurchaseReturnEntity> purchases = purchaseDao.queryPurchaseReturnOrderList(docNo, beg, end);
 		for (PurchaseReturnEntity purchase : purchases) {
-			PmilaSaleReturn bsijaSaleReturn = new PmilaSaleReturn();
-			bsijaSaleReturn.setBillDate(purchase.getBillDate());
-			bsijaSaleReturn.setRetSaleType("NOR");
-			bsijaSaleReturn.setSourceNo(purchase.getDocNo());
-			bsijaSaleReturn.setOrigAddName(purchase.getStoreName());
-			bsijaSaleReturn.setDestAddName(purchase.getSupplierName());
-			bsijaSaleReturn.setDescription(purchase.getDescription());
+			PmilaSaleReturn pmilaSaleReturn = new PmilaSaleReturn();
+			pmilaSaleReturn.setBillDate(purchase.getBillDate());
+			pmilaSaleReturn.setRetSaleType("NOR");
+			pmilaSaleReturn.setSourceNo(purchase.getDocNo());
+			pmilaSaleReturn.setOrigAddName(purchase.getStoreName());
+			pmilaSaleReturn.setDestAddName(purchase.getSupplierName());
+			pmilaSaleReturn.setDescription(purchase.getDescription());
 			List<PmilaSaleReturnItem> bsijaSaleReturnItems = new ArrayList<>();
 			for (ItemEntity item : purchase.getItems()) {
-				PmilaSaleReturnItem bsijaSaleReturnItem = new PmilaSaleReturnItem();
-				bsijaSaleReturnItem.setProductAdd(item.getSku());
-				bsijaSaleReturnItem.setQty(item.getQty());
-				bsijaSaleReturnItem.setPriceActual(item.getPriceActual());
-				bsijaSaleReturnItems.add(bsijaSaleReturnItem);
+				PmilaSaleReturnItem pmilaSaleReturnItem = new PmilaSaleReturnItem();
+				pmilaSaleReturnItem.setProductAdd(item.getSku());
+				pmilaSaleReturnItem.setQty(item.getQty());
+				pmilaSaleReturnItem.setPriceActual(item.getPriceActual());
+				bsijaSaleReturnItems.add(pmilaSaleReturnItem);
 			}
-			bsijaSaleReturn.setItems(bsijaSaleReturnItems);
+			pmilaSaleReturn.setItems(bsijaSaleReturnItems);
 
-			log.info("同步毕厶迦采购退货申请（销售退货单）参数：{}", JSONObject.toJSONString(bsijaSaleReturn));
-			ProcessOrderResponse response = burgeonRestClient.processOrder(bsijaSaleReturn, ObjectOperateType.CREATE);
+			log.info("同步毕厶迦采购退货申请（销售退货单）参数：{}", JSONObject.toJSONString(pmilaSaleReturn));
+			ProcessOrderResponse response = burgeonRestClient.processOrder(pmilaSaleReturn, ObjectOperateType.CREATE);
 			log.info("同步毕厶迦采购退货申请（销售退货单）响应：{}", JSONObject.toJSONString(response));
 			String bsijaNo = "";
 			if (response.isRequestSuccess()) {
 				List<QueryFilterParam> filterParamList = new ArrayList<>();
 				filterParamList.add(new QueryFilterParam("ID", String.valueOf(response.getObjectid()), QueryFilterCombine.AND));
 
-				bsijaSaleReturn = burgeonRestClient.queryObject(PmilaSaleReturn.class, filterParamList);
-				if (null != bsijaSaleReturn) {
-					bsijaNo = bsijaSaleReturn.getDocNo();
+				pmilaSaleReturn = burgeonRestClient.queryObject(PmilaSaleReturn.class, filterParamList);
+				if (null != pmilaSaleReturn) {
+					bsijaNo = pmilaSaleReturn.getDocNo();
 
 					// 执行出库
-					// if (StringUtils.isNotEmpty(bsijaNo) && "未提交".equals(bsijaSaleReturn.getOutStatus())) {
+					// if (StringUtils.isNotEmpty(bsijaNo) && "未提交".equals(pmilaSaleReturn.getOutStatus())) {
 					//     stockService.dealBsijaOut(bsijaNo, "M_RET_SALEOUT", null);
 					// }
 				}
@@ -285,6 +287,44 @@ public class PurchaseServiceImpl implements IPurchaseService {
 					? Constants.BURGEON_YES : Constants.BURGEON_FAIL, bsijaNo, response.getMessage());
 		}
 		return purchases;
+	}
+
+	@Override
+	public List<PmilaCuspurchase> syncPmilaWbCuspurchase() {
+		List<PurchaseEntity> purchaseEntityList = purchaseDao.queryPurchaseIdBydocNo();
+		List<PmilaCuspurchase> pmilaCuspurchaseList = new ArrayList<>();
+		for (PurchaseEntity purchase : purchaseEntityList) {
+			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
+			pmilaCuspurchase.setDocNo(purchase.getSourceNo());
+			pmilaCuspurchase.setBillDate(purchase.getBillDate());
+			pmilaCuspurchase.setOrigCode(purchase.getSupplierCode());
+			pmilaCuspurchase.setDestCode(purchase.getStoreCode());
+			pmilaCuspurchase.setInDate(purchase.getInDate());
+			pmilaCuspurchase.setDescription(purchase.getDescription());
+
+			List<ItemEntity> items = new ArrayList<>();
+			List<PmilaCuspurchaseItem> pmilaCuspurchaseItemList = new ArrayList<>();
+			purchase.getItems().forEach(i -> {
+				ItemEntity item = new ItemEntity();
+				item.setSku(i.getSku());
+				item.setQtyOut(i.getQty());
+				item.setQtyIn(i.getQtyIn());
+				item.setPriceActual(i.getPriceActual());
+				items.add(item);
+			});
+			for (ItemEntity item : items) {
+				PmilaCuspurchaseItem pmilaCuspurchaseItem = new PmilaCuspurchaseItem();
+				pmilaCuspurchaseItem.setSku(item.getSku());
+				pmilaCuspurchaseItem.setQtyOut(item.getQty());
+				pmilaCuspurchaseItem.setQtyIn(item.getQtyIn());
+				pmilaCuspurchaseItem.setPriceActual(item.getPriceActual());
+				pmilaCuspurchaseItemList.add(pmilaCuspurchaseItem);
+			}
+			pmilaCuspurchase.setItems(pmilaCuspurchaseItemList);
+
+			pmilaCuspurchaseList.add(pmilaCuspurchase);
+		}
+		return pmilaCuspurchaseList;
 	}
 
 	private void dealItem(Long mainId, ItemEntity item) {

@@ -81,4 +81,5 @@ public interface IPurchaseMapper {
 	                                            @Param("status") String status, @Param("bsijaNo") String bsijaNo,
 	                                            @Param("message") String message);
 
+	List<PurchaseEntity> queryPurchaseIdBydoceNo();
 }
