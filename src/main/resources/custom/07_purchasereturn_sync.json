@@ -1,6 +1,6 @@
 {
-  "name": "根据帕米拉销售退货单号同步至采购退货单(目前此系统未使用)",
-  "url": "/Rest/Purchase/Return/Sync",
+  "name": "根据经销商采购退货单单号同步至采购退货单",
+  "url": "/Rest/Purchase/Return/syncCuspurchaseReturn",
   "type": "JSON",
   "params": [
     {

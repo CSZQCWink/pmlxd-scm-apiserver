@@ -160,9 +160,6 @@ public class SaleServiceImpl implements ISaleService {
 		}
 		if (StringUtils.isNotEmpty(startTime)) {
 			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
-			// filterParamList.add(new QueryFilterParam("", "(M_RET_SALE.STATUSTIME > to_date('"
-			//         + DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss') OR M_RET_SALE.OUTTIME > to_date('"
-			//         + DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss'))", QueryFilterCombine.AND));
 			filterParamList.add(new QueryFilterParam("", "M_RET_SALE.INTIME > to_date('"
 					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
 		}

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.burgeon.framework.restapi.model.ObjectOperateType;
 import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
+import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ObjectSubmitResponse;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
 import com.sungeon.bos.core.constants.Constants;
@@ -16,10 +17,7 @@ import com.sungeon.bos.core.utils.DateTimeUtils;
 import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.*;
 import com.sungeon.bos.entity.base.*;
-import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
-import com.sungeon.bos.entity.pmila.PmilaCuspurchaseItem;
-import com.sungeon.bos.entity.pmila.PmilaSaleReturn;
-import com.sungeon.bos.entity.pmila.PmilaSaleReturnItem;
+import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.service.IStockService;
 import com.sungeon.bos.util.BurgeonRestClient;
@@ -29,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -291,7 +290,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 
 	@Override
 	public List<PmilaCuspurchase> syncPmilaWbCuspurchase() {
-		List<PurchaseEntity> purchaseEntityList = purchaseDao.queryPurchaseIdBydocNo();
+		List<PurchaseEntity> purchaseEntityList = purchaseDao.queryPurchase();
 		List<PmilaCuspurchase> pmilaCuspurchaseList = new ArrayList<>();
 		for (PurchaseEntity purchase : purchaseEntityList) {
 			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
@@ -325,6 +324,99 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			pmilaCuspurchaseList.add(pmilaCuspurchase);
 		}
 		return pmilaCuspurchaseList;
+	}
+
+	@Override
+	public List<PurchaseReturnEntity> syncCuspurchaseReturn(String startTime, String docNo, int page, int pageSize) {
+		int start = (page - 1) * pageSize;
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
+		if (StringUtils.isNotEmpty(docNo)) {
+			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
+		}
+		if (StringUtils.isNotEmpty(startTime)) {
+			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
+			filterParamList.add(new QueryFilterParam("", "M_V_RET_CUSPUR.INTIME > to_date('"
+					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		}
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+
+		List<PmilaCuspurchaseReturn> purchases = burgeonRestClient.query(PmilaCuspurchaseReturn.class, start, pageSize, filterParamList, orderByParamList);
+		List<PurchaseReturnEntity> purchaseReturnList = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(purchases)) {
+			log.info("获取帕米拉销售退货单响应：{}", purchases);
+			for (PmilaCuspurchaseReturn pmilaCuspurchaseReturn : purchases) {
+				PurchaseReturnEntity retPur = purchaseDao.queryPurchaseReturnBySourceNo(pmilaCuspurchaseReturn.getDocNo());
+				if (null != retPur) {
+					continue;
+				}
+				PurchaseReturnEntity purchaseReturn = new PurchaseReturnEntity();
+				purchaseReturn.setSourceNo(pmilaCuspurchaseReturn.getDocNo());
+				purchaseReturn.setBillDate(pmilaCuspurchaseReturn.getInDate());
+//				purchaseReturn.setSupplierCode(pmilaCuspurchaseReturn.getDestCode());
+//				purchaseReturn.setStoreCode(pmilaCuspurchaseReturn.getOrigCode());
+				purchaseReturn.setOutDate(pmilaCuspurchaseReturn.getInDate());
+				purchaseReturn.setIsAutoOut("提交".equals(pmilaCuspurchaseReturn.getInStatus()));
+//				if (StringUtils.isNotEmpty(pmilaCuspurchaseReturn.getSourceNo())) {
+//					purchaseReturn.setPurchaseReturnOrderNo(pmilaCuspurchaseReturn.getSourceNo().startsWith("PRO")
+//							? pmilaCuspurchaseReturn.getSourceNo() : null);
+//				}
+				purchaseReturn.setDescription(pmilaCuspurchaseReturn.getDescription());
+				List<ItemEntity> items = new ArrayList<>();
+				pmilaCuspurchaseReturn.getItems().forEach(i -> {
+					ItemEntity item = new ItemEntity();
+					item.setSku(i.getSku());
+					item.setQty(i.getQty());
+					item.setQtyOut(i.getQtyOut());
+					item.setPriceActual(i.getPriceActual());
+					items.add(item);
+				});
+				purchaseReturn.setItems(items);
+				try {
+					addPurchaseReturn(purchaseReturn);
+				} catch (AlreadyExistsException e) {
+					log.info(e.getMessage());
+				}
+				purchaseReturnList.add(purchaseReturn);
+			}
+		}
+		return purchaseReturnList;
+	}
+
+	@Override
+	public List<PmilaCuspurchaseReturn> syncWbCuspurchaseReturn() {
+		List<PurchaseReturnEntity> purchaseReturnEntityList = purchaseDao.queryPurchaseReturn();
+		List<PmilaCuspurchaseReturn> pmilaCuspurchaseReturnList = new ArrayList<>();
+		for (PurchaseReturnEntity purchaseReturn : purchaseReturnEntityList) {
+			PmilaCuspurchaseReturn pmilaCuspurchaseReturn = new PmilaCuspurchaseReturn();
+			pmilaCuspurchaseReturn.setDocNo(purchaseReturn.getSourceNo());
+			pmilaCuspurchaseReturn.setBillDate(purchaseReturn.getBillDate());
+			pmilaCuspurchaseReturn.setDescription(purchaseReturn.getDescription());
+
+			List<ItemEntity> items = new ArrayList<>();
+			List<PmilaCuspurchaseReturnItem> pmilaCuspurchaseReturnItemList = new ArrayList<>();
+			purchaseReturn.getItems().forEach(i -> {
+				ItemEntity item = new ItemEntity();
+				item.setSku(i.getSku());
+				item.setQtyOut(i.getQty());
+				item.setQtyIn(i.getQtyIn());
+				item.setPriceActual(i.getPriceActual());
+				items.add(item);
+			});
+			for (ItemEntity item : items) {
+				PmilaCuspurchaseReturnItem pmilaCuspurchaseReturnItem = new PmilaCuspurchaseReturnItem();
+				pmilaCuspurchaseReturnItem.setSku(item.getSku());
+				pmilaCuspurchaseReturnItem.setQtyOut(item.getQty());
+				pmilaCuspurchaseReturnItem.setQtyIn(item.getQtyIn());
+				pmilaCuspurchaseReturnItem.setPriceActual(item.getPriceActual());
+				pmilaCuspurchaseReturnItemList.add(pmilaCuspurchaseReturnItem);
+			}
+			pmilaCuspurchaseReturn.setItems(pmilaCuspurchaseReturnItemList);
+
+			pmilaCuspurchaseReturnList.add(pmilaCuspurchaseReturn);
+		}
+		return pmilaCuspurchaseReturnList;
 	}
 
 	private void dealItem(Long mainId, ItemEntity item) {

@@ -5,6 +5,7 @@ import com.sungeon.bos.core.model.ValueHolder;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchaseReturn;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.service.ISaleService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,14 @@ public class PurchaseController extends SungeonBaseController {
 	@Autowired
 	private IPurchaseService purchaseService;
 
-
+	/**
+	 * @title: syncCuspurchase
+	 * @author: 陈苏洲
+	 * @description: 根据经销商采购单同步采购单
+	 * @param: [docNo]
+	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.base.PurchaseEntity>>
+	 * @date: 2023/9/1 9:17
+	 **/
 	@RequestMapping("/Cuspurchase")
 	@ResponseBody
 	public ValueHolder<List<PurchaseEntity>> syncCuspurchase(String docNo) {
@@ -50,6 +58,34 @@ public class PurchaseController extends SungeonBaseController {
 	@ResponseBody
 	public ValueHolder<List<PmilaCuspurchase>> syncWbCuspurchase() {
 		return ValueHolder.ok(purchaseService.syncPmilaWbCuspurchase());
+	}
+
+	/**
+	 * @title: syncCuspurchaseReturn
+	 * @author: 陈苏洲
+	 * @description: 根据经销商采购退货单单号同步采购退货单
+	 * @param: [docNo]
+	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.base.PurchaseReturnEntity>>
+	 * @date: 2023/9/1 9:16
+	 **/
+	@RequestMapping("/Return/syncCuspurchaseReturn")
+	@ResponseBody
+	public ValueHolder<List<PurchaseReturnEntity>> syncCuspurchaseReturn(String docNo) {
+		return ValueHolder.ok(purchaseService.syncCuspurchaseReturn(null, docNo, 1, 1));
+	}
+
+	/**
+	 * @title: syncWbCuspurchaseReturn
+	 * @author: 陈苏洲
+	 * @description: 将帕米拉已出库的采购退货单传到品牌方系统,生成已出库未入库的经销商采购退货单
+	 * @param: []
+	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.pmila.PmilaCuspurchaseReturn>>
+	 * @date: 2023/9/1 14:19
+	 **/
+	@RequestMapping("/WbCuspurchaseReturn")
+	@ResponseBody
+	public ValueHolder<List<PmilaCuspurchaseReturn>> syncWbCuspurchaseReturn() {
+		return ValueHolder.ok(purchaseService.syncWbCuspurchaseReturn());
 	}
 
 	@RequestMapping("/Sync")

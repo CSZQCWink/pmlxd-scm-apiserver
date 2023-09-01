@@ -452,11 +452,17 @@
                             ) w
                        WHERE w.rn BETWEEN #{beg} AND #{end})
     </select>
-    <select id="queryPurchaseIdBydoceNo" resultType="com.sungeon.bos.entity.base.PurchaseEntity">
+    <select id="queryPurchase" resultType="com.sungeon.bos.entity.base.PurchaseEntity">
         select * from m_purchase mp
         where mp.in_status = 2
           and mp.c_supplier_id = 132
           and mp.isactive = 'Y';
+    </select>
+    <select id="queryPurchaseReturn" resultType="com.sungeon.bos.entity.base.PurchaseReturnEntity">
+        select * from  M_RET_PUR mrp
+        where mrp.OUT_STATUS = 2
+        and mrp.ISACTIVE = 'Y'
+        and mrp.c_supplier_id = 132;
     </select>
 
     <update id="updatePurchaseReturnOrderSyncStatus">

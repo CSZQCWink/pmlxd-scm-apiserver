@@ -73,5 +73,7 @@ public interface IPurchaseDao {
 
 	Integer updatePurchaseReturnOrderSyncStatus(Long purchaseReturnOrderId, String status, String bsijaNo, String message);
 
-	List<PurchaseEntity> queryPurchaseIdBydocNo();
+	List<PurchaseEntity> queryPurchase();
+
+	List<PurchaseReturnEntity> queryPurchaseReturn();
 }
