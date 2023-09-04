@@ -1,7 +1,6 @@
 package com.sungeon.bos.dao;
 
 import com.sungeon.bos.entity.base.SupplierEntity;
-import org.omg.CORBA.LongHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

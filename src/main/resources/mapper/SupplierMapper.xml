@@ -2,18 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sungeon.bos.mapper.ISupplierMapper">
     <insert id="addSupplier" parameterType="Supplier" keyProperty="id">
-		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
-			SELECT get_sequences('c_supplier') AS id FROM dual
-		</selectKey>
-		insert into c_supplier(id,code,name,feermain,account,email,mobil)
-		values (#{id},#{supplierCode},#{supplierName},#{supplierFeerPrice},#{supplierAccount},#{supplierEmail},#{supplierPhone})
+
 	</insert>
 
-	<insert id="addSupplierList" parameterType="java.util.List">
+	<insert id="addSupplierList">
 		insert into c_supplier(id,code,name,feermain,account,email,mobil)
 		values
 		<foreach collection="list" item="item" index="index" separator=",">
-			(#{id},#{supplierCode},#{supplierName},#{supplierFeerPrice},#{supplierAccount},#{supplierEmail},#{supplierPhone})
+			(#{item.id,javaType=Long,jdbcType=BIGINT},
+			 #{item.supplierCode, javaType=String, jdbcType=VARCHAR},
+			 #{item.supplierName, javaType=String, jdbcType=VARCHAR},
+			 #{item.supplierFeerPrice,javaType=Double,jdbcType=BIGINT},
+			 #{item.supplierAccount, javaType=String, jdbcType=VARCHAR},
+			 #{item.supplierEmail, javaType=String, jdbcType=VARCHAR},
+			 #{item.supplierPhone, javaType=String, jdbcType=VARCHAR}
+			 )
 		</foreach>
 	</insert>
 

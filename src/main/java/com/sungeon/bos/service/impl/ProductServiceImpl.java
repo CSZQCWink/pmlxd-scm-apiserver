@@ -273,18 +273,26 @@ public class ProductServiceImpl implements IProductService {
 		List<AttributeValueEntity> sizeList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(sizes)) {
 			log.info("获取帕米拉尺寸响应：{}", sizes);
-			sizes.forEach(d -> {
+
+			for (int i = 0; i < sizes.size(); i++) {
+				Long sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
+				AttributeValueEntity attributeValue = getAttributeValue(2,sizes.get(i).getCode(), sizes.get(i).getName(), null,
+						sizeGroupId);
+				sizeList.add(attributeValue);
+			}
+
+//			sizes.forEach(d -> {
 //				Long sizeGroupId;
 //				if ("均码".equals(d.getSizeGroup().getName()) || "00".equals(d.getSizeGroup().getName())) {
 //					sizeGroupId = productDao.queryAttributeId(2, "均码");
 //				}
 //				else {
-				Long sizeGroupId = productDao.queryAttributeId(2, d.getSizeGroup().getName());
+//				Long sizeGroupId = productDao.queryAttributeId(2, d.getSizeGroup().getName());
 //				}
-				AttributeValueEntity attributeValue = getAttributeValue(2, d.getCode(), d.getName(), null,
-						sizeGroupId);
-				sizeList.add(attributeValue);
-			});
+//				AttributeValueEntity attributeValue = getAttributeValue(2, d.getCode(), d.getName(), null,
+//						sizeGroupId);
+//				sizeList.add(attributeValue);
+//			});
 		}
 		return sizeList;
 	}
