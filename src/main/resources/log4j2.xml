@@ -2,7 +2,7 @@
 
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
-        <Property name="LOG_FILE_PATH">../logs/zijinghai-scm-apiserver</Property>
+        <Property name="LOG_FILE_PATH">../logs/pmila-scm-apiserver</Property>
         <Property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %c{1.}.%M(Line:%L) - %msg%n</Property>
     </Properties>
 
