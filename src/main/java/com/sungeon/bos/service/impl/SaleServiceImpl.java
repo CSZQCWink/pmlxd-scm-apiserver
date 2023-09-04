@@ -66,6 +66,7 @@ public class SaleServiceImpl implements ISaleService {
 				if (null != purchaseId) {
 					continue;
 				}
+
 				PurchaseEntity purchase = new PurchaseEntity();
 				purchase.setSourceNo(pmilaCuspurchase.getDocNo());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
