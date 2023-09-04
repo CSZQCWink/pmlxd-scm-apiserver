@@ -2,11 +2,14 @@ package com.sungeon.bos.entity.pmila;
 
 import com.alibaba.fastjson.JSONObject;
 import com.burgeon.framework.restapi.annotation.RestColumn;
+import com.burgeon.framework.restapi.annotation.RestOneToMany;
 import com.burgeon.framework.restapi.annotation.RestTable;
 import com.burgeon.framework.restapi.model.BaseRestBean;
 import com.burgeon.framework.restapi.parser.value.LongParser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * @author 陈苏洲
@@ -23,6 +26,10 @@ public class PmilaIn extends BaseRestBean {
 	private String docNo;
 	@RestColumn(name = "BILLTYPE")
 	private String billType;
+	@RestColumn(name = "DATEIN", isRestSave = true)
+	private Integer dateIn;
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "inId", childBeanClass = PmilaInItem.class)
+	private List<PmilaInItem> items;
 
 	@Override
 	public String toString() {
