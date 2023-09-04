@@ -205,7 +205,7 @@ public class ProductServiceImpl implements IProductService {
 		List<PmilaDim> dims = burgeonRestClient.query(PmilaDim.class, start, pageSize, filterParamList, orderByParamList);
 		List<DimEntity> dimList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(dims)) {
-			log.info("获取毕厶迦属性值响应：{}", dims);
+			log.info("获取帕米拉属性值响应：{}", dims);
 			dims.forEach(d -> {
 				DimEntity dim = new DimEntity();
 				dim.setCode(isUseCode ? d.getCode() : d.getName());
@@ -269,18 +269,18 @@ public class ProductServiceImpl implements IProductService {
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 
-		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, start, pageSize, filterParamList,
-				orderByParamList);
+		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, start, pageSize, filterParamList, orderByParamList);
 		List<AttributeValueEntity> sizeList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(sizes)) {
-			log.info("获取毕厶迦尺寸响应：{}", sizes);
+			log.info("获取帕米拉尺寸响应：{}", sizes);
 			sizes.forEach(d -> {
-				Long sizeGroupId;
-				if ("均码".equals(d.getSizeGroup().getName()) || "00".equals(d.getSizeGroup().getName())) {
-					sizeGroupId = productDao.queryAttributeId(2, "均码");
-				} else {
-					sizeGroupId = productDao.queryAttributeId(2, "pmila-" + d.getSizeGroup().getName());
-				}
+//				Long sizeGroupId;
+//				if ("均码".equals(d.getSizeGroup().getName()) || "00".equals(d.getSizeGroup().getName())) {
+//					sizeGroupId = productDao.queryAttributeId(2, "均码");
+//				}
+//				else {
+				Long sizeGroupId = productDao.queryAttributeId(2, d.getSizeGroup().getName());
+//				}
 				AttributeValueEntity attributeValue = getAttributeValue(2, d.getCode(), d.getName(), null,
 						sizeGroupId);
 				sizeList.add(attributeValue);
@@ -319,7 +319,7 @@ public class ProductServiceImpl implements IProductService {
 				BeanUtils.copyProperties(p, product);
 				product.setId(null);
 				product.setBrandCode("P");
-				product.setBrandName("帕米拉");
+				product.setBrandName("名典");
 				product.setYearCode(p.getYearName());
 				product.setGenderCode(p.getGenderName());
 				product.setSmallClassCode(p.getClassCode());

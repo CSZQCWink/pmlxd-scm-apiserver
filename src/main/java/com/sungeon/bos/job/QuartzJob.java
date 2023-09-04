@@ -54,35 +54,47 @@ public class QuartzJob implements InterruptableJob {
 		log.debug("调度任务 - [" + scheduleJob.getGroupName() + "." + scheduleJob.getJobName() + "] 开始");
 		if (scheduleJob.getStatus().equals(Constants.BURGEON_YES) && scheduleGroup.equals(scheduleJob.getGroupName())) {
 			switch (scheduleJob.getJobName()) {
+				// 同步Dim
 				case "SyncPmilaDim":
 					productTask.syncPmilaDim();
 					break;
+				// 同步颜色
 				case "SyncPmilaColor":
 					productTask.syncPmilaColor();
 					break;
+				// 同步尺寸组
 				case "SyncPmilaSize":
 					productTask.syncPmilaSize();
 					break;
+				// 同步款号
 				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
-				case "SyncPmilaPurchaseReturn":
-					purchaseTask.syncPmilaPurchaseReturn();
+//				case "SyncPmilaPurchaseReturn":
+//					purchaseTask.syncPmilaPurchaseReturn();
+//					break;
+//				case "SyncPmilaSale":
+//					saleTask.syncPmilaSale();
+//					break;
+//				case "SyncPmilaSaleReturn":
+//					saleTask.syncPmilaSaleReturn();
+//					break;
+//				case "SyncPmilaTransfer":
+//					transferTask.syncPmilaTransfer();
+//					break;
+//				case "SyncPmilaRetail":
+//					retailTask.syncPmilaRetail();
+//					break;
+//				case "SyncPmilaInventory":
+//					stockTask.syncPmilaInventory();
+//					break;
+				// 同步供应商
+				case "SyncPmilaSupplier":
+					supplierTask.syncPmilaSupplier();
 					break;
-				case "SyncPmilaSale":
-					saleTask.syncPmilaSale();
-					break;
-				case "SyncPmilaSaleReturn":
-					saleTask.syncPmilaSaleReturn();
-					break;
-				case "SyncPmilaTransfer":
-					transferTask.syncPmilaTransfer();
-					break;
-				case "SyncPmilaRetail":
-					retailTask.syncPmilaRetail();
-					break;
-				case "SyncPmilaInventory":
-					stockTask.syncPmilaInventory();
+				// 同步帕米拉采购单
+				case "SyncPmilaCuspurchase":
+					saleTask.syncPmilaCuspurchase();
 					break;
 				default:
 					break;

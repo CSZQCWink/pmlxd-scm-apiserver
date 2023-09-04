@@ -251,7 +251,7 @@
 			#{brandId, javaType=Long, jdbcType=BIGINT}
 		</if>
 		<if test="clr == 2">
-			(SELECT COUNT(1) FROM m_attributevalue WHERE m_attribute_id = #{attributeId}),
+			(SELECT COUNT(1) FROM m_attributevalue WHERE m_attribute_id = #{attributeId jdbcType=BIGINT},
 			NULL
 		</if>)
 	</insert>
