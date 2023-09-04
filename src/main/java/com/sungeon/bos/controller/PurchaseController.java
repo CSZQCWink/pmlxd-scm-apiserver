@@ -34,7 +34,8 @@ public class PurchaseController extends SungeonBaseController {
 	/**
 	 * @title: syncCuspurchase
 	 * @author: 陈苏洲
-	 * @description: 根据经销商采购单同步采购单
+	 * @description: 根据经销商采购单同步采购单 抓取品牌方系统内已出库未入库的经销商采购单，生成已提交未入库的帕米拉采购单
+	 *               供应商：温州外购仓
 	 * @param: [docNo]
 	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.base.PurchaseEntity>>
 	 * @date: 2023/9/1 9:17
@@ -77,7 +78,7 @@ public class PurchaseController extends SungeonBaseController {
 	/**
 	 * @title: syncWbCuspurchaseReturn
 	 * @author: 陈苏洲
-	 * @description: 将帕米拉已出库的采购退货单传到品牌方系统,生成已出库未入库的经销商采购退货单
+	 * @description: TODO 将帕米拉已出库的采购退货单传到品牌方系统,生成已出库未入库的经销商采购退货单
 	 * @param: []
 	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.pmila.PmilaCuspurchaseReturn>>
 	 * @date: 2023/9/1 14:19

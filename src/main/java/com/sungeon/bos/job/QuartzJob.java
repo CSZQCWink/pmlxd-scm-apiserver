@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 /**
  * @author 刘国帅
  * @date 2019-10-9
+ *
+ * @updateAuthor 陈苏洲
+ * @date 2023-09-4
  **/
 @Slf4j
 @PersistJobDataAfterExecution
@@ -38,6 +41,9 @@ public class QuartzJob implements InterruptableJob {
 	@Autowired
 	private StockTask stockTask;
 
+	@Autowired
+	private SupplierTask supplierTask;
+
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		executeInternal(context);
@@ -48,34 +54,34 @@ public class QuartzJob implements InterruptableJob {
 		log.debug("调度任务 - [" + scheduleJob.getGroupName() + "." + scheduleJob.getJobName() + "] 开始");
 		if (scheduleJob.getStatus().equals(Constants.BURGEON_YES) && scheduleGroup.equals(scheduleJob.getGroupName())) {
 			switch (scheduleJob.getJobName()) {
-				case "SyncBsijaDim":
+				case "SyncPmilaDim":
 					productTask.syncPmilaDim();
 					break;
-				case "SyncBsijaColor":
+				case "SyncPmilaColor":
 					productTask.syncPmilaColor();
 					break;
-				case "SyncBsijaSize":
+				case "SyncPmilaSize":
 					productTask.syncPmilaSize();
 					break;
-				case "SyncBsijaProduct":
+				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
-				case "SyncBsijaPurchaseReturn":
+				case "SyncPmilaPurchaseReturn":
 					purchaseTask.syncPmilaPurchaseReturn();
 					break;
-				case "SyncBsijaSale":
+				case "SyncPmilaSale":
 					saleTask.syncPmilaSale();
 					break;
-				case "SyncBsijaSaleReturn":
+				case "SyncPmilaSaleReturn":
 					saleTask.syncPmilaSaleReturn();
 					break;
-				case "SyncBsijaTransfer":
+				case "SyncPmilaTransfer":
 					transferTask.syncPmilaTransfer();
 					break;
-				case "SyncBsijaRetail":
+				case "SyncPmilaRetail":
 					retailTask.syncPmilaRetail();
 					break;
-				case "SyncBsijaInventory":
+				case "SyncPmilaInventory":
 					stockTask.syncPmilaInventory();
 					break;
 				default:

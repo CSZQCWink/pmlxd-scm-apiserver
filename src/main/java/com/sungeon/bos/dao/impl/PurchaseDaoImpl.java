@@ -251,7 +251,7 @@ public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 
 	@Override
 	public List<PurchaseReturnEntity> queryPurchaseReturn() {
-		return purchaseMapper.queryPurchaseReturnList();
+		return purchaseMapper.queryPurchaseReturn();
 	}
 
 }

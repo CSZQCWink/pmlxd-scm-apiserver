@@ -28,6 +28,14 @@ public class SupplierController extends SungeonBaseController {
 	@Autowired
 	private ISupplierService supplierService;
 
+	/**
+	 * @title: syncProduct
+	 * @author: 陈苏洲
+	 * @description: 供应商同步
+	 * @param: [code]
+	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.base.SupplierEntity>>
+	 * @date: 2023/9/4 9:54
+	 **/
 	@RequestMapping("/Sync")
 	@ResponseBody
 	public ValueHolder<List<SupplierEntity>> syncProduct(String code) {

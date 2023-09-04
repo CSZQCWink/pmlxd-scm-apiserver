@@ -25,6 +25,14 @@ public class ProductController extends SungeonBaseController {
 	@Autowired
 	private IProductService productService;
 
+	/**
+	 * @title: syncProduct
+	 * @author: 陈苏洲
+	 * @description: 同步帕米拉款号商品
+	 * @param: [productCode]
+	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.base.ProductEntity>>
+	 * @date: 2023/9/4 9:46
+	 **/
 	@RequestMapping("/Sync")
 	@ResponseBody
 	public ValueHolder<List<ProductEntity>> syncProduct(String productCode) {
