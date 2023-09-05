@@ -275,9 +275,13 @@ public class ProductServiceImpl implements IProductService {
 			log.info("获取帕米拉尺寸响应：{}", sizes);
 
 			for (int i = 0; i < sizes.size(); i++) {
-				Long sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
-				AttributeValueEntity attributeValue = getAttributeValue(2,sizes.get(i).getCode(), sizes.get(i).getName(), null,
-						sizeGroupId);
+				Long sizeGroupId;
+				if ("均码".equals(sizes.get(i).getSizeGroup().getName()) || "00".equals(sizes.get(i).getSizeGroup().getName())) {
+					sizeGroupId = productDao.queryAttributeId(2, "均码");
+				}else{
+					sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
+				}
+				AttributeValueEntity attributeValue = getAttributeValue(2,sizes.get(i).getCode(), sizes.get(i).getName(), null, sizeGroupId);
 				sizeList.add(attributeValue);
 			}
 
