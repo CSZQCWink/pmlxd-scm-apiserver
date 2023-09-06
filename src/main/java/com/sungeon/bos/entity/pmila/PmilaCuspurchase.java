@@ -48,13 +48,13 @@ public class PmilaCuspurchase extends BaseRestBean {
 	private String description;
 	@RestColumn(name = "STATUS")
 	private String status;
-	@RestColumn(name = "CONFIRM_STATUS")
-	private String confirmStatus;
+//	@RestColumn(name = "CONFIRM_STATUS")
+//	private String confirmStatus;
 	@RestColumn(name = "OUT_STATUS")
 	private String outStatus;
 	@RestColumn(name = "IN_STATUS")
 	private String inStatus;
-	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "saleId", childBeanClass = PmilaSaleItem.class)
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "saleId", childBeanClass = PmilaCuspurchaseItem.class)
 	private List<PmilaCuspurchaseItem> items;
 
 	@Override

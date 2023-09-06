@@ -56,32 +56,33 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Integer addPurchase(PurchaseEntity purchase) {
-		if (StringUtils.isEmpty(purchase.getSourceNo())) {
-			throw new ParamNullException("sourceNo", "第三方平台单号不能为空");
-		}
-		synchronizedHandler.execute("Burgeon.Bos.Purchase.Add", purchase.getSourceNo(), () -> {
+//		if (StringUtils.isEmpty(purchase.getSourceNo())) {
+//			throw new ParamNullException("sourceNo", "第三方平台单号不能为空");
+//		}
+		synchronizedHandler.execute("Burgeon.Bos.Purchase.Add", purchase.getDocNo(), () -> {
 			if (CollectionUtils.isEmpty(purchase.getItems())) {
 				throw new ParamNullException("items", "明细不能为空");
 			}
-			if (!StringUtils.isEmpty(purchase.getPoDocno())) {
-				PurchaseEntity po = purchaseDao.queryPOSupplierStore(purchase.getPoDocno());
-				if (null == po) {
-					throw new ParamNotMatchException("poDocno", "采购订单[" + purchase.getPoDocno() + "]不存在");
-				}
-				purchase.setPoId(po.getId());
-				purchase.setSupplierId(po.getSupplierId());
-				purchase.setStoreId(po.getStoreId());
-				purchase.setDocType("POO");
-			} else {
+//			if (!StringUtils.isEmpty(purchase.getDocNo())) {
+//				PurchaseEntity po = purchaseDao.queryPOSupplierStore(purchase.getDocNo());
+//				if (null == po) {
+//					throw new ParamNotMatchException("poDocno", "采购订单[" + purchase.getDocNo() + "]不存在");
+//				}
+//				purchase.setPoId(po.getId());
+//				purchase.setSupplierId(po.getSupplierId());
+//				purchase.setStoreId(po.getStoreId());
+//				purchase.setDocType("POO");
+//			}
+			if(StringUtils.isEmpty(purchase.getDocNo())){
 				if (StringUtils.isEmpty(purchase.getSupplierCode())) {
 					throw new ParamNullException("supplierCode", "供应商不能为空");
 				}
 				if (StringUtils.isEmpty(purchase.getStoreCode())) {
 					throw new ParamNullException("storeCode", "采购店仓不能为空");
 				}
-				Long purchaseId = purchaseDao.queryPurchaseIdBySourceNo(purchase.getSourceNo());
+				Long purchaseId = purchaseDao.queryPurchaseIdByDocNo(purchase.getDocNo());
 				if (null != purchaseId) {
-					throw new AlreadyExistsException("单号[" + purchase.getSourceNo() + "]已存在，不允许重复新增");
+					throw new AlreadyExistsException("单号[" + purchase.getDocNo() + "]已存在，不允许重复新增");
 				}
 				Long supplierId = supplierDao.querySupplierIdByCode(purchase.getSupplierCode());
 				if (null == supplierId) {
@@ -104,16 +105,16 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			purchaseDao.insertPurchase(purchase);
 
 			for (ItemEntity item : purchase.getItems()) {
-				dealItem(purchase.getId(), item);
+				//dealItem(purchase.getId(), item);
 				purchaseDao.insertPurchaseItem(item);
-				purchaseDao.callPurchaseItemAm(item.getId());
+				//purchaseDao.callPurchaseItemAm(item.getId());
 			}
-			purchaseDao.callPurchaseAm(purchase.getId());
-			purchaseDao.callPurchaseSubmit(purchase.getId());
-			if (purchase.getIsAutoIn()) {
-				// purchaseDao.callPurchaseInQtyCop(purchase.getId());
-				purchaseDao.callPurchaseInSubmit(purchase.getId());
-			}
+			//purchaseDao.callPurchaseAm(purchase.getId());
+			//purchaseDao.callPurchaseSubmit(purchase.getId());
+//			if (purchase.getIsAutoIn()) {
+//				// purchaseDao.callPurchaseInQtyCop(purchase.getId());
+//				purchaseDao.callPurchaseInSubmit(purchase.getId());
+//			}
 		});
 		return 1;
 	}
@@ -294,7 +295,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 		List<PmilaCuspurchase> pmilaCuspurchaseList = new ArrayList<>();
 		for (PurchaseEntity purchase : purchaseEntityList) {
 			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
-			pmilaCuspurchase.setDocNo(purchase.getSourceNo());
+			pmilaCuspurchase.setDocNo(purchase.getDocNo());
 			pmilaCuspurchase.setBillDate(purchase.getBillDate());
 			pmilaCuspurchase.setOrigCode(purchase.getSupplierCode());
 			pmilaCuspurchase.setDestCode(purchase.getStoreCode());

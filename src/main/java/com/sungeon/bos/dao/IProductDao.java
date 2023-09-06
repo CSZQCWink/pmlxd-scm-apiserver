@@ -1,10 +1,7 @@
 package com.sungeon.bos.dao;
 
 import com.sungeon.bos.entity.BosResult;
-import com.sungeon.bos.entity.base.AttributeValueEntity;
-import com.sungeon.bos.entity.base.DimEntity;
-import com.sungeon.bos.entity.base.ProductEntity;
-import com.sungeon.bos.entity.base.SkuEntity;
+import com.sungeon.bos.entity.base.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -50,4 +47,5 @@ public interface IProductDao {
 
 	BosResult callSizeAc(Long sizeId);
 
+	Integer insertAttribute(AttributeEntity attribute);
 }

@@ -11,6 +11,7 @@ import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.ItemEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
+import com.sungeon.bos.entity.base.SkuEntity;
 import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
 import com.sungeon.bos.entity.pmila.PmilaSale;
 import com.sungeon.bos.entity.pmila.PmilaSaleReturn;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,28 +55,27 @@ public class SaleServiceImpl implements ISaleService {
 		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
-
 		// 获取品牌方的经销商采购单
-		List<PmilaCuspurchase> cuspurchaseList = burgeonRestClient.query(PmilaCuspurchase.class, start, pageSize, filterParamList, orderByParamList);
+		List<PmilaCuspurchase> pmilaCuspurchaseList = burgeonRestClient.query(PmilaCuspurchase.class, start, pageSize, filterParamList, orderByParamList);
 		// 创建帕米拉的经销商采购单list用于接受被同步的经销商采购单
 		List<PurchaseEntity> purchaseList = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(cuspurchaseList)) {
-			log.info("获取帕米拉销售单响应：{}", cuspurchaseList);
-			for (PmilaCuspurchase pmilaCuspurchase : cuspurchaseList) {
-				// 根据第三方平台单号获取采购单id
-				Long purchaseId = purchaseDao.queryPurchaseIdBySourceNo(pmilaCuspurchase.getDocNo());
-				if (null != purchaseId) {
-					continue;
-				}
-
+		if (CollectionUtils.isNotEmpty(pmilaCuspurchaseList)) {
+			log.info("获取帕米拉经销商采购单响应：{}", pmilaCuspurchaseList);
+			for (PmilaCuspurchase pmilaCuspurchase : pmilaCuspurchaseList) {
 				PurchaseEntity purchase = new PurchaseEntity();
-				purchase.setSourceNo(pmilaCuspurchase.getDocNo());
+				purchase.setDocNo(pmilaCuspurchase.getDocNo());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
 				purchase.setSupplierCode(pmilaCuspurchase.getOrigCode());
+				purchase.setSupplierName(pmilaCuspurchase.getOrigName());
 				purchase.setStoreCode(pmilaCuspurchase.getDestCode());
+				purchase.setStoreName(pmilaCuspurchase.getDestName());
+				purchase.setOutDate(pmilaCuspurchase.getOutDate());
 				purchase.setInDate(pmilaCuspurchase.getInDate());
 				purchase.setIsAutoIn(false);
 				purchase.setDescription(pmilaCuspurchase.getDescription());
+				purchase.setOutStatus(pmilaCuspurchase.getOutStatus());
+				purchase.setInStatus(pmilaCuspurchase.getInStatus());
+				purchase.setStatus(pmilaCuspurchase.getStatus());
 				List<ItemEntity> items = new ArrayList<>();
 				pmilaCuspurchase.getItems().forEach(i -> {
 					ItemEntity item = new ItemEntity();
@@ -85,6 +86,13 @@ public class SaleServiceImpl implements ISaleService {
 					items.add(item);
 				});
 				purchase.setItems(items);
+				List<SkuEntity> skuEntities = new ArrayList<>();
+				for (ItemEntity itemSku : items) {
+					SkuEntity skuEntity = new SkuEntity();
+					skuEntity.setSku(itemSku.getSku());
+					skuEntities.add(skuEntity);
+				}
+				purchase.setSkuEntities(skuEntities);
 				try {
 					purchaseService.addPurchase(purchase);
 				} catch (Exception e) {
@@ -123,7 +131,7 @@ public class SaleServiceImpl implements ISaleService {
 					continue;
 				}
 				PurchaseEntity purchase = new PurchaseEntity();
-				purchase.setSourceNo(bsijaSale.getDocNo());
+				purchase.setDocNo(bsijaSale.getDocNo());
 				purchase.setBillDate(bsijaSale.getBillDate());
 				purchase.setSupplierCode(bsijaSale.getOrigCode());
 				purchase.setStoreCode(bsijaSale.getDestCode());

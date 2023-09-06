@@ -85,4 +85,5 @@ public interface IPurchaseMapper {
 
 	List<PurchaseReturnEntity> queryPurchaseReturn();
 
+	Long queryPurchaseIdByDocno(@Param("docNo") String docNo);
 }

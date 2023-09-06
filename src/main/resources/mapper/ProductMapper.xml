@@ -244,16 +244,24 @@
 		</selectKey>
 		INSERT INTO m_attributevalue(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
 									isactive, m_attribute_id, value, name, clrsize, martixcol, m_dim1_id)
-		VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y', #{attributeId}, #{code},
-				#{name, javaType=String, jdbcType=VARCHAR}, #{clr},
+		VALUES (#{id}, 37, 27, 893, 893, SYSDATE, SYSDATE, 'Y', #{attributeId,javaType=Long,jdbcType=BIGINT},
+		   	 	#{code},#{name, javaType=String, jdbcType=VARCHAR}, #{clr},
 		<if test="clr == 1">
 			'',
 			#{brandId, javaType=Long, jdbcType=BIGINT}
 		</if>
 		<if test="clr == 2">
-			(SELECT COUNT(1) FROM m_attributevalue WHERE m_attribute_id = #{attributeId jdbcType=BIGINT},
+			(SELECT COUNT(1) FROM m_attributevalue WHERE m_attribute_id = #{attributeId,javaType=Long,jdbcType=BIGINT}),
 			NULL
 		</if>)
+	</insert>
+	<insert id="insertAttribute">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			SELECT get_sequences('m_attribute') AS id FROM dual
+		</selectKey>
+		INSERT INTO m_attribute(id,ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
+								isactive,name, clrsize)
+	    Values(#{id},37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',#{name, javaType=String, jdbcType=VARCHAR}, #{clrSize})
 	</insert>
 
 	<select id="callColorAc" statementType="CALLABLE">

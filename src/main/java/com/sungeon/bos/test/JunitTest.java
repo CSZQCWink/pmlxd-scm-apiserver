@@ -5,15 +5,9 @@ import com.burgeon.framework.restapi.model.ObjectOperateType;
 import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
-import com.burgeon.framework.restapi.response.ObjectCreateResponse;
-import com.burgeon.framework.restapi.response.ObjectModifyResponse;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
-import com.sungeon.bos.core.utils.CollectionUtils;
 import com.sungeon.bos.core.utils.StringUtils;
-import com.sungeon.bos.entity.base.AttributeValueEntity;
-import com.sungeon.bos.entity.pmila.PmilaIn;
-import com.sungeon.bos.entity.pmila.PmilaInItem;
-import com.sungeon.bos.entity.pmila.PmilaSize;
+import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.xml.transform.Source;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,21 +49,83 @@ public class JunitTest {
 		System.out.println(JSONObject.toJSONString(resp));
 	}
 
-	@Test
-	public void testQuery() {
 
+
+	/**
+	 * @title: testPurchase
+	 * @author: 陈苏洲
+	 * @description: 查询经销商采购单
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/6 11:32
+	 **/
+	@Test
+	public void testPurchase() {
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-		filterParamList.add(new QueryFilterParam("", "MODIFIEDDATE > to_date('2014-06-26 11:56:59.0', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("C_DEST_ID", "445", QueryFilterCombine.AND));
+//		if (StringUtils.isNotEmpty(docNo)) {
+//			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
+//		}
 
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
-
-		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, 1, 100, filterParamList,
-				orderByParamList);
-		for (PmilaSize size : sizes) {
-			System.out.println(size);
+		// 获取品牌方的经销商采购单
+		List<PmilaCuspurchase> cuspurchaseList = burgeonRestClient.query(PmilaCuspurchase.class, 1, 100, filterParamList, orderByParamList);
+		for (PmilaCuspurchase pmilaCuspurchase : cuspurchaseList
+		) {
+			System.out.println(pmilaCuspurchase);
 		}
+	}
 
+	/**
+	 * @title: testSize
+	 * @author: 陈苏洲
+	 * @description: 查询尺寸
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/6 11:31
+	 **/
+	@Test
+	public void testSize() {
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, 1, 100, null, orderByParamList);
+		System.out.println(sizes);
+	}
 
+	/**
+	 * @title: testProduct
+	 * @author: 陈苏洲
+	 * @description: 查询款号档案
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/6 11:33
+	 **/
+	@Test
+	public void testProduct(){
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, 1, 30000,
+				null, orderByParamList);
+		System.out.println(pmilaProducts.size());
+	}
+
+	@Test
+	public void testColor(){
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaColor> colors = burgeonRestClient.query(PmilaColor.class, 1, 1000, null,
+				orderByParamList);
+		System.out.println(colors.size());
+	}
+
+	@Test
+	public void testDim(){
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaDim> dims = burgeonRestClient.query(PmilaDim.class, 1, 1000, null, orderByParamList);
+		System.out.println(dims.size());
 	}
 }

@@ -17,6 +17,7 @@ public interface IPurchaseDao {
 
 	Long queryPurchaseIdBySourceNo(String sourceNo);
 
+	Long queryPurchaseIdByDocNo(String docNo);
 	PurchaseEntity queryPOSupplierStore(String poDocno);
 
 	Integer insertPurchase(PurchaseEntity purchase);

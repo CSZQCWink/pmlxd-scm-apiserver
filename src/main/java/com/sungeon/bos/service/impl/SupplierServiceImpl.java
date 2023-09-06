@@ -39,21 +39,6 @@ public class SupplierServiceImpl implements ISupplierService {
 	private BurgeonRestClient burgeonRestClient;
 
 
-	@Override
-	public void addSupplier(List<SupplierEntity> supplierEntityList) {
-		if (CollectionUtils.isEmpty(supplierEntityList)) {
-			return;
-		}
-		for (SupplierEntity supplier : supplierEntityList) {
-			if (StringUtils.isEmpty(supplier.getSupplierCode())) {
-				throw new ParamNullException("供应商编号不能为空");
-			}
-			if (StringUtils.isEmpty(supplier.getSupplierName())) {
-				throw new ParamNullException("供应商名称不能为空");
-			}
-		}
-		supplierDao.addSupplierList(supplierEntityList);
-	}
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -85,10 +70,9 @@ public class SupplierServiceImpl implements ISupplierService {
 				supplier.setSupplierAccount(s.getSupplierAccount());
 				supplier.setSupplierEmail(s.getSupplierEmail());
 				supplier.setSupplierPhone(s.getSupplierPhone());
-
 				supplierEntityList.add(supplier);
+				supplierDao.addSupplier(supplier);
 			});
-			addSupplier(supplierEntityList);
 		}
 		return supplierEntityList;
 	}

@@ -1,6 +1,7 @@
 package com.sungeon.bos.task;
 
 import com.sungeon.bos.core.utils.CollectionUtils;
+import com.sungeon.bos.entity.base.AttributeEntity;
 import com.sungeon.bos.entity.base.AttributeValueEntity;
 import com.sungeon.bos.entity.base.DimEntity;
 import com.sungeon.bos.entity.base.ProductEntity;
@@ -118,7 +119,7 @@ public class ProductTask extends BaseTask {
 			int page = 1;
 			int pageSize = 100;
 			do {
-				attributes = productService.syncPmilaColor(startTime, null, page++, pageSize);
+				attributes = productService.syncPmilaColor(startTime, null, ++page, pageSize);
 			} while (attributes.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_COLOR_SYNC_TIME", now);
 		} catch (Exception e) {
@@ -164,7 +165,7 @@ public class ProductTask extends BaseTask {
 			List<ProductEntity> products;
 			String startTime = baseService.getThirdTime("BSIJA_PRODUCT_SYNC_TIME");
 			int page = 1;
-			int pageSize = 10;
+			int pageSize = 100;
 			List<String> productCodes = new ArrayList<>();
 			boolean be = false;
 			do {
@@ -183,10 +184,24 @@ public class ProductTask extends BaseTask {
 					}
 				}
 			} while (products.size() == pageSize);
+			baseService.updateThirdTime("BSIJA_PRODUCT_SYNC_TIME", now);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		baseService.updateThirdTime("BSIJA_PRODUCT_SYNC_TIME", now);
 	}
-
+	public void syncPmilaAttribute() {
+		try {
+			List<AttributeEntity> attributes;
+			String startTime = baseService.getThirdTime("BSIJA_COLOR_SYNC_TIME");
+			Date now = new Date();
+			int page = 1;
+			int pageSize = 100;
+			do {
+				attributes = productService.syncPmilaAttribute(startTime, null, page++, pageSize);
+			} while (attributes.size() == pageSize);
+			baseService.updateThirdTime("BSIJA_COLOR_SYNC_TIME", now);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 }

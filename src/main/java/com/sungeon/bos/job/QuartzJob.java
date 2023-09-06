@@ -54,41 +54,24 @@ public class QuartzJob implements InterruptableJob {
 		log.debug("调度任务 - [" + scheduleJob.getGroupName() + "." + scheduleJob.getJobName() + "] 开始");
 		if (scheduleJob.getStatus().equals(Constants.BURGEON_YES) && scheduleGroup.equals(scheduleJob.getGroupName())) {
 			switch (scheduleJob.getJobName()) {
-				// 同步Dim
+				// 同步Dim(正常使用)
 				case "SyncPmilaDim":
 					productTask.syncPmilaDim();
 					break;
-				// 同步颜色
+				// 同步颜色(正常使用)
 				case "SyncPmilaColor":
 					productTask.syncPmilaColor();
 					break;
-				// 同步尺寸组
+				// 同步尺寸(正常使用)
 				case "SyncPmilaSize":
 					productTask.syncPmilaSize();
 					break;
-				// 同步款号
+				// 同步款号档案
 				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
-//				case "SyncPmilaPurchaseReturn":
-//					purchaseTask.syncPmilaPurchaseReturn();
-//					break;
-//				case "SyncPmilaSale":
-//					saleTask.syncPmilaSale();
-//					break;
-//				case "SyncPmilaSaleReturn":
-//					saleTask.syncPmilaSaleReturn();
-//					break;
-//				case "SyncPmilaTransfer":
-//					transferTask.syncPmilaTransfer();
-//					break;
-//				case "SyncPmilaRetail":
-//					retailTask.syncPmilaRetail();
-//					break;
-//				case "SyncPmilaInventory":
-//					stockTask.syncPmilaInventory();
-//					break;
-				// 同步供应商
+				// 同步供应商(正常使用)
+				// TODO 需要在实体类上添加属性 同步的时候需要注意insert语句中添加相应的值
 				case "SyncPmilaSupplier":
 					supplierTask.syncPmilaSupplier();
 					break;

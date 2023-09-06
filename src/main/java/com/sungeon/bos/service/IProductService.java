@@ -1,5 +1,6 @@
 package com.sungeon.bos.service;
 
+import com.sungeon.bos.entity.base.AttributeEntity;
 import com.sungeon.bos.entity.base.AttributeValueEntity;
 import com.sungeon.bos.entity.base.DimEntity;
 import com.sungeon.bos.entity.base.ProductEntity;
@@ -16,7 +17,7 @@ public interface IProductService {
 
 	Integer addProduct(List<ProductEntity> products);
 
-	List<DimEntity> syncPmilaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime, String dimName,
+	List<DimEntity> syncPmilaDim(String dimFlag, String pmlDimFlag, boolean isUseCode, String startTime, String dimName,
 	                             int page, int pageSize);
 
 	List<AttributeValueEntity> syncPmilaColor(String startTime, String colorName, int page, int pageSize);
@@ -24,5 +25,7 @@ public interface IProductService {
 	List<AttributeValueEntity> syncPmilaSize(String startTime, String sizeName, int page, int pageSize);
 
 	List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize);
+
+	List<AttributeEntity> syncPmilaAttribute(String startTime,String attributeName, int page, int pageSize);
 
 }

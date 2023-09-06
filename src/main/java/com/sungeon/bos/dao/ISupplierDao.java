@@ -21,8 +21,6 @@ public interface ISupplierDao {
 	// 添加供应商
 	Long addSupplier(SupplierEntity supplierEntity);
 
-	// 批量添加供应商
-	Long addSupplierList(List<SupplierEntity> supplierEntityList);
 
 
 

@@ -1,9 +1,6 @@
 package com.sungeon.bos.mapper;
 
-import com.sungeon.bos.entity.base.AttributeValueEntity;
-import com.sungeon.bos.entity.base.DimEntity;
-import com.sungeon.bos.entity.base.ProductEntity;
-import com.sungeon.bos.entity.base.SkuEntity;
+import com.sungeon.bos.entity.base.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -54,4 +51,5 @@ public interface IProductMapper {
 
 	void callSizeAc(Long sizeId);
 
+	Integer insertAttribute(AttributeEntity attribute);
 }

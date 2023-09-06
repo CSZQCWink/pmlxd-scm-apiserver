@@ -5,10 +5,7 @@ import com.sungeon.bos.core.annotation.SgExceptionField;
 import com.sungeon.bos.core.exception.*;
 import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.entity.BosResult;
-import com.sungeon.bos.entity.base.AttributeValueEntity;
-import com.sungeon.bos.entity.base.DimEntity;
-import com.sungeon.bos.entity.base.ProductEntity;
-import com.sungeon.bos.entity.base.SkuEntity;
+import com.sungeon.bos.entity.base.*;
 import com.sungeon.bos.mapper.IProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,5 +137,11 @@ public class ProductDaoImpl extends BaseDaoImpl implements IProductDao {
 		result.setMessage("OK");
 		return result;
 	}
+
+	@Override
+	public Integer insertAttribute(AttributeEntity attribute) {
+		return productMapper.insertAttribute(attribute);
+	}
+
 
 }

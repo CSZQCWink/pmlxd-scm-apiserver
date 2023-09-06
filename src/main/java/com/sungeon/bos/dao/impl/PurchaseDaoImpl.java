@@ -37,6 +37,12 @@ public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 
 	@SgExceptionField(exception = QueryFailException.class)
 	@Override
+	public Long queryPurchaseIdByDocNo(String docNo) {
+		return purchaseMapper.queryPurchaseIdByDocno(docNo);
+	}
+
+	@SgExceptionField(exception = QueryFailException.class)
+	@Override
 	public PurchaseEntity queryPOSupplierStore(String poDocno) {
 		return purchaseMapper.queryPOSupplierStore(poDocno);
 	}

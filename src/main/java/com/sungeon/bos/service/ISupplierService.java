@@ -14,8 +14,7 @@ import java.util.List;
  */
 
 public interface ISupplierService {
-	// 添加供应商
-	void addSupplier(List<SupplierEntity> supplierEntityList);
+
 
 	// 同步帕米拉供应商
 	List<SupplierEntity> syncPmilaSupplier(String startTime, String code, int page, int pageSize);

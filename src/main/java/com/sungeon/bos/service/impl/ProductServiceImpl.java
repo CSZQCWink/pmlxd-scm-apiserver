@@ -6,20 +6,12 @@ import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.sungeon.bos.core.exception.ParamNotMatchException;
 import com.sungeon.bos.core.exception.ParamNullException;
 import com.sungeon.bos.core.utils.CollectionUtils;
-import com.sungeon.bos.core.utils.FileUtils;
-import com.sungeon.bos.core.utils.HttpUtils;
 import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.IBaseDao;
 import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.dao.ISupplierDao;
-import com.sungeon.bos.entity.base.AttributeValueEntity;
-import com.sungeon.bos.entity.base.DimEntity;
-import com.sungeon.bos.entity.base.ProductEntity;
-import com.sungeon.bos.entity.base.SkuEntity;
-import com.sungeon.bos.entity.pmila.PmilaColor;
-import com.sungeon.bos.entity.pmila.PmilaDim;
-import com.sungeon.bos.entity.pmila.PmilaProduct;
-import com.sungeon.bos.entity.pmila.PmilaSize;
+import com.sungeon.bos.entity.base.*;
+import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IProductService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,16 +127,14 @@ public class ProductServiceImpl implements IProductService {
 			}
 			// 新增或修改条码
 			if (CollectionUtils.isNotEmpty(product.getSkus())) {
-				product.getSkus().forEach(sku -> {
-					sku.setProductId(product.getId());
-					sku.setProductCode(product.getProductCode());
-					sku.setBrandId(brandId);
-					sku.setSizeGroupId(sizeGroupId);
-					getAttributeValue(1, sku.getColorCode(), sku.getColorName(), portal6162.equals("true")
-							? brandId : null, colorGroupId);
-					getAttributeValue(2, sku.getSizeCode(), sku.getSizeName(), null, sizeGroupId);
-				});
-				productDao.insertSku(product.getSkus());
+				for (int i = 0; i < product.getSkus().size(); i++) {
+					product.getSkus().get(i).setProductId(product.getId());
+					product.getSkus().get(i).setProductCode(product.getProductCode());
+					product.getSkus().get(i).setBrandId(brandId);
+					product.getSkus().get(i).setSizeGroupId(sizeGroupId);
+//					getAttributeValue(1, product.getSkus().get(i).getColorCode(), product.getSkus().get(i).getColorName(), brandId, colorGroupId);
+//					getAttributeValue(2, product.getSkus().get(i).getSizeCode(), product.getSkus().get(i).getSizeName(), null, sizeGroupId);
+				}
 			}
 		}
 		portal6162 = null;
@@ -165,13 +154,19 @@ public class ProductServiceImpl implements IProductService {
 		return dimId;
 	}
 
+
 	private AttributeValueEntity getAttributeValue(int clr, String attributeValueCode, String attributeValueName, Long brandId,
 	                                               Long attributeId) {
 		AttributeValueEntity attributeValue = productDao.queryAttributeValue(clr, attributeValueCode, attributeId, brandId);
 		if (null == attributeValue) {
 			attributeValue = new AttributeValueEntity();
 			attributeValue.setClr(clr);
-			attributeValue.setAttributeId(attributeId);
+			if(clr == 1){
+				Long attributeId1 = productDao.queryAttributeId(clr, "颜色");
+				attributeValue.setAttributeId(attributeId1);
+			}else{
+				attributeValue.setAttributeId(attributeId);
+			}
 			attributeValue.setCode(attributeValueCode);
 			attributeValue.setName(attributeValueName);
 			attributeValue.setBrandId(brandId);
@@ -187,7 +182,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public List<DimEntity> syncPmilaDim(String dimFlag, String zjhDimFlag, boolean isUseCode, String startTime,
+	public List<DimEntity> syncPmilaDim(String dimFlag, String pmlDimFlag, boolean isUseCode, String startTime,
 	                                    String dimName, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
@@ -210,12 +205,12 @@ public class ProductServiceImpl implements IProductService {
 				DimEntity dim = new DimEntity();
 				dim.setCode(isUseCode ? d.getCode() : d.getName());
 				dim.setName(d.getName());
-				dim.setDimFlag(zjhDimFlag);
+				dim.setDimFlag(pmlDimFlag);
 				Long dimId;
-				if ("DIM16".equals(zjhDimFlag)) {
-					dimId = productDao.queryDimId(zjhDimFlag, dim.getCode());
+				if ("DIM16".equals(pmlDimFlag)) {
+					dimId = productDao.queryDimId(pmlDimFlag, dim.getCode());
 				} else {
-					dimId = productDao.queryDimId(zjhDimFlag, dim.getName());
+					dimId = productDao.queryDimId(pmlDimFlag, dim.getName());
 				}
 				if (null == dimId) {
 					productDao.insertDim(dim);
@@ -229,7 +224,6 @@ public class ProductServiceImpl implements IProductService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public List<AttributeValueEntity> syncPmilaColor(String startTime, String colorName, int page, int pageSize) {
-		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 		if (StringUtils.isNotEmpty(colorName)) {
 			filterParamList.add(new QueryFilterParam("NAME", colorName, QueryFilterCombine.AND));
@@ -241,12 +235,12 @@ public class ProductServiceImpl implements IProductService {
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 
-		List<PmilaColor> colors = burgeonRestClient.query(PmilaColor.class, start, pageSize, filterParamList,
+		List<PmilaColor> colors = burgeonRestClient.query(PmilaColor.class, 1, 1000, filterParamList,
 				orderByParamList);
 		List<AttributeValueEntity> colorList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(colors)) {
 			log.info("获取帕米拉颜色响应：{}", colors);
-			Long brandId = productDao.queryDimId("DIM1", "B");
+			Long brandId = productDao.queryDimId("DIM1", "名典");
 			colors.forEach(d -> {
 				AttributeValueEntity attributeValue = getAttributeValue(1, d.getCode(), d.getName(), brandId, 1498L);
 				colorList.add(attributeValue);
@@ -275,28 +269,17 @@ public class ProductServiceImpl implements IProductService {
 			log.info("获取帕米拉尺寸响应：{}", sizes);
 
 			for (int i = 0; i < sizes.size(); i++) {
-				Long sizeGroupId;
-				if ("均码".equals(sizes.get(i).getSizeGroup().getName()) || "00".equals(sizes.get(i).getSizeGroup().getName())) {
-					sizeGroupId = productDao.queryAttributeId(2, "均码");
-				}else{
-					sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
+				if (sizes.get(i).getSizeGroup() != null) {
+					Long sizeGroupId;
+					if ("均码".equals(sizes.get(i).getSizeGroup().getName()) || "00".equals(sizes.get(i).getSizeGroup().getName())) {
+						sizeGroupId = productDao.queryAttributeId(2, "均码");
+					} else {
+						sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
+					}
+					AttributeValueEntity attributeValue = getAttributeValue(2, sizes.get(i).getCode(), sizes.get(i).getName(), null, sizeGroupId);
+					sizeList.add(attributeValue);
 				}
-				AttributeValueEntity attributeValue = getAttributeValue(2,sizes.get(i).getCode(), sizes.get(i).getName(), null, sizeGroupId);
-				sizeList.add(attributeValue);
 			}
-
-//			sizes.forEach(d -> {
-//				Long sizeGroupId;
-//				if ("均码".equals(d.getSizeGroup().getName()) || "00".equals(d.getSizeGroup().getName())) {
-//					sizeGroupId = productDao.queryAttributeId(2, "均码");
-//				}
-//				else {
-//				Long sizeGroupId = productDao.queryAttributeId(2, d.getSizeGroup().getName());
-//				}
-//				AttributeValueEntity attributeValue = getAttributeValue(2, d.getCode(), d.getName(), null,
-//						sizeGroupId);
-//				sizeList.add(attributeValue);
-//			});
 		}
 		return sizeList;
 	}
@@ -339,7 +322,7 @@ public class ProductServiceImpl implements IProductService {
 				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
 					product.setSizeGroupName("均码");
 				} else {
-					product.setSizeGroupName("pmila-" + p.getSizeGroupName());
+					product.setSizeGroupName(p.getSizeGroupName());
 				}
 				product.setSupplierCode("005");
 				List<SkuEntity> skus = new ArrayList<>();
@@ -352,8 +335,8 @@ public class ProductServiceImpl implements IProductService {
 				});
 				product.setSkus(skus);
 				productList.add(product);
-
-				// 下载图片
+			/*
+			下载图片
 				File img;
 				if (StringUtils.isNotEmpty(p.getImageUrl())) {
 					img = FileUtils.getFile(productImagePath + p.getProductCode() + ".jpg");
@@ -397,10 +380,37 @@ public class ProductServiceImpl implements IProductService {
 								productImagePath + p.getProductCode() + "_5.jpg");
 					}
 				}
+				*/
 			});
 			addProduct(productList);
 		}
 		return productList;
 	}
 
+	@Override
+	public List<AttributeEntity> syncPmilaAttribute(String startTime, String attributeName, int page, int pageSize) {
+		int start = (page - 1) * pageSize;
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		if (StringUtils.isNotEmpty(attributeName)) {
+			filterParamList.add(new QueryFilterParam("NAME", attributeName, QueryFilterCombine.AND));
+		}
+		if (StringUtils.isNotEmpty(startTime)) {
+			filterParamList.add(new QueryFilterParam("", "MODIFIEDDATE > to_date('" + startTime
+					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		}
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaAttribute> pmilaAttributeList = burgeonRestClient.query(PmilaAttribute.class, start, pageSize, filterParamList, orderByParamList);
+		ArrayList<AttributeEntity> attributeEntities = new ArrayList<>();
+		for (PmilaAttribute pmilaAttribute : pmilaAttributeList) {
+			AttributeEntity attributeEntity = new AttributeEntity();
+			attributeEntity.setId(pmilaAttribute.getId());
+			attributeEntity.setName(pmilaAttribute.getName());
+			attributeEntity.setClrSize(pmilaAttribute.getClrSize());
+			attributeEntities.add(attributeEntity);
+
+			productDao.insertAttribute(attributeEntity);
+		}
+		return attributeEntities;
+	}
 }

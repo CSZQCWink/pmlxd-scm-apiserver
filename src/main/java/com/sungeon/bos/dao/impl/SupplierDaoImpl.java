@@ -3,9 +3,9 @@ package com.sungeon.bos.dao.impl;
 import com.sungeon.bos.dao.ISupplierDao;
 import com.sungeon.bos.entity.base.SupplierEntity;
 import com.sungeon.bos.mapper.ISupplierMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Repository("supplierDao")
 public class SupplierDaoImpl extends BaseDaoImpl implements ISupplierDao {
 
-	@Autowired
+	@Resource
 	private ISupplierMapper supplierMapper;
 
 
@@ -34,8 +34,4 @@ public class SupplierDaoImpl extends BaseDaoImpl implements ISupplierDao {
 		return supplierMapper.addSupplier(supplierEntity);
 	}
 
-	@Override
-	public Long addSupplierList(List<SupplierEntity> supplierEntityList) {
-		return supplierMapper.addSupplierList(supplierEntityList);
-	}
 }

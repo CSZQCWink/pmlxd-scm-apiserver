@@ -22,7 +22,7 @@
         </selectKey>
         INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
                                isactive, docno, doctype, billdate, c_store_id, c_supplier_id, b_po_id, tax_dis,
-                               sourceno, datein, description)
+                               datein, description)
         VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
                 #{docNo, javaType=String, jdbcType=VARCHAR},
                 #{docType, javaType=String, jdbcType=VARCHAR},
@@ -31,7 +31,6 @@
                 #{supplierId, javaType=Long, jdbcType=BIGINT},
                 #{poId, javaType=Long, jdbcType=BIGINT},
                 #{tax, javaType=Double, jdbcType=DOUBLE},
-                #{sourceNo, javaType=String, jdbcType=VARCHAR},
                 #{inDate, javaType=Integer, jdbcType=INTEGER},
                 #{description, javaType=String, jdbcType=VARCHAR})
     </insert>
@@ -463,6 +462,12 @@
         where mrp.OUT_STATUS = 2
         and mrp.ISACTIVE = 'Y'
         and mrp.c_supplier_id = 132;
+    </select>
+    <select id="queryPurchaseIdByDocno" resultType="java.lang.Long">
+        select * from m_purchase mp
+        where mp.DOCNO = #{docNo, javaType=String, jdbcType=VARCHAR}
+          AND t.isactive = 'Y'
+          AND rownum = 1
     </select>
 
     <update id="updatePurchaseReturnOrderSyncStatus">

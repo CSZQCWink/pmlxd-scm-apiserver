@@ -63,6 +63,9 @@ public class ProductEntity implements Serializable {
 	private Long standardId;
 	private Long securityCategoryId;
 
+	private List<SkuEntity> skuEntities;
+
+
 	@Override
 	public String toString() {
 		return JSONObject.toJSONString(this);
