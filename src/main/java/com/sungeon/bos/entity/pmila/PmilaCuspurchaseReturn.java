@@ -42,6 +42,6 @@ public class PmilaCuspurchaseReturn extends BaseRestBean {
 	private String outStatus;
 	@RestColumn(name = "IN_STATUS")
 	private String inStatus;
-	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retSaleId", childBeanClass = PmilaCuspurchaseItem.class)
+	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "retSaleId", childBeanClass = PmilaCuspurchaseReturnItem.class)
 	private List<PmilaCuspurchaseReturnItem> items;
 }

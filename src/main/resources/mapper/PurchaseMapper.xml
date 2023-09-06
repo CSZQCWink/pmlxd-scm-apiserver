@@ -237,12 +237,12 @@
         <result property="billDate" column="billdate"/>
         <result property="storeCode" column="storeCode"/>
         <result property="storeName" column="storeName"/>
-        <result property="customerCode" column="customerCode"/>
+<!--        <result property="customerCode" column="customerCode"/>-->
         <result property="supplierCode" column="supplierCode"/>
         <result property="supplierName" column="supplierName"/>
         <result property="sourceNo" column="sourceNo"/>
         <result property="outDate" column="outDate"/>
-        <result property="outTime" column="outTime"/>
+<!--        <result property="outTime" column="outTime"/>-->
         <result property="description" column="description"/>
         <collection property="items" ofType="Item">
             <result property="id" column="itemId"/>
@@ -459,8 +459,8 @@
     </select>
     <select id="queryPurchaseReturn" resultType="com.sungeon.bos.entity.base.PurchaseReturnEntity">
         select * from  M_RET_PUR mrp
-        where mrp.OUT_STATUS = 2
-        and mrp.ISACTIVE = 'Y'
+        where mrp.out_status = 2
+        and mrp.isactive = 'Y'
         and mrp.c_supplier_id = 132;
     </select>
     <select id="queryPurchaseIdByDocno" resultType="java.lang.Long">

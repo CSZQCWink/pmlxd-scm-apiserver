@@ -6,8 +6,13 @@ import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
+import com.sungeon.bos.core.utils.DateTimeUtils;
 import com.sungeon.bos.core.utils.StringUtils;
+import com.sungeon.bos.dao.IPurchaseDao;
+import com.sungeon.bos.entity.base.PurchaseEntity;
+import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
+import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +34,10 @@ public class JunitTest {
 
 	@Autowired
 	private BurgeonRestClient burgeonRestClient;
+	@Autowired
+	private IPurchaseDao purchaseDao;
+	@Autowired
+	private IPurchaseService purchaseService;
 
 	@Test
 	public void test() {
@@ -127,5 +137,22 @@ public class JunitTest {
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		List<PmilaDim> dims = burgeonRestClient.query(PmilaDim.class, 1, 1000, null, orderByParamList);
 		System.out.println(dims.size());
+	}
+
+	@Test
+	public void testPurchaseReturn(){
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+
+		List<PmilaCuspurchaseReturn> purchasesReturn = burgeonRestClient.query(PmilaCuspurchaseReturn.class, 1, 1000, filterParamList, orderByParamList);
+		System.out.println(purchasesReturn.size());
+	}
+
+
+	@Test
+	public void testWbPurchase(){
+		List<PurchaseEntity> purchaseEntities = purchaseDao.queryPurchase();
+		System.out.println(purchaseEntities);
 	}
 }

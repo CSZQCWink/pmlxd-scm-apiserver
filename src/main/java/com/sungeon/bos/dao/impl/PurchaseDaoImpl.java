@@ -12,9 +12,10 @@ import com.sungeon.bos.entity.base.ItemEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.mapper.IPurchaseMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+//import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import java.util.Map;
 @Repository("purchaseDao")
 public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 
-	@Resource
+	@Autowired
 	private IPurchaseMapper purchaseMapper;
 
 	@SgExceptionField(exception = QueryFailException.class)

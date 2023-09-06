@@ -173,8 +173,8 @@ public class PurchaseServiceImpl implements IPurchaseService {
 					purchaseDao.updateRetPurOutItem(item);
 				}
 				purchaseDao.callRetPurAm(retPur.getId());
-				if (purchaseReturn.getIsAutoOut() && retPur.getOutStatus() == 1) {
-					// purchaseDao.callRetPurOutQtyCop(purchaseReturn.getId());
+				if (purchaseReturn.getIsAutoOut() && retPur.getOutStatus().equals("1")) {
+					purchaseDao.callRetPurOutQtyCop(purchaseReturn.getId());
 					purchaseDao.callRetPurOutSubmit(retPur.getId());
 				}
 			}
@@ -348,16 +348,19 @@ public class PurchaseServiceImpl implements IPurchaseService {
 		if (CollectionUtils.isNotEmpty(purchases)) {
 			log.info("获取帕米拉销售退货单响应：{}", purchases);
 			for (PmilaCuspurchaseReturn pmilaCuspurchaseReturn : purchases) {
-				PurchaseReturnEntity retPur = purchaseDao.queryPurchaseReturnBySourceNo(pmilaCuspurchaseReturn.getDocNo());
-				if (null != retPur) {
-					continue;
-				}
+//				PurchaseReturnEntity retPur = purchaseDao.queryPurchaseReturnBySourceNo(pmilaCuspurchaseReturn.getDocNo());
+//				if (null != retPur) {
+//					continue;
+//				}
 				PurchaseReturnEntity purchaseReturn = new PurchaseReturnEntity();
-				purchaseReturn.setSourceNo(pmilaCuspurchaseReturn.getDocNo());
-				purchaseReturn.setBillDate(pmilaCuspurchaseReturn.getInDate());
+				purchaseReturn.setDocNo(pmilaCuspurchaseReturn.getDocNo());
+				purchaseReturn.setBillDate(pmilaCuspurchaseReturn.getBillDate());
 //				purchaseReturn.setSupplierCode(pmilaCuspurchaseReturn.getDestCode());
 //				purchaseReturn.setStoreCode(pmilaCuspurchaseReturn.getOrigCode());
-				purchaseReturn.setOutDate(pmilaCuspurchaseReturn.getInDate());
+				purchaseReturn.setOutDate(pmilaCuspurchaseReturn.getOutDate());
+				purchaseReturn.setOutStatus(pmilaCuspurchaseReturn.getOutStatus());
+				purchaseReturn.setInStatus(pmilaCuspurchaseReturn.getInStatus());
+				purchaseReturn.setInDate(pmilaCuspurchaseReturn.getInDate());
 				purchaseReturn.setIsAutoOut("提交".equals(pmilaCuspurchaseReturn.getInStatus()));
 //				if (StringUtils.isNotEmpty(pmilaCuspurchaseReturn.getSourceNo())) {
 //					purchaseReturn.setPurchaseReturnOrderNo(pmilaCuspurchaseReturn.getSourceNo().startsWith("PRO")
@@ -414,7 +417,6 @@ public class PurchaseServiceImpl implements IPurchaseService {
 				pmilaCuspurchaseReturnItemList.add(pmilaCuspurchaseReturnItem);
 			}
 			pmilaCuspurchaseReturn.setItems(pmilaCuspurchaseReturnItemList);
-
 			pmilaCuspurchaseReturnList.add(pmilaCuspurchaseReturn);
 		}
 		return pmilaCuspurchaseReturnList;
