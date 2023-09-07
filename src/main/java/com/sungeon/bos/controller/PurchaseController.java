@@ -49,7 +49,7 @@ public class PurchaseController extends SungeonBaseController {
 	/**
 	 * @title: syncWbCuspurchase
 	 * @author: 陈苏洲
-	 * @description: TODO 目前已经将所有的已入库的采购单同步 就需要最后的提交给品牌方 但是现在还是不知道到底使用哪个方法
+	 * @description: 回写采购单
 	 * @param: []
 	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.pmila.PmilaCuspurchase>>
 	 * @throws: 
@@ -78,7 +78,7 @@ public class PurchaseController extends SungeonBaseController {
 	/**
 	 * @title: syncWbCuspurchaseReturn
 	 * @author: 陈苏洲
-	 * @description: TODO 将帕米拉已出库的采购退货单传到品牌方系统,生成已出库未入库的经销商采购退货单
+	 * @description: 回写采购退货单
 	 * @param: []
 	 * @return: com.sungeon.bos.core.model.ValueHolder<java.util.List<com.sungeon.bos.entity.pmila.PmilaCuspurchaseReturn>>
 	 * @date: 2023/9/1 14:19

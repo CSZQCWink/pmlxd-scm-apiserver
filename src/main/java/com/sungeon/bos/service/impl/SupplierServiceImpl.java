@@ -64,6 +64,9 @@ public class SupplierServiceImpl implements ISupplierService {
 				SupplierEntity supplier = new SupplierEntity();
 				BeanUtils.copyProperties(s, supplier);
 				supplier.setId(null);
+				supplier.setSupplierType(s.getSupplierType());
+				supplier.setDescription(s.getDescription());
+				supplier.setSupplierTypeId(s.getSupplierTypeId());
 				supplier.setSupplierCode(s.getSupplierCode());
 				supplier.setSupplierName(s.getSupplierName());
 				supplier.setSupplierFeerPrice(s.getSupplierFeerPrice());

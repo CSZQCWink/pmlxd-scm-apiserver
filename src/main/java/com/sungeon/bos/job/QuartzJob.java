@@ -66,22 +66,25 @@ public class QuartzJob implements InterruptableJob {
 				case "SyncPmilaSize":
 					productTask.syncPmilaSize();
 					break;
-				// 同步款号档案
+				// 同步款号档案(正常使用)
 				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
 				// 同步供应商(正常使用)
-				// TODO 需要在实体类上添加属性 同步的时候需要注意insert语句中添加相应的值
 				case "SyncPmilaSupplier":
 					supplierTask.syncPmilaSupplier();
 					break;
-				// 同步帕米拉采购单
+				// 同步帕米拉采购单(正常使用)
 				case "SyncPmilaCuspurchase":
 					saleTask.syncPmilaCuspurchase();
 					break;
-				// 同步采购退货单
+				// 同步采购退货单(没有单子没法进行测试)
 				case "SyncCuspurchaseReturn":
 					purchaseTask.syncCuspurchaseReturn();
+					break;
+				// 采购单回写
+				case "SyncPmilaWbCuspurchase":
+					purchaseTask.syncPmilaWbCuspurchase();
 					break;
 				default:
 					break;

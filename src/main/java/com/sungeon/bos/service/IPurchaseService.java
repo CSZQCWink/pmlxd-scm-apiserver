@@ -34,5 +34,11 @@ public interface IPurchaseService {
 	// 查询所有的采购退货单
 	List<PmilaCuspurchaseReturn> syncWbCuspurchaseReturn();
 
+	// 添加到名典经销商采购单
+	void addMdPurchase(PmilaCuspurchase pmilaCuspurchase);
+
+	// 添加到名典的采购退货单
+	void addMdPurchaseReturn(PmilaCuspurchaseReturn pmilaCuspurchaseReturn);
+
 
 }

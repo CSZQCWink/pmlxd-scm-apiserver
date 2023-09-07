@@ -1,6 +1,7 @@
 package com.sungeon.bos.entity.base;
 
 import com.alibaba.fastjson.JSONObject;
+import com.burgeon.framework.restapi.annotation.RestColumn;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
@@ -23,6 +24,15 @@ public class SupplierEntity implements Serializable {
 
 	// id
 	private Long id;
+
+	// 供应商类型
+	private String supplierType;
+
+	// 描述
+	private String description;
+
+	// 外购区域
+	private String supplierTypeId;
 
 	// 供应商编号
 	private String supplierCode;

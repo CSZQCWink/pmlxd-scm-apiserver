@@ -28,6 +28,10 @@ public class PmilaCuspurchaseReturn extends BaseRestBean {
 	private Long id;
 	@RestColumn(name = "DOCNO")
 	private String docNo;
+	@RestColumn(name = "DOCTYPE")
+	private String docType;
+	@RestColumn(name = "C_STORE_ID")
+	private String storeId;
 	@RestColumn(name = "BILLDATE", isRestSave = true)
 	private Integer billDate;
 	@RestColumn(name = "DATEOUT", isRestSave = true)

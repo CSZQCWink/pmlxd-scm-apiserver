@@ -21,18 +21,15 @@
             SELECT get_sequences('m_purchase') AS id FROM dual
         </selectKey>
         INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
-                               isactive, docno, doctype, billdate, c_store_id, c_supplier_id, b_po_id, tax_dis,
-                               datein, description)
+                               isactive, docno, billdate, suppliername,storename,description,intime,in_status)
         VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
                 #{docNo, javaType=String, jdbcType=VARCHAR},
-                #{docType, javaType=String, jdbcType=VARCHAR},
                 #{billDate, javaType=Integer, jdbcType=INTEGER},
-                #{storeId, javaType=Long, jdbcType=BIGINT},
-                #{supplierId, javaType=Long, jdbcType=BIGINT},
-                #{poId, javaType=Long, jdbcType=BIGINT},
-                #{tax, javaType=Double, jdbcType=DOUBLE},
+                #{supplierName, javaType=String, jdbcType=VARCHAR},
+                #{storeName, javaType=String, jdbcType=VARCHAR},
+                #{description, javaType=String, jdbcType=VARCHAR}),
                 #{inDate, javaType=Integer, jdbcType=INTEGER},
-                #{description, javaType=String, jdbcType=VARCHAR})
+                #{inStatus, javaType=String, jdbcType=VARCHAR}
     </insert>
 
     <insert id="insertPurchaseItem" parameterType="Item" keyProperty="id">
@@ -451,17 +448,40 @@
                             ) w
                        WHERE w.rn BETWEEN #{beg} AND #{end})
     </select>
-    <select id="queryPurchase" resultType="com.sungeon.bos.entity.base.PurchaseEntity">
-        select * from m_purchase mp
-        where mp.in_status = 2
+
+
+    <resultMap id="oneToManyResultMap" type="com.sungeon.bos.entity.base.PurchaseEntity">
+        <id property="id" column="id"/>
+        <result property="docNo" column="docNo"/>
+        <result property="docType" column="docType"/>
+        <result property="billDate" column="billDate"/>
+        <result property="storeId" column="C_STORE_ID"/>
+        <result property="inDate" column="DATEIN"/>
+        <result property="description" column="description"/>
+        <collection property="items" ofType="com.sungeon.bos.entity.base.ItemEntity">
+            <id property="id" column="id"/>
+            <result property="sku" column="M_PRODUCTALIAS_ID"/>
+            <result property="qtyIn" column="QTYIN"/>
+            <result property="qty" column="QTY"/>
+            <result property="priceActual" column="PRICEACTUAL"/>
+        </collection>
+    </resultMap>
+    <select id="queryPurchase" resultMap="oneToManyResultMap">
+        select mp.id,mp.DOCNO,mp.DOCTYPE,mp.BILLDATE,mp.C_STORE_ID,mp.DATEIN,mp.description,
+               mpi.M_PRODUCTALIAS_ID,mpi.qtyIn,mpi.priceActual,mpi.QTY
+        from m_purchase mp,m_purchaseitem mpi
+        where mp.id = mpi.M_PURCHASE_ID
+          and mp.in_status = 2
           and mp.c_supplier_id = 132
-          and mp.isactive = 'Y';
+          and mp.isactive = 'Y'
     </select>
-    <select id="queryPurchaseReturn" resultType="com.sungeon.bos.entity.base.PurchaseReturnEntity">
-        select * from  M_RET_PUR mrp
-        where mrp.out_status = 2
-        and mrp.isactive = 'Y'
-        and mrp.c_supplier_id = 132;
+    <select id="queryPurchaseReturn" resultMap="oneToManyResultMap">
+        select mp.id,mp.DOCNO,mp.DOCTYPE,mp.BILLDATE,mp.C_STORE_ID,mp.DATEIN,mp.description,
+               mpi.M_PRODUCTALIAS_ID,mpi.qtyIn,mpi.priceActual,mpi.QTY
+        from  M_RET_PUR mp,M_RET_PURITEM mpi
+        where mp.out_status = 2
+        and mp.isactive = 'Y'
+        and mp.c_supplier_id = 132
     </select>
     <select id="queryPurchaseIdByDocno" resultType="java.lang.Long">
         select * from m_purchase mp

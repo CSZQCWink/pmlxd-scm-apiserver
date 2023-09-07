@@ -265,9 +265,9 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			}
 			pmilaSaleReturn.setItems(bsijaSaleReturnItems);
 
-			log.info("同步毕厶迦采购退货申请（销售退货单）参数：{}", JSONObject.toJSONString(pmilaSaleReturn));
+			log.info("同步帕米拉采购退货申请（销售退货单）参数：{}", JSONObject.toJSONString(pmilaSaleReturn));
 			ProcessOrderResponse response = burgeonRestClient.processOrder(pmilaSaleReturn, ObjectOperateType.CREATE);
-			log.info("同步毕厶迦采购退货申请（销售退货单）响应：{}", JSONObject.toJSONString(response));
+			log.info("同步帕米拉采购退货申请（销售退货单）响应：{}", JSONObject.toJSONString(response));
 			String bsijaNo = "";
 			if (response.isRequestSuccess()) {
 				List<QueryFilterParam> filterParamList = new ArrayList<>();
@@ -288,17 +288,19 @@ public class PurchaseServiceImpl implements IPurchaseService {
 		}
 		return purchases;
 	}
-
+// ------------------------------------------------------------------------------------------------
 	@Override
 	public List<PmilaCuspurchase> syncPmilaWbCuspurchase() {
 		List<PurchaseEntity> purchaseEntityList = purchaseDao.queryPurchase();
 		List<PmilaCuspurchase> pmilaCuspurchaseList = new ArrayList<>();
 		for (PurchaseEntity purchase : purchaseEntityList) {
 			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
+			pmilaCuspurchase.setId(null);
 			pmilaCuspurchase.setDocNo(purchase.getDocNo());
+			pmilaCuspurchase.setDocType(purchase.getDocType());
 			pmilaCuspurchase.setBillDate(purchase.getBillDate());
-			pmilaCuspurchase.setOrigCode(purchase.getSupplierCode());
-			pmilaCuspurchase.setDestCode(purchase.getStoreCode());
+			String storeId = purchase.getStoreId().toString();
+			pmilaCuspurchase.setStoreId(storeId);
 			pmilaCuspurchase.setInDate(purchase.getInDate());
 			pmilaCuspurchase.setDescription(purchase.getDescription());
 
@@ -307,24 +309,43 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			purchase.getItems().forEach(i -> {
 				ItemEntity item = new ItemEntity();
 				item.setSku(i.getSku());
-				item.setQtyOut(i.getQty());
+				item.setQty(i.getQty());
 				item.setQtyIn(i.getQtyIn());
 				item.setPriceActual(i.getPriceActual());
 				items.add(item);
 			});
+
 			for (ItemEntity item : items) {
-				PmilaCuspurchaseItem pmilaCuspurchaseItem = new PmilaCuspurchaseItem();
-				pmilaCuspurchaseItem.setSku(item.getSku());
-				pmilaCuspurchaseItem.setQtyOut(item.getQty());
-				pmilaCuspurchaseItem.setQtyIn(item.getQtyIn());
-				pmilaCuspurchaseItem.setPriceActual(item.getPriceActual());
-				pmilaCuspurchaseItemList.add(pmilaCuspurchaseItem);
+				if(item ==null){
+					addMdPurchase(pmilaCuspurchase);
+				}else{
+					PmilaCuspurchaseItem pmilaCuspurchaseItem = new PmilaCuspurchaseItem();
+					pmilaCuspurchaseItem.setSku(item.getSku());
+					pmilaCuspurchaseItem.setQtyOut(item.getQty());
+					pmilaCuspurchaseItem.setQtyIn(item.getQtyIn());
+					pmilaCuspurchaseItem.setPriceActual(item.getPriceActual());
+					pmilaCuspurchaseItemList.add(pmilaCuspurchaseItem);
+				}
 			}
 			pmilaCuspurchase.setItems(pmilaCuspurchaseItemList);
 
+			try {
+				addMdPurchase(pmilaCuspurchase);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+			}
 			pmilaCuspurchaseList.add(pmilaCuspurchase);
 		}
 		return pmilaCuspurchaseList;
+	}
+
+	public void addMdPurchase(PmilaCuspurchase pmilaCuspurchase) {
+		burgeonRestClient.processOrder(pmilaCuspurchase,ObjectOperateType.MODIFY);
+	}
+
+	@Override
+	public void addMdPurchaseReturn(PmilaCuspurchaseReturn pmilaCuspurchaseReturn) {
+		burgeonRestClient.processOrder(pmilaCuspurchaseReturn,ObjectOperateType.MODIFY);
 	}
 
 	@Override
@@ -346,7 +367,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 		List<PmilaCuspurchaseReturn> purchases = burgeonRestClient.query(PmilaCuspurchaseReturn.class, start, pageSize, filterParamList, orderByParamList);
 		List<PurchaseReturnEntity> purchaseReturnList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(purchases)) {
-			log.info("获取帕米拉销售退货单响应：{}", purchases);
+			log.info("获取帕米拉采购退货单响应：{}", purchases);
 			for (PmilaCuspurchaseReturn pmilaCuspurchaseReturn : purchases) {
 //				PurchaseReturnEntity retPur = purchaseDao.queryPurchaseReturnBySourceNo(pmilaCuspurchaseReturn.getDocNo());
 //				if (null != retPur) {
@@ -392,31 +413,47 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	public List<PmilaCuspurchaseReturn> syncWbCuspurchaseReturn() {
 		List<PurchaseReturnEntity> purchaseReturnEntityList = purchaseDao.queryPurchaseReturn();
 		List<PmilaCuspurchaseReturn> pmilaCuspurchaseReturnList = new ArrayList<>();
-		for (PurchaseReturnEntity purchaseReturn : purchaseReturnEntityList) {
+		for (PurchaseReturnEntity PurchaseReturnEntity : purchaseReturnEntityList) {
 			PmilaCuspurchaseReturn pmilaCuspurchaseReturn = new PmilaCuspurchaseReturn();
-			pmilaCuspurchaseReturn.setDocNo(purchaseReturn.getSourceNo());
-			pmilaCuspurchaseReturn.setBillDate(purchaseReturn.getBillDate());
-			pmilaCuspurchaseReturn.setDescription(purchaseReturn.getDescription());
+			pmilaCuspurchaseReturn.setId(null);
+			pmilaCuspurchaseReturn.setDocNo(PurchaseReturnEntity.getDocNo());
+			pmilaCuspurchaseReturn.setDocType(PurchaseReturnEntity.getDocType());
+			pmilaCuspurchaseReturn.setBillDate(PurchaseReturnEntity.getBillDate());
+			String storeId = PurchaseReturnEntity.getStoreId().toString();
+			pmilaCuspurchaseReturn.setStoreId(storeId);
+			pmilaCuspurchaseReturn.setInDate(PurchaseReturnEntity.getInDate());
+			pmilaCuspurchaseReturn.setDescription(PurchaseReturnEntity.getDescription());
 
 			List<ItemEntity> items = new ArrayList<>();
 			List<PmilaCuspurchaseReturnItem> pmilaCuspurchaseReturnItemList = new ArrayList<>();
-			purchaseReturn.getItems().forEach(i -> {
+			PurchaseReturnEntity.getItems().forEach(i -> {
 				ItemEntity item = new ItemEntity();
 				item.setSku(i.getSku());
-				item.setQtyOut(i.getQty());
+				item.setQty(i.getQty());
 				item.setQtyIn(i.getQtyIn());
 				item.setPriceActual(i.getPriceActual());
 				items.add(item);
 			});
+
 			for (ItemEntity item : items) {
-				PmilaCuspurchaseReturnItem pmilaCuspurchaseReturnItem = new PmilaCuspurchaseReturnItem();
-				pmilaCuspurchaseReturnItem.setSku(item.getSku());
-				pmilaCuspurchaseReturnItem.setQtyOut(item.getQty());
-				pmilaCuspurchaseReturnItem.setQtyIn(item.getQtyIn());
-				pmilaCuspurchaseReturnItem.setPriceActual(item.getPriceActual());
-				pmilaCuspurchaseReturnItemList.add(pmilaCuspurchaseReturnItem);
+				if(item ==null){
+					addMdPurchaseReturn(pmilaCuspurchaseReturn);
+				}else{
+					PmilaCuspurchaseReturnItem pmilaCuspurchaseReturnItem = new PmilaCuspurchaseReturnItem();
+					pmilaCuspurchaseReturnItem.setSku(item.getSku());
+					pmilaCuspurchaseReturnItem.setQtyOut(item.getQty());
+					pmilaCuspurchaseReturnItem.setQtyIn(item.getQtyIn());
+					pmilaCuspurchaseReturnItem.setPriceActual(item.getPriceActual());
+					pmilaCuspurchaseReturnItemList.add(pmilaCuspurchaseReturnItem);
+				}
 			}
 			pmilaCuspurchaseReturn.setItems(pmilaCuspurchaseReturnItemList);
+
+			try {
+				addMdPurchaseReturn(pmilaCuspurchaseReturn);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+			}
 			pmilaCuspurchaseReturnList.add(pmilaCuspurchaseReturn);
 		}
 		return pmilaCuspurchaseReturnList;

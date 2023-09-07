@@ -311,14 +311,32 @@ public class ProductServiceImpl implements IProductService {
 			log.info("获取帕米拉商品响应：{}", pmilaProducts);
 			pmilaProducts.forEach(p -> {
 				ProductEntity product = new ProductEntity();
-				BeanUtils.copyProperties(p, product);
+				//BeanUtils.copyProperties(p, product);
 				product.setId(null);
+				product.setProductCode(p.getProductCode());
+				product.setProductName(p.getProductName());
+				product.setPriceList(p.getPriceList());
 				product.setBrandCode("P");
 				product.setBrandName("名典");
-				product.setYearCode(p.getYearName());
-				product.setGenderCode(p.getGenderName());
-				product.setSmallClassCode(p.getClassCode());
-				product.setSmallClassName(p.getClassName());
+				product.setYearCode(p.getYearCode());
+				product.setSeasonCode(p.getSeasonCode());
+				product.setSeasonName(p.getSeasonName());
+				product.setBigClassCode(p.getBigClassCode());
+				product.setBigClassName(p.getBigClassName());
+				product.setClassCode(p.getClassCode());
+				product.setClassName(p.getClassName());
+				product.setMidClassCode(p.getMidClassCode());
+				product.setMidClassName(p.getMidClassName());
+				product.setSmallClassCode(p.getSmallClassCode());
+				product.setSmallClassName(p.getSmallClassName());
+				product.setGenderCode(p.getGenderCode());
+				product.setGenderName(p.getGenderName());
+				product.setBandCode(p.getBandCode());
+				product.setBandName(p.getBandName());
+				product.setStandardCode(p.getStandardCode());
+				product.setStandardName(p.getStandardName());
+				product.setSecurityCategoryCode(p.getSecurityCategoryCode());
+				product.setSecurityCategoryName(p.getSecurityCategoryName());
 				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
 					product.setSizeGroupName("均码");
 				} else {

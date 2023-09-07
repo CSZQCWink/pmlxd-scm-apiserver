@@ -6,22 +6,19 @@ import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
-import com.sungeon.bos.core.utils.DateTimeUtils;
-import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.PurchaseEntity;
-import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +36,14 @@ public class JunitTest {
 	@Autowired
 	private IPurchaseService purchaseService;
 
+	/**
+	 * @title: test
+	 * @author: 刘国帅
+	 * @description: 测试回写功能
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:36
+	 **/
 	@Test
 	public void test() {
 		PmilaIn in = new PmilaIn();
@@ -58,6 +63,8 @@ public class JunitTest {
 		ProcessOrderResponse resp = burgeonRestClient.processOrder(in, ObjectOperateType.MODIFY);
 		System.out.println(JSONObject.toJSONString(resp));
 	}
+
+
 
 
 
@@ -122,6 +129,14 @@ public class JunitTest {
 		System.out.println(pmilaProducts.size());
 	}
 
+	/**
+	 * @title: testColor
+	 * @author: 陈苏洲
+	 * @description: 查询颜色
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:28
+	 **/
 	@Test
 	public void testColor(){
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
@@ -131,6 +146,14 @@ public class JunitTest {
 		System.out.println(colors.size());
 	}
 
+	/**
+	 * @title: testDim
+	 * @author: 陈苏洲
+	 * @description: 查询属性
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:28
+	 **/
 	@Test
 	public void testDim(){
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
@@ -139,6 +162,14 @@ public class JunitTest {
 		System.out.println(dims.size());
 	}
 
+	/**
+	 * @title: testPurchaseReturn
+	 * @author: 陈苏洲
+	 * @description: 查询采购退货单
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:28
+	 **/
 	@Test
 	public void testPurchaseReturn(){
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
@@ -150,9 +181,23 @@ public class JunitTest {
 	}
 
 
+	/**
+	 * @title: testWbPurchase
+	 * @author: 陈苏洲
+	 * @description: 查询所有的符合条件的采购单
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:29
+	 **/
 	@Test
 	public void testWbPurchase(){
 		List<PurchaseEntity> purchaseEntities = purchaseDao.queryPurchase();
-		System.out.println(purchaseEntities);
+		System.out.println(purchaseEntities.size());
+//		for (PurchaseEntity purchaseEntity : purchaseEntities) {
+//			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
+//			BeanUtils.copyProperties(pmilaCuspurchase, purchaseEntity);
+//			ProcessOrderResponse processOrderResponse = burgeonRestClient.processOrder(pmilaCuspurchase, ObjectOperateType.MODIFY);
+//			System.out.println(JSONObject.toJSONString(processOrderResponse));
+//		}
 	}
 }

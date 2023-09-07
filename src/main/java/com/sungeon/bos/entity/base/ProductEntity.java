@@ -18,7 +18,7 @@ public class ProductEntity implements Serializable {
 	private String productCode;
 	private String productName;
 	private String productEnName;
-	private String unit;
+//	private String unit;
 	private String sizeGroupName;
 	private String supplierCode;
 	private String supplierName;
@@ -63,7 +63,7 @@ public class ProductEntity implements Serializable {
 	private Long standardId;
 	private Long securityCategoryId;
 
-	private List<SkuEntity> skuEntities;
+
 
 
 	@Override

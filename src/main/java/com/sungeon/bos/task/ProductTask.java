@@ -130,7 +130,7 @@ public class ProductTask extends BaseTask {
 	/**
 	 * @title: syncPmilaSize
 	 * @author: 陈苏洲
-	 * @description: 同步尺寸组
+	 * @description: 同步尺寸
 	 * @param: []
 	 * @return: void
 	 * @date: 2023/8/30 11:30
@@ -189,6 +189,14 @@ public class ProductTask extends BaseTask {
 			log.error(e.getMessage(), e);
 		}
 	}
+	/**
+	 * @title: syncPmilaAttribute
+	 * @author: 陈苏洲
+	 * @description: 同步商品特征包含尺寸组和颜色组
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/7 9:51
+	 **/
 	public void syncPmilaAttribute() {
 		try {
 			List<AttributeEntity> attributes;

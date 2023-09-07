@@ -23,6 +23,15 @@ public class PmilaSupplier extends BaseRestBean {
 	@RestColumn(name = "ID", isAkField = true, valuePraser = LongParser.class)
 	private Long id;
 
+	@RestColumn(name = "SUPTYPE")
+	private String supplierType;
+
+	@RestColumn(name = "DESCRIPTION")
+	private String description;
+
+	@RestColumn(name = "C_SUPPLIERTYPE_ID")
+	private String supplierTypeId;
+
 	@RestColumn(name = "CODE")
 	private String supplierCode;
 

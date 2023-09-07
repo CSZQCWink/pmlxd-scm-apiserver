@@ -2,6 +2,7 @@ package com.sungeon.bos.task;
 
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
+import com.sungeon.bos.entity.pmila.PmilaCuspurchase;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.SystemProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,22 @@ public class PurchaseTask extends BaseTask {
 			do {
 				purchaseReturnEntityList = purchaseService.syncCuspurchaseReturn(startTime, null, page++, pageSize);
 			} while (purchaseReturnEntityList.size() == pageSize);
+			baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	public void syncPmilaWbCuspurchase() {
+		try {
+			List<PmilaCuspurchase> wbCuspurchase;
+			String startTime = baseService.getThirdTime("BSIJA_SALE_RETURN_SYNC_TIME");
+			Date now = new Date();
+			int page = 1;
+			int pageSize = 30;
+			do {
+				wbCuspurchase = purchaseService.syncPmilaWbCuspurchase();
+			} while (wbCuspurchase.size() == pageSize);
 			baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

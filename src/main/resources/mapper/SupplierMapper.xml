@@ -5,8 +5,13 @@
 		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
 			SELECT get_sequences('c_supplier') AS id FROM dual
 		</selectKey>
-		insert into c_supplier(id,code,name,feeremain,account,email,mobil)
-		values( #{id,javaType=Long,jdbcType=BIGINT},
+		insert into c_supplier(id,ad_client_id,ad_org_id,description,suptype,c_suppliertype_id,
+							   code,name,feeremain,account,email,mobil
+		)
+		values( #{id},37,27,
+		    	#{supplierType, javaType=String, jdbcType=VARCHAR},
+		    	#{supplierTypeId, javaType=String, jdbcType=VARCHAR},
+		    	#{description, javaType=String, jdbcType=VARCHAR},
 				#{supplierCode, javaType=String, jdbcType=VARCHAR},
 				#{supplierName, javaType=String, jdbcType=VARCHAR},
 				#{supplierFeerPrice,javaType=Double,jdbcType=BIGINT},

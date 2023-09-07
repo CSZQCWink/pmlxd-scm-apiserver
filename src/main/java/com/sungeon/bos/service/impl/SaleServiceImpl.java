@@ -64,16 +64,15 @@ public class SaleServiceImpl implements ISaleService {
 			for (PmilaCuspurchase pmilaCuspurchase : pmilaCuspurchaseList) {
 				PurchaseEntity purchase = new PurchaseEntity();
 				purchase.setDocNo(pmilaCuspurchase.getDocNo());
+//				purchase.setSaleType(pmilaCuspurchase.getSaleType());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
 				purchase.setSupplierCode(pmilaCuspurchase.getOrigCode());
 				purchase.setSupplierName(pmilaCuspurchase.getOrigName());
 				purchase.setStoreCode(pmilaCuspurchase.getDestCode());
 				purchase.setStoreName(pmilaCuspurchase.getDestName());
-				purchase.setOutDate(pmilaCuspurchase.getOutDate());
 				purchase.setInDate(pmilaCuspurchase.getInDate());
 				purchase.setIsAutoIn(false);
 				purchase.setDescription(pmilaCuspurchase.getDescription());
-				purchase.setOutStatus(pmilaCuspurchase.getOutStatus());
 				purchase.setInStatus(pmilaCuspurchase.getInStatus());
 				purchase.setStatus(pmilaCuspurchase.getStatus());
 				List<ItemEntity> items = new ArrayList<>();

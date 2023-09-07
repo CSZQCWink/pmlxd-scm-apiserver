@@ -12,6 +12,7 @@ public class PurchaseReturnEntity {
 
 	private Long id;
 	private String docNo;
+	private Long storeId;
 	private Integer billDate;
 	private String sourceNo;
 	private String docType;
@@ -33,7 +34,6 @@ public class PurchaseReturnEntity {
 	private List<ItemEntity> items;
 
 	private Long supplierId;
-	private Long storeId;
 	private Long purchaseReturnOrderId;
 
 }

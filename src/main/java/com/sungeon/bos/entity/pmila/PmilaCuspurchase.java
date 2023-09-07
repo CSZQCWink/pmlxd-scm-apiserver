@@ -30,6 +30,10 @@ public class PmilaCuspurchase extends BaseRestBean {
 	private Long id;
 	@RestColumn(name = "DOCNO")
 	private String docNo;
+	@RestColumn(name = "DOCTYPE")
+	private String docType;
+	@RestColumn(name = "C_STORE_ID")
+	private String storeId;
 	@RestColumn(name = "BILLDATE")
 	private Integer billDate;
 	@RestColumn(name = "DATEOUT")
@@ -48,8 +52,6 @@ public class PmilaCuspurchase extends BaseRestBean {
 	private String description;
 	@RestColumn(name = "STATUS")
 	private String status;
-//	@RestColumn(name = "CONFIRM_STATUS")
-//	private String confirmStatus;
 	@RestColumn(name = "OUT_STATUS")
 	private String outStatus;
 	@RestColumn(name = "IN_STATUS")
