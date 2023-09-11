@@ -475,9 +475,25 @@
           and mp.c_supplier_id = 132
           and mp.isactive = 'Y'
     </select>
-    <select id="queryPurchaseReturn" resultMap="oneToManyResultMap">
-        select mp.id,mp.DOCNO,mp.DOCTYPE,mp.BILLDATE,mp.C_STORE_ID,mp.DATEIN,mp.description,
-               mpi.M_PRODUCTALIAS_ID,mpi.qtyIn,mpi.priceActual,mpi.QTY
+    <resultMap id="oneToManyResultMap2" type="com.sungeon.bos.entity.base.PurchaseEntity">
+        <id property="id" column="id"/>
+        <result property="docNo" column="docNo"/>
+        <result property="docType" column="docType"/>
+        <result property="billDate" column="billDate"/>
+        <result property="storeId" column="C_STORE_ID"/>
+        <result property="outDate" column="DATEOUT"/>
+        <result property="description" column="description"/>
+        <collection property="items" ofType="com.sungeon.bos.entity.base.ItemEntity">
+            <id property="id" column="id"/>
+            <result property="sku" column="M_PRODUCTALIAS_ID"/>
+            <result property="qtyOut" column="QTYOUT"/>
+            <result property="qty" column="QTY"/>
+            <result property="priceActual" column="PRICEACTUAL"/>
+        </collection>
+    </resultMap>
+    <select id="queryPurchaseReturn" resultMap="oneToManyResultMap2">
+        select mp.id,mp.DOCNO,mp.DOCTYPE,mp.BILLDATE,mp.C_STORE_ID,mp.DATEOUT,mp.description,
+               mpi.M_PRODUCTALIAS_ID,mpi.qtyOut,mpi.priceActual,mpi.qty
         from  M_RET_PUR mp,M_RET_PURITEM mpi
         where mp.out_status = 2
         and mp.isactive = 'Y'

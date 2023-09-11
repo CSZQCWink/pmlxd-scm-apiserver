@@ -143,5 +143,10 @@ public class ProductDaoImpl extends BaseDaoImpl implements IProductDao {
 		return productMapper.insertAttribute(attribute);
 	}
 
+	@Override
+	public Long queryASI(Long sizeGroupId, String sizeCode, String colorCode) {
+		return productMapper.queryASI(sizeGroupId, sizeCode, colorCode);
+	}
+
 
 }

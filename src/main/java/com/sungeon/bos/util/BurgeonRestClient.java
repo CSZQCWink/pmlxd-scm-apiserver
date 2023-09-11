@@ -140,7 +140,6 @@ public class BurgeonRestClient {
 
 	/**
 	 * 新增对象
-	 *
 	 * @param objectCreateBean 对象
 	 * @return ObjectCreateResponse
 	 */

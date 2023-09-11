@@ -276,4 +276,12 @@
 			)}
 	</select>
 
+	<select id="queryASI" resultType="java.lang.Long">
+		select t.id
+		from M_ATTRIBUTESETINSTANCE t
+		where t.m_attributeset_id = #{sizeGroupId ,javaType=Long,jdbcType=BIGINT}
+		and t.VALUE1 = #{colorCode ,javaType=String ,jdbcType=VARCHAR}
+		and t.value2 = #{sizeCode , javaType=String ,jdbcType=VARCHAR}
+	</select>
+
 </mapper>

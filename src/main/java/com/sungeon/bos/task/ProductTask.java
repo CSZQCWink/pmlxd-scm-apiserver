@@ -163,7 +163,7 @@ public class ProductTask extends BaseTask {
 		Date now = new Date();
 		try {
 			List<ProductEntity> products;
-			String startTime = baseService.getThirdTime("BSIJA_PRODUCT_SYNC_TIME");
+			String startTime = baseService.getThirdTime("PMILA_PRODUCT_SYNC_TIME");
 			int page = 1;
 			int pageSize = 100;
 			List<String> productCodes = new ArrayList<>();

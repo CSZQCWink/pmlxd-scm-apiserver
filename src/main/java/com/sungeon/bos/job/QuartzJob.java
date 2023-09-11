@@ -54,37 +54,41 @@ public class QuartzJob implements InterruptableJob {
 		log.debug("调度任务 - [" + scheduleJob.getGroupName() + "." + scheduleJob.getJobName() + "] 开始");
 		if (scheduleJob.getStatus().equals(Constants.BURGEON_YES) && scheduleGroup.equals(scheduleJob.getGroupName())) {
 			switch (scheduleJob.getJobName()) {
-				// 同步Dim(正常使用)
+				// 同步Dim
 				case "SyncPmilaDim":
 					productTask.syncPmilaDim();
 					break;
-				// 同步颜色(正常使用)
+				// 同步颜色
 				case "SyncPmilaColor":
 					productTask.syncPmilaColor();
 					break;
-				// 同步尺寸(正常使用)
+				// 同步尺寸
 				case "SyncPmilaSize":
 					productTask.syncPmilaSize();
 					break;
-				// 同步款号档案(正常使用)
+				// 同步款号档案
 				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
-				// 同步供应商(正常使用)
+				// 同步供应商
 				case "SyncPmilaSupplier":
 					supplierTask.syncPmilaSupplier();
 					break;
-				// 同步帕米拉采购单(正常使用)
+				// 同步帕米拉采购单
 				case "SyncPmilaCuspurchase":
 					saleTask.syncPmilaCuspurchase();
 					break;
-				// 同步采购退货单(没有单子没法进行测试)
+				// 同步采购退货单
 				case "SyncCuspurchaseReturn":
 					purchaseTask.syncCuspurchaseReturn();
 					break;
 				// 采购单回写
 				case "SyncPmilaWbCuspurchase":
 					purchaseTask.syncPmilaWbCuspurchase();
+					break;
+				// 采购退货单回写
+				case "SyncWbCuspurchaseReturn":
+					purchaseTask.syncWbCuspurchaseReturn();
 					break;
 				default:
 					break;

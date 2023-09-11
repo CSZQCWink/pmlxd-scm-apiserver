@@ -6,14 +6,15 @@ import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
+import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.PurchaseEntity;
+import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -122,9 +123,10 @@ public class JunitTest {
 	 **/
 	@Test
 	public void testProduct(){
+
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
-		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, 1, 30000,
+		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, 1, 100,
 				null, orderByParamList);
 		System.out.println(pmilaProducts.size());
 	}
@@ -193,11 +195,19 @@ public class JunitTest {
 	public void testWbPurchase(){
 		List<PurchaseEntity> purchaseEntities = purchaseDao.queryPurchase();
 		System.out.println(purchaseEntities.size());
-//		for (PurchaseEntity purchaseEntity : purchaseEntities) {
-//			PmilaCuspurchase pmilaCuspurchase = new PmilaCuspurchase();
-//			BeanUtils.copyProperties(pmilaCuspurchase, purchaseEntity);
-//			ProcessOrderResponse processOrderResponse = burgeonRestClient.processOrder(pmilaCuspurchase, ObjectOperateType.MODIFY);
-//			System.out.println(JSONObject.toJSONString(processOrderResponse));
-//		}
+	}
+
+	/**
+	 * @title: testWbPurchaseReturn
+	 * @author: 陈苏洲
+	 * @description: 测试查询采购退货单
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/8 9:45
+	 **/
+	@Test
+	public void testWbPurchaseReturn(){
+		List<PurchaseReturnEntity> purchaseReturnEntityList = purchaseDao.queryPurchaseReturn();
+		System.out.println(purchaseReturnEntityList.size());
 	}
 }

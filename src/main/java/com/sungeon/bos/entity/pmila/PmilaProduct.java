@@ -74,6 +74,8 @@ public class PmilaProduct extends BaseRestBean {
 	private String securityCategoryName;
 	@RestColumn(name = "IMAGEURL")
 	private String imageUrl;
+//	@RestColumn(name = "")
+//	private Long asiId;
 	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductAliasItem.class)
 	private List<PmilaProductAliasItem> skus;
 	@RestOneToOne(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductMediaItem.class)

@@ -25,13 +25,13 @@ public interface IPurchaseService {
 
 	List<PurchaseReturnEntity> syncPmilaPurchaseReturnOrder(String docNo, int page, int pageSize);
 
-	// 查询所有的采购单
+	// 查询所有的采购单进行回写
 	List<PmilaCuspurchase> syncPmilaWbCuspurchase();
 
 	// 根据经销商采购退货单单号同步采购退货单
 	List<PurchaseReturnEntity> syncCuspurchaseReturn(String startTime, String docNo, int page, int pageSize);
 
-	// 查询所有的采购退货单
+	// 查询所有的采购退货单进行回写
 	List<PmilaCuspurchaseReturn> syncWbCuspurchaseReturn();
 
 	// 添加到名典经销商采购单

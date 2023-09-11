@@ -48,4 +48,6 @@ public interface IProductDao {
 	BosResult callSizeAc(Long sizeId);
 
 	Integer insertAttribute(AttributeEntity attribute);
+
+	Long queryASI(Long sizeGroupId,String sizeCode,String colorCode);
 }

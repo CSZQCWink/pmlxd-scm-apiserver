@@ -52,4 +52,9 @@ public interface IProductMapper {
 	void callSizeAc(Long sizeId);
 
 	Integer insertAttribute(AttributeEntity attribute);
+
+
+	Long queryASI(@Param("sizeGroupId") Long sizeGroupId,
+	                 @Param("sizeId") String sizeId,
+	                 @Param("colorId") String colorId);
 }

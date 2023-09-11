@@ -105,16 +105,16 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			purchaseDao.insertPurchase(purchase);
 
 			for (ItemEntity item : purchase.getItems()) {
-				//dealItem(purchase.getId(), item);
+				dealItem(purchase.getId(), item);
 				purchaseDao.insertPurchaseItem(item);
 				//purchaseDao.callPurchaseItemAm(item.getId());
 			}
-			//purchaseDao.callPurchaseAm(purchase.getId());
-			//purchaseDao.callPurchaseSubmit(purchase.getId());
-//			if (purchase.getIsAutoIn()) {
-//				// purchaseDao.callPurchaseInQtyCop(purchase.getId());
-//				purchaseDao.callPurchaseInSubmit(purchase.getId());
-//			}
+			purchaseDao.callPurchaseAm(purchase.getId());
+			purchaseDao.callPurchaseSubmit(purchase.getId());
+			if (purchase.getIsAutoIn()) {
+				// purchaseDao.callPurchaseInQtyCop(purchase.getId());
+				purchaseDao.callPurchaseInSubmit(purchase.getId());
+			}
 		});
 		return 1;
 	}
@@ -288,7 +288,6 @@ public class PurchaseServiceImpl implements IPurchaseService {
 		}
 		return purchases;
 	}
-// ------------------------------------------------------------------------------------------------
 	@Override
 	public List<PmilaCuspurchase> syncPmilaWbCuspurchase() {
 		List<PurchaseEntity> purchaseEntityList = purchaseDao.queryPurchase();

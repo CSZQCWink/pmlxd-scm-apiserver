@@ -125,6 +125,7 @@ public class ProductServiceImpl implements IProductService {
 			if (null == portal6162) {
 				portal6162 = baseDao.getParamValue("portal.6162");
 			}
+
 			// 新增或修改条码
 			if (CollectionUtils.isNotEmpty(product.getSkus())) {
 				for (int i = 0; i < product.getSkus().size(); i++) {
@@ -132,9 +133,16 @@ public class ProductServiceImpl implements IProductService {
 					product.getSkus().get(i).setProductCode(product.getProductCode());
 					product.getSkus().get(i).setBrandId(brandId);
 					product.getSkus().get(i).setSizeGroupId(sizeGroupId);
+					// 获取ASI的条件是 尺寸组的id + 尺寸的id + 颜色的id
+					Long asi = productDao.queryASI(product.getSizeGroupId(),
+							product.getSkus().get(i).getSizeCode(),
+							product.getSkus().get(i).getColorCode());
+					product.getSkus().get(i).setAsiId(asi);
+
 //					getAttributeValue(1, product.getSkus().get(i).getColorCode(), product.getSkus().get(i).getColorName(), brandId, colorGroupId);
 //					getAttributeValue(2, product.getSkus().get(i).getSizeCode(), product.getSkus().get(i).getSizeName(), null, sizeGroupId);
 				}
+				productDao.insertSku(product.getSkus());
 			}
 		}
 		portal6162 = null;
@@ -298,7 +306,7 @@ public class ProductServiceImpl implements IProductService {
 			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
 		}
 		if (StringUtils.isNotEmpty(startTime)) {
-			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.MODIFIEDDATE > to_date('" + startTime
+			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE >= to_date('" + startTime
 					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
 		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
@@ -343,6 +351,7 @@ public class ProductServiceImpl implements IProductService {
 					product.setSizeGroupName(p.getSizeGroupName());
 				}
 				product.setSupplierCode("005");
+
 				List<SkuEntity> skus = new ArrayList<>();
 				p.getSkus().forEach(s -> {
 					SkuEntity sku = new SkuEntity();
