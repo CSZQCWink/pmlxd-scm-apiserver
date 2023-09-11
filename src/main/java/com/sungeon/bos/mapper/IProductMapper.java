@@ -55,6 +55,6 @@ public interface IProductMapper {
 
 
 	Long queryASI(@Param("sizeGroupId") Long sizeGroupId,
-	                 @Param("sizeId") String sizeId,
-	                 @Param("colorId") String colorId);
+	                 @Param("sizeCode") String sizeId,
+	                 @Param("colorCode") String colorId);
 }
