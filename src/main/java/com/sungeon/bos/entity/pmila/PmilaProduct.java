@@ -28,54 +28,66 @@ public class PmilaProduct extends BaseRestBean {
 	private String productCode;
 	@RestColumn(name = "VALUE")
 	private String productName;
-	@RestColumn(name = "PRICELIST", valuePraser = DoubleParser.class)
-	private Double priceList;
 	@RestColumn(name = "M_SIZEGROUP_ID;NAME")
 	private String sizeGroupName;
+	@RestColumn(name = "preCost", valuePraser = DoubleParser.class)
+	private Double preCost;
+	@RestColumn(name = "PRICELIST", valuePraser = DoubleParser.class)
+	private Double priceList;
+
+	// 品牌
+	@RestColumn(name = "M_DIM1_ID;ATTRIBCODE")
+	private String bandCode;
+	@RestColumn(name = "M_DIM1_ID;ATTRIBNAME")
+	private String bandName;
+	// 年份
 	@RestColumn(name = "M_DIM2_ID;ATTRIBCODE")
 	private String yearCode;
 	@RestColumn(name = "M_DIM2_ID;ATTRIBNAME")
 	private String yearName;
+	// 季节
 	@RestColumn(name = "M_DIM3_ID;ATTRIBCODE")
 	private String seasonCode;
 	@RestColumn(name = "M_DIM3_ID;ATTRIBNAME")
 	private String seasonName;
-	@RestColumn(name = "M_DIM10_ID;ATTRIBCODE")
-	private String bigClassCode;
-	@RestColumn(name = "M_DIM10_ID;ATTRIBNAME")
-	private String bigClassName;
-	@RestColumn(name = "M_DIM6_ID;ATTRIBCODE")
-	private String midClassCode;
-	@RestColumn(name = "M_DIM6_ID;ATTRIBNAME")
-	private String midClassName;
-	@RestColumn(name = "M_DIM11_ID;ATTRIBCODE")
-	private String smallClassCode;
-	@RestColumn(name = "M_DIM11_ID;ATTRIBNAME")
-	private String smallClassName;
+	// 大类
 	@RestColumn(name = "M_DIM4_ID;ATTRIBCODE")
-	private String genderCode;
+	private String bigClassCode;
 	@RestColumn(name = "M_DIM4_ID;ATTRIBNAME")
-	private String genderName;
-	@RestColumn(name = "M_DIM8_ID;ATTRIBCODE", isRestQuery = false)
-	private String classCode;
-	@RestColumn(name = "M_DIM8_ID;ATTRIBNAME", isRestQuery = false)
-	private String className;
+	private String bigClassName;
+	// 小类
+	@RestColumn(name = "M_DIM5_ID;ATTRIBCODE")
+	private String smallClassCode;
+	@RestColumn(name = "M_DIM5_ID;ATTRIBNAME")
+	private String smallClassName;
+	// 材质大类
 	@RestColumn(name = "M_DIM7_ID;ATTRIBCODE")
-	private String bandCode;
+	private String materialBigClassCode;
 	@RestColumn(name = "M_DIM7_ID;ATTRIBNAME")
-	private String bandName;
+	private String materialBigClassName;
+	// 跟型
+	@RestColumn(name = "M_DIM8_ID;ATTRIBCODE")
+	private String HeelTypeCode;
+	@RestColumn(name = "M_DIM8_ID;ATTRIBNAME")
+	private String HeelTypeName;
+	// 产地
+	@RestColumn(name = "M_DIM9_ID;ATTRIBCODE")
+	private String originPlaceCode;
+	@RestColumn(name = "M_DIM9_ID;ATTRIBNAME")
+	private String originPlaceName;
+	// 质量等级
+	@RestColumn(name = "M_DIM14_ID;ATTRIBCODE")
+	private String qualityGradeCode;
+	@RestColumn(name = "M_DIM14_ID;ATTRIBNAME")
+	private String qualityGradeName;
+	// 执行标准
 	@RestColumn(name = "M_DIM15_ID;ATTRIBCODE")
 	private String standardCode;
 	@RestColumn(name = "M_DIM15_ID;ATTRIBNAME")
 	private String standardName;
-	@RestColumn(name = "M_DIM16_ID;ATTRIBCODE")
-	private String securityCategoryCode;
-	@RestColumn(name = "M_DIM16_ID;ATTRIBNAME")
-	private String securityCategoryName;
+
 	@RestColumn(name = "IMAGEURL")
 	private String imageUrl;
-//	@RestColumn(name = "")
-//	private Long asiId;
 	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductAliasItem.class)
 	private List<PmilaProductAliasItem> skus;
 	@RestOneToOne(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductMediaItem.class)
@@ -85,6 +97,5 @@ public class PmilaProduct extends BaseRestBean {
 	public String toString() {
 		return JSONObject.toJSONString(this);
 	}
-
 
 }

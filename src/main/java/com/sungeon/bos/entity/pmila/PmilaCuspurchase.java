@@ -32,30 +32,45 @@ public class PmilaCuspurchase extends BaseRestBean {
 	private String docNo;
 	@RestColumn(name = "DOCTYPE")
 	private String docType;
-	@RestColumn(name = "C_STORE_ID")
-	private String storeId;
+	@RestColumn(name = "C_CUSTOMER_ID",valuePraser = LongParser.class)
+	private Long customerId;
+	@RestColumn(name = "C_CUSTOMER_ID;CODE")
+	private String customerCode;
+	@RestColumn(name = "C_CUSTOMER_ID;NAME")
+	private String customerName;
+	// 时间相关
 	@RestColumn(name = "BILLDATE")
 	private Integer billDate;
 	@RestColumn(name = "DATEOUT")
 	private Integer outDate;
 	@RestColumn(name = "DATEIN")
 	private Integer inDate;
+	// 发货店仓
+	@RestColumn(name = "C_STORE_ID",valuePraser = LongParser.class)
+	private Long origId;
 	@RestColumn(name = "C_STORE_ID;CODE")
 	private String origCode;
 	@RestColumn(name = "C_STORE_ID;NAME")
 	private String origName;
-	@RestColumn(name = "C_DEST_ID;CODE")
+	// 收货店仓
+	@RestColumn(name = "C_DEST_ID")
+	private Long destId;
+	@RestColumn(name = "C_DEST_ID;Code")
 	private String destCode;
 	@RestColumn(name = "C_DEST_ID;NAME")
 	private String destName;
+
+	// 描述
 	@RestColumn(name = "DESCRIPTION")
 	private String description;
+	// 状态
 	@RestColumn(name = "STATUS")
 	private String status;
 	@RestColumn(name = "OUT_STATUS")
 	private String outStatus;
 	@RestColumn(name = "IN_STATUS")
 	private String inStatus;
+	// 明细
 	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "saleId", childBeanClass = PmilaCuspurchaseItem.class)
 	private List<PmilaCuspurchaseItem> items;
 

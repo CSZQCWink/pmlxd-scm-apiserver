@@ -1,9 +1,8 @@
 package com.sungeon.bos.dao;
 
+import com.sungeon.bos.entity.BosResult;
 import com.sungeon.bos.entity.base.SupplierEntity;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author 陈苏洲
@@ -22,6 +21,5 @@ public interface ISupplierDao {
 	Long addSupplier(SupplierEntity supplierEntity);
 
 
-
-
+	BosResult callSupplierAC(Long supplierId);
 }

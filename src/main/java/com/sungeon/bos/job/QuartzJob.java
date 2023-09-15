@@ -34,12 +34,12 @@ public class QuartzJob implements InterruptableJob {
 	private PurchaseTask purchaseTask;
 	@Autowired
 	private SaleTask saleTask;
-	@Autowired
-	private TransferTask transferTask;
-	@Autowired
-	private RetailTask retailTask;
-	@Autowired
-	private StockTask stockTask;
+//	@Autowired
+//	private TransferTask transferTask;
+//	@Autowired
+//	private RetailTask retailTask;
+//	@Autowired
+//	private StockTask stockTask;
 
 	@Autowired
 	private SupplierTask supplierTask;
@@ -70,6 +70,7 @@ public class QuartzJob implements InterruptableJob {
 				case "SyncPmilaProduct":
 					productTask.syncPmilaProduct();
 					break;
+
 				// 同步供应商
 				case "SyncPmilaSupplier":
 					supplierTask.syncPmilaSupplier();

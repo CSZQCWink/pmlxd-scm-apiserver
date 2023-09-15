@@ -5,9 +5,16 @@
 		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
 			SELECT get_sequences('c_supplier') AS id FROM dual
 		</selectKey>
-		insert into c_supplier(id,ad_client_id,ad_org_id,description,suptype,c_suppliertype_id,
-							   code,name,feeremain,account,email,mobil
-		)
+		insert into c_supplier(id,ad_client_id,ad_org_id,
+							   suptype,
+							   c_suppliertype_id,
+							   description,
+							   code,
+							   name,
+							   feeremain,
+							   account,
+							   email,
+							   mobil)
 		values( #{id},37,27,
 		    	#{supplierType, javaType=String, jdbcType=VARCHAR},
 		    	#{supplierTypeId, javaType=String, jdbcType=VARCHAR},
@@ -30,6 +37,11 @@
 		SELECT t.id
 		FROM c_supplier t
 		WHERE t.code = #{supplierCode, javaType=String, jdbcType=VARCHAR}
+	</select>
+	<select id="callSupplierAC">
+		{call m_supplier_ac(
+				#{supplierId, mode=IN, jdbcType=BIGINT}
+			)}
 	</select>
 
 </mapper>

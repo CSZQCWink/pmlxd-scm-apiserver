@@ -50,4 +50,15 @@ public interface IProductDao {
 	Integer insertAttribute(AttributeEntity attribute);
 
 	Long queryASI(Long sizeGroupId,String sizeCode,String colorCode);
+
+	BosResult callSizeGroupAC(Long id);
+
+	BosResult callColorGroupAC(Long id);
+
+	List<AttributeEntity> queryAttribute();
+
+	List<AttributeValueEntity> queryAttributeValueAll();
+
+	AttributeValueEntity queryAttributeValueByName(int clr, String attributeValueName, Long attributeId, Long brandId);
+
 }

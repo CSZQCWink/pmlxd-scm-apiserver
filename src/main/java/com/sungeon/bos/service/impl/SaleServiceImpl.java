@@ -42,17 +42,18 @@ public class SaleServiceImpl implements ISaleService {
 	public List<PurchaseEntity> syncPmilaCuspurchase(String startTime, String docNo, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
-		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
-		filterParamList.add(new QueryFilterParam("C_DEST_ID","445",QueryFilterCombine.AND));
-		if (StringUtils.isNotEmpty(docNo)) {
-			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
-		}
-		if (StringUtils.isNotEmpty(startTime)) {
-			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
-			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.OUTTIME > to_date('"
-					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
-		}
+//		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("C_DEST_ID","445",QueryFilterCombine.AND));
+//		if (StringUtils.isNotEmpty(docNo)) {
+//			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
+//		}
+//		if (StringUtils.isNotEmpty(startTime)) {
+//			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
+//			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.OUTTIME > to_date('"
+//					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+//		}
+		filterParamList.add(new QueryFilterParam("DOCNO", "SA2308020000008", QueryFilterCombine.AND));
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		// 获取品牌方的经销商采购单
@@ -64,12 +65,17 @@ public class SaleServiceImpl implements ISaleService {
 			for (PmilaCuspurchase pmilaCuspurchase : pmilaCuspurchaseList) {
 				PurchaseEntity purchase = new PurchaseEntity();
 				purchase.setDocNo(pmilaCuspurchase.getDocNo());
-//				purchase.setSaleType(pmilaCuspurchase.getSaleType());
+				purchase.setDocType(pmilaCuspurchase.getDocType());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
-				purchase.setSupplierCode(pmilaCuspurchase.getOrigCode());
-				purchase.setSupplierName(pmilaCuspurchase.getOrigName());
+				// 采购店仓对应供应商的收货店仓
 				purchase.setStoreCode(pmilaCuspurchase.getDestCode());
 				purchase.setStoreName(pmilaCuspurchase.getDestName());
+				// 经销商
+				purchase.setCustomerCode(pmilaCuspurchase.getCustomerCode());
+				purchase.setCustomerName(pmilaCuspurchase.getCustomerName());
+				// 供应商对应经销商采购单的发货店仓
+				purchase.setSupplierCode(pmilaCuspurchase.getOrigCode());
+				purchase.setSupplierName(pmilaCuspurchase.getOrigName());
 				purchase.setInDate(pmilaCuspurchase.getInDate());
 				purchase.setIsAutoIn(false);
 				purchase.setDescription(pmilaCuspurchase.getDescription());

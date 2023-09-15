@@ -77,4 +77,10 @@ public interface IPurchaseDao {
 	List<PurchaseEntity> queryPurchase();
 
 	List<PurchaseReturnEntity> queryPurchaseReturn();
+
+	Long queryStoreId(String storeCode, String storeName);
+
+	Long queryCustomerId(String customerCode, String customerName);
+
+	Long querySupplierId(String supplierName);
 }

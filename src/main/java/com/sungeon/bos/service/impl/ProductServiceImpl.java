@@ -22,11 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * @author 刘国帅
+ * @author 陈苏洲
  * @date 2019-10-9
+ * @date 2023-9
  **/
 @Slf4j
 @Service("productService")
@@ -42,14 +45,16 @@ public class ProductServiceImpl implements IProductService {
 	private BurgeonRestClient burgeonRestClient;
 	private static Long colorGroupId = null;
 	// 颜色维护是否到品牌
-	private static String portal6162 = null;
+//	private static String portal6162 = null;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Integer addProduct(List<ProductEntity> products) {
-		if (org.springframework.util.CollectionUtils.isEmpty(products)) {
+		// 首先判断xe系统中的款号档案是否存在 不存在返回0
+		if (CollectionUtils.isEmpty(products)) {
 			return 0;
 		}
+		// 存在直接遍历
 		for (ProductEntity product : products) {
 			if (StringUtils.isEmpty(product.getBrandName())) {
 				throw new ParamNullException("品牌不能为空");
@@ -57,13 +62,10 @@ public class ProductServiceImpl implements IProductService {
 			if (StringUtils.isEmpty(product.getSizeGroupName())) {
 				throw new ParamNullException("尺码组不能为空");
 			}
+			// 根据款号查询指定的商品
 			ProductEntity pdt = productDao.queryProductByCode(product.getProductCode());
-			Long brandId = productDao.queryDimId("DIM1", product.getBrandName());
-			if (brandId == null) {
-				throw new ParamNotMatchException("品牌[" + product.getBrandName() + "]不存在");
-			}
-			product.setBrandId(brandId);
 			Long sizeGroupId;
+			// 如果商品不为空 设置尺寸组id 为空查询出来在设置
 			if (null != pdt) {
 				sizeGroupId = pdt.getSizeGroupId();
 			} else {
@@ -74,41 +76,59 @@ public class ProductServiceImpl implements IProductService {
 				}
 			}
 			product.setSizeGroupId(sizeGroupId);
+
+			// 根据品牌名查询指定的品牌id
+			Long brandId = productDao.queryDimId("DIM1", product.getBrandName());
+			// 判断品牌是否存在 不存在直接抛出异常
+			if (brandId == null) {
+				throw new ParamNotMatchException("品牌[" + product.getBrandName() + "]不存在");
+			}
+			product.setBrandId(brandId);
+
+			// 年份
 			if (!StringUtils.isEmpty(product.getYearName())) {
-				product.setYearId(getDimId("DIM5", product.getYearCode(), product.getYearName()));
+				product.setYearId(getDimId("DIM2", product.getYearCode(), product.getYearName()));
 			}
+			// 季节
 			if (!StringUtils.isEmpty(product.getSeasonName())) {
-				product.setSeasonId(getDimId("DIM6", product.getSeasonCode(), product.getSeasonName()));
+				product.setSeasonId(getDimId("DIM3", product.getSeasonCode(), product.getSeasonName()));
 			}
+			// 大类
 			if (!StringUtils.isEmpty(product.getBigClassName())) {
-				product.setBigClassId(getDimId("DIM17", product.getBigClassCode(), product.getBigClassName()));
+				product.setBigClassId(getDimId("DIM4", product.getBigClassCode(), product.getBigClassName()));
 			}
-			if (StringUtils.isNotEmpty(product.getMidClassName())) {
-				product.setMidClassId(getDimId("DIM18", product.getMidClassCode(), product.getMidClassName()));
-			}
+			// 小类
 			if (StringUtils.isNotEmpty(product.getSmallClassName())) {
-				product.setSmallClassId(getDimId("DIM19", product.getSmallClassCode(), product.getSmallClassName()));
+				product.setSmallClassId(getDimId("DIM5", product.getSmallClassCode(), product.getSmallClassName()));
 			}
-			if (!StringUtils.isEmpty(product.getGenderName())) {
-				product.setGenderId(getDimId("DIM20", product.getGenderCode(), product.getGenderName()));
+			// 材质大类
+			if (StringUtils.isNotEmpty(product.getMaterialBigClassName())) {
+				product.setMaterialBigClassId(getDimId("DIM6", product.getMaterialBigClassCode(), product.getMaterialBigClassName()));
 			}
-			if (!StringUtils.isEmpty(product.getClassName())) {
-				product.setClassId(getDimId("DIM2", product.getClassCode(), product.getClassName()));
+			// 跟型
+			if (StringUtils.isNotEmpty(product.getHeelTypeName())) {
+				product.setHeelTypeId(getDimId("DIM7", product.getHeelTypeCode(), product.getHeelTypeName()));
 			}
-			if (!StringUtils.isEmpty(product.getBandName())) {
-				product.setBandId(getDimId("DIM9", product.getBandCode(), product.getBandName()));
+			// 产地
+			if (StringUtils.isNotEmpty(product.getOriginPlaceName())) {
+				product.setOriginPlaceId(getDimId("DIM8", product.getOriginPlaceCode(), product.getOriginPlaceName()));
 			}
+			// 质量等级
+			// 产地
+			if (StringUtils.isNotEmpty(product.getQualityGradeName())) {
+				product.setQualityGradeId(getDimId("DIM9", product.getQualityGradeCode(), product.getQualityGradeName()));
+			}
+			// 执行标准
 			if (!StringUtils.isEmpty(product.getStandardName())) {
-				product.setStandardId(getDimId("DIM15", product.getStandardCode(), product.getStandardName()));
+				product.setStandardId(getDimId("DIM10", product.getStandardCode(), product.getStandardName()));
 			}
-			if (!StringUtils.isEmpty(product.getSecurityCategoryName())) {
-				product.setSecurityCategoryId(getDimId("DIM16", product.getSecurityCategoryCode(), product.getSecurityCategoryName()));
-			}
+
 			if (!StringUtils.isEmpty(product.getSupplierCode())) {
 				Long supplierId = supplierDao.querySupplierIdByCode(product.getSupplierCode());
 				product.setSupplierId(supplierId);
 			}
 
+			//
 			if (null == pdt) {
 				// 新增款号
 				productDao.insertProduct(product);
@@ -118,34 +138,23 @@ public class ProductServiceImpl implements IProductService {
 				product.setId(pdt.getId());
 				productDao.updateProduct(product);
 			}
-			productDao.updateProductMedia(product.getId(), product.getProductCode());
+//			productDao.updateProductMedia(product.getId(), product.getProductCode());
 			if (null == colorGroupId) {
 				colorGroupId = productDao.queryAttributeId(1, "颜色");
 			}
-			if (null == portal6162) {
-				portal6162 = baseDao.getParamValue("portal.6162");
-			}
 
-			// 新增或修改条码
 			if (CollectionUtils.isNotEmpty(product.getSkus())) {
-				for (int i = 0; i < product.getSkus().size(); i++) {
-					product.getSkus().get(i).setProductId(product.getId());
-					product.getSkus().get(i).setProductCode(product.getProductCode());
-					product.getSkus().get(i).setBrandId(brandId);
-					product.getSkus().get(i).setSizeGroupId(sizeGroupId);
-					// 获取ASI的条件是 尺寸组的id + 尺寸的id + 颜色的id
-					Long asi = productDao.queryASI(product.getSizeGroupId(),
-							product.getSkus().get(i).getSizeCode(),
-							product.getSkus().get(i).getColorCode());
-					product.getSkus().get(i).setAsiId(asi);
-
-//					getAttributeValue(1, product.getSkus().get(i).getColorCode(), product.getSkus().get(i).getColorName(), brandId, colorGroupId);
-//					getAttributeValue(2, product.getSkus().get(i).getSizeCode(), product.getSkus().get(i).getSizeName(), null, sizeGroupId);
-				}
+				product.getSkus().forEach(sku -> {
+					sku.setProductId(product.getId());
+					sku.setProductCode(product.getProductCode());
+					sku.setBrandId(brandId);
+					sku.setSizeGroupId(sizeGroupId);
+					getAttributeValue(1, sku.getColorCode(), sku.getColorName(), brandId, colorGroupId);
+					getAttributeValue(2, sku.getSizeCode(), sku.getSizeName(), null, sizeGroupId);
+				});
 				productDao.insertSku(product.getSkus());
 			}
 		}
-		portal6162 = null;
 		return 1;
 	}
 
@@ -165,16 +174,12 @@ public class ProductServiceImpl implements IProductService {
 
 	private AttributeValueEntity getAttributeValue(int clr, String attributeValueCode, String attributeValueName, Long brandId,
 	                                               Long attributeId) {
-		AttributeValueEntity attributeValue = productDao.queryAttributeValue(clr, attributeValueCode, attributeId, brandId);
+//		AttributeValueEntity attributeValue = productDao.queryAttributeValue(clr, attributeValueCode, attributeId, brandId);
+		AttributeValueEntity attributeValue = productDao.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
 		if (null == attributeValue) {
 			attributeValue = new AttributeValueEntity();
 			attributeValue.setClr(clr);
-			if(clr == 1){
-				Long attributeId1 = productDao.queryAttributeId(clr, "颜色");
-				attributeValue.setAttributeId(attributeId1);
-			}else{
-				attributeValue.setAttributeId(attributeId);
-			}
+			attributeValue.setAttributeId(attributeId);
 			attributeValue.setCode(attributeValueCode);
 			attributeValue.setName(attributeValueName);
 			attributeValue.setBrandId(brandId);
@@ -245,12 +250,22 @@ public class ProductServiceImpl implements IProductService {
 
 		List<PmilaColor> colors = burgeonRestClient.query(PmilaColor.class, 1, 1000, filterParamList,
 				orderByParamList);
+		List<AttributeEntity> attributeEntityList = productDao.queryAttribute();
+		for (AttributeEntity attributeEntity : attributeEntityList) {
+			if (!attributeEntity.getName().equals("颜色") && attributeEntity.getName() == null) {
+				AttributeEntity attribute = new AttributeEntity();
+				attribute.setName("颜色");
+				attribute.setClrSize(1);
+				productDao.insertAttribute(attribute);
+			}
+		}
 		List<AttributeValueEntity> colorList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(colors)) {
 			log.info("获取帕米拉颜色响应：{}", colors);
 			Long brandId = productDao.queryDimId("DIM1", "名典");
+			Long attributeId = productDao.queryAttributeId(1, "颜色");
 			colors.forEach(d -> {
-				AttributeValueEntity attributeValue = getAttributeValue(1, d.getCode(), d.getName(), brandId, 1498L);
+				AttributeValueEntity attributeValue = getAttributeValue(1, d.getCode(), d.getName(), brandId, attributeId);
 				colorList.add(attributeValue);
 			});
 		}
@@ -274,19 +289,21 @@ public class ProductServiceImpl implements IProductService {
 		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, start, pageSize, filterParamList, orderByParamList);
 		List<AttributeValueEntity> sizeList = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(sizes)) {
-			log.info("获取帕米拉尺寸响应：{}", sizes);
-
+			// 创建一个Map集合用来存储尺寸组id和尺寸组的信息
+			HashMap<Long, PmilaSizeGroup> map = new HashMap<>();
+//			log.info("获取帕米拉尺寸响应：{}", sizes);
 			for (int i = 0; i < sizes.size(); i++) {
 				if (sizes.get(i).getSizeGroup() != null) {
-					Long sizeGroupId;
-					if ("均码".equals(sizes.get(i).getSizeGroup().getName()) || "00".equals(sizes.get(i).getSizeGroup().getName())) {
-						sizeGroupId = productDao.queryAttributeId(2, "均码");
-					} else {
-						sizeGroupId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
-					}
-					AttributeValueEntity attributeValue = getAttributeValue(2, sizes.get(i).getCode(), sizes.get(i).getName(), null, sizeGroupId);
-					sizeList.add(attributeValue);
+					map.put(sizes.get(i).getSizeGroupId(), sizes.get(i).getSizeGroup());
 				}
+
+				if (sizes.get(i).getSizeGroup() == null) {
+					PmilaSizeGroup group = map.get(sizes.get(i).getSizeGroupId());
+					sizes.get(i).setSizeGroup(group);
+				}
+				Long attributeId = productDao.queryAttributeId(2, sizes.get(i).getSizeGroup().getName());
+				AttributeValueEntity attributeValue = getAttributeValue(2, sizes.get(i).getCode(), sizes.get(i).getName(), null, attributeId);
+				sizeList.add(attributeValue);
 			}
 		}
 		return sizeList;
@@ -302,56 +319,74 @@ public class ProductServiceImpl implements IProductService {
 	public List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-		if (StringUtils.isNotEmpty(productCode)) {
-			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
-		}
-		if (StringUtils.isNotEmpty(startTime)) {
-			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE >= to_date('" + startTime
-					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
-		}
+		filterParamList.add(new QueryFilterParam("M_DIM2_ID;ATTRIBNAME", "2023", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("NAME", "MS9681", QueryFilterCombine.AND));
+//		if (StringUtils.isNotEmpty(productCode)) {
+//			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
+//		}
+//		if (StringUtils.isNotEmpty(startTime)) {
+//			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE <= to_date('" + startTime
+//					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+//		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 
+		// 获取名典品牌方的款号档案并返回一个list集合
 		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, start, pageSize,
 				filterParamList, orderByParamList);
+		// 创建一个帕米拉XE系统的款号档案集合 用于存储抓取过来的数据
 		List<ProductEntity> productList = new ArrayList<>();
+		// 判断抓取的款号档案是否为空
 		if (CollectionUtils.isNotEmpty(pmilaProducts)) {
-			log.info("获取帕米拉商品响应：{}", pmilaProducts);
+//			log.info("获取帕米拉商品响应：{}", pmilaProducts);
+			// 遍历款号档案获取里面的元素
 			pmilaProducts.forEach(p -> {
+				// 创建对象用于和元素属性对应
 				ProductEntity product = new ProductEntity();
 				//BeanUtils.copyProperties(p, product);
+				// 设置id为空 必须使用xe本地的id
 				product.setId(null);
 				product.setProductCode(p.getProductCode());
 				product.setProductName(p.getProductName());
+				product.setPreCost(p.getPreCost());
 				product.setPriceList(p.getPriceList());
+				// 品牌
 				product.setBrandCode("P");
 				product.setBrandName("名典");
+				// 年份
 				product.setYearCode(p.getYearCode());
+				product.setYearName(p.getYearName());
+				// 季节
 				product.setSeasonCode(p.getSeasonCode());
 				product.setSeasonName(p.getSeasonName());
+				// 大类
 				product.setBigClassCode(p.getBigClassCode());
 				product.setBigClassName(p.getBigClassName());
-				product.setClassCode(p.getClassCode());
-				product.setClassName(p.getClassName());
-				product.setMidClassCode(p.getMidClassCode());
-				product.setMidClassName(p.getMidClassName());
+				// 小类
 				product.setSmallClassCode(p.getSmallClassCode());
 				product.setSmallClassName(p.getSmallClassName());
-				product.setGenderCode(p.getGenderCode());
-				product.setGenderName(p.getGenderName());
-				product.setBandCode(p.getBandCode());
-				product.setBandName(p.getBandName());
+				// 材质大类
+				product.setMaterialBigClassCode(p.getMaterialBigClassCode());
+				product.setMaterialBigClassName(p.getMaterialBigClassName());
+				// 跟型
+				product.setHeelTypeCode(p.getHeelTypeCode());
+				product.setHeelTypeName(p.getHeelTypeName());
+				// 产地
+				product.setOriginPlaceCode(p.getOriginPlaceCode());
+				product.setOriginPlaceName(p.getOriginPlaceName());
+				// 质量等级
+				product.setQualityGradeCode(p.getQualityGradeCode());
+				product.setQualityGradeName(p.getQualityGradeName());
+				// 执行标准
 				product.setStandardCode(p.getStandardCode());
 				product.setStandardName(p.getStandardName());
-				product.setSecurityCategoryCode(p.getSecurityCategoryCode());
-				product.setSecurityCategoryName(p.getSecurityCategoryName());
-				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
-					product.setSizeGroupName("均码");
-				} else {
-					product.setSizeGroupName(p.getSizeGroupName());
-				}
+//				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
+//					product.setSizeGroupName("均码");
+//				} else {
+				product.setSizeGroupName(p.getSizeGroupName());
+//				}
 				product.setSupplierCode("005");
-
+				// 条码
 				List<SkuEntity> skus = new ArrayList<>();
 				p.getSkus().forEach(s -> {
 					SkuEntity sku = new SkuEntity();
@@ -361,53 +396,8 @@ public class ProductServiceImpl implements IProductService {
 					skus.add(sku);
 				});
 				product.setSkus(skus);
+				// 将每一个同步好的款号添加到xe系统的款号档案中
 				productList.add(product);
-			/*
-			下载图片
-				File img;
-				if (StringUtils.isNotEmpty(p.getImageUrl())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + ".jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getImageUrl(),
-								productImagePath + p.getProductCode() + ".jpg");
-					}
-				}
-				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl1())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_1.jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl1(),
-								productImagePath + p.getProductCode() + "_1.jpg");
-					}
-				}
-				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl2())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_2.jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl2(),
-								productImagePath + p.getProductCode() + "_2.jpg");
-					}
-				}
-				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl3())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_3.jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl3(),
-								productImagePath + p.getProductCode() + "_3.jpg");
-					}
-				}
-				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl4())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_4.jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl4(),
-								productImagePath + p.getProductCode() + "_4.jpg");
-					}
-				}
-				if (StringUtils.isNotEmpty(p.getMedia().getImgUrl5())) {
-					img = FileUtils.getFile(productImagePath + p.getProductCode() + "_5.jpg");
-					if (!img.exists()) {
-						HttpUtils.doDownload(pmilaUrl + p.getMedia().getImgUrl5(),
-								productImagePath + p.getProductCode() + "_5.jpg");
-					}
-				}
-				*/
 			});
 			addProduct(productList);
 		}
@@ -431,12 +421,14 @@ public class ProductServiceImpl implements IProductService {
 		ArrayList<AttributeEntity> attributeEntities = new ArrayList<>();
 		for (PmilaAttribute pmilaAttribute : pmilaAttributeList) {
 			AttributeEntity attributeEntity = new AttributeEntity();
-			attributeEntity.setId(pmilaAttribute.getId());
 			attributeEntity.setName(pmilaAttribute.getName());
 			attributeEntity.setClrSize(pmilaAttribute.getClrSize());
 			attributeEntities.add(attributeEntity);
 
 			productDao.insertAttribute(attributeEntity);
+			if (attributeEntity.getClrSize() == 2) {
+				productDao.callSizeGroupAC(attributeEntity.getId());
+			}
 		}
 		return attributeEntities;
 	}

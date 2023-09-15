@@ -102,25 +102,37 @@
 			SELECT get_sequences('m_product') AS id FROM dual
 		</selectKey>
 		INSERT INTO m_product(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate, isactive,
-							  name, value, e_name, m_sizegroup_id, c_supplier_id, m_dim1_id, m_dim2_id, m_dim5_id,
-							  m_dim6_id, m_dim13_id, m_dim14_id, m_dim16_id, m_dim17_id, m_dim18_id, m_dim19_id,
-							  m_dim20_id, imageurl, pricelist, precost)
+							  name,
+							  value,
+							  m_sizegroup_id,
+							  c_supplier_id,
+							  m_dim1_id,
+							  m_dim2_id,
+							  m_dim3_id,
+							  m_dim4_id,
+							  m_dim5_id,
+							  m_dim6_id,
+							  m_dim7_id,
+							  m_dim8_id,
+							  m_dim9_id,
+							  m_dim10_id,
+							  imageurl,
+							  pricelist,
+							  precost)
 		VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
 				#{productCode}, #{productName, javaType=String, jdbcType=VARCHAR},
-				#{productEnName, javaType=String, jdbcType=VARCHAR},
 				#{sizeGroupId, javaType=Long, jdbcType=BIGINT},
 				#{supplierId, javaType=Long, jdbcType=BIGINT},
 				#{brandId, javaType=Long, jdbcType=BIGINT},
-				#{classId, javaType=Long, jdbcType=BIGINT},
 				#{yearId, javaType=Long, jdbcType=BIGINT},
 				#{seasonId, javaType=Long, jdbcType=BIGINT},
-				#{standardId, javaType=Long, jdbcType=BIGINT},
-				#{securityCategoryId, javaType=Long, jdbcType=BIGINT},
-				#{bandId, javaType=Long, jdbcType=BIGINT},
 				#{bigClassId, javaType=Long, jdbcType=BIGINT},
-				#{midClassId, javaType=Long, jdbcType=BIGINT},
 				#{smallClassId, javaType=Long, jdbcType=BIGINT},
-				#{genderId, javaType=Long, jdbcType=BIGINT},
+				#{materialBigClassId, javaType=Long, jdbcType=BIGINT},
+				#{HeelTypeId, javaType=Long, jdbcType=BIGINT},
+				#{originPlaceId, javaType=Long, jdbcType=BIGINT},
+				#{qualityGradeId, javaType=Long, jdbcType=BIGINT},
+				#{standardId, javaType=Long, jdbcType=BIGINT},
 		    	'/img/' || #{productCode} || '.jpg',
 				#{priceList, javaType=Double, jdbcType=DOUBLE},
 				#{priceList, javaType=Double, jdbcType=DOUBLE})
@@ -137,36 +149,34 @@
 	<insert id="updateProduct">
 		UPDATE m_product t
 		SET t.isactive = 'Y'
-		<if test="classId != null">
-			,t.m_dim2_id = #{classId}
-		</if>
 		<if test="yearId != null">
-			,t.m_dim5_id = #{yearId}
+			,t.m_dim2_id = #{yearId}
 		</if>
 		<if test="seasonId != null">
-			,t.m_dim6_id = #{seasonId}
-		</if>
-		<if test="standardId != null">
-			,t.m_dim13_id = #{standardId}
-		</if>
-		<if test="securityCategoryId != null">
-			,t.m_dim14_id = #{securityCategoryId}
-		</if>
-		<if test="bandId != null">
-			,t.m_dim16_id = #{bandId}
+			,t.m_dim3_id = #{seasonId}
 		</if>
 		<if test="bigClassId != null">
-			,t.m_dim17_id = #{bigClassId}
-		</if>
-		<if test="midClassId != null">
-			,t.m_dim18_id = #{midClassId}
+			,t.m_dim4_id = #{bigClassId}
 		</if>
 		<if test="smallClassId != null">
-			,t.m_dim19_id = #{smallClassId}
+			,t.m_dim5_id = #{smallClassId}
 		</if>
-		<if test="genderId != null">
-			,t.m_dim20_id = #{genderId}
+		<if test="materialBigClassId != null">
+			,t.m_dim6_id = #{materialBigClassId}
 		</if>
+		<if test="HeelTypeId != null">
+			,t.m_dim7_id = #{HeelTypeId}
+		</if>
+		<if test="originPlaceId != null">
+			,t.m_dim8_id = #{originPlaceId}
+		</if>
+		<if test="qualityGradeId != null">
+			,t.m_dim9_id = #{qualityGradeId}
+		</if>
+		<if test="standardId != null">
+			,t.m_dim10_id = #{standardId}
+		</if>
+
 		<if test="supplierId != null">
 			,t.c_supplier_id = #{supplierId}
 		</if>
@@ -201,14 +211,13 @@
 			FROM m_attributesetinstance a,
 				 m_attributeset s,
 				 m_attributevalue c,
-				 m_attribute t
+				 m_attributevalue c2
 			WHERE a.m_attributeset_id = s.id
 			  AND a.value1_id = c.id
-			  AND t.clrsize = 2
-			  AND s.m_sizegroup_id = t.id
-			  AND t.id = #{sku.sizeGroupId}
-			  AND a.value1_code = #{sku.colorCode}
-			  AND a.value2_code = #{sku.sizeCode}
+			  AND a.value2_id = c2.id
+			  AND s.m_sizegroup_id = #{sku.sizeGroupId}
+			  AND c.VALUE = #{sku.colorCode}
+			  AND c2.VALUE = #{sku.sizeCode}
 			<if test="sku.brandId != null and sku.brandId != ''">
 				AND c.m_dim1_id = #{sku.brandId, javaType=Long, jdbcType=BIGINT}
 			</if>
@@ -256,12 +265,15 @@
 		</if>)
 	</insert>
 	<insert id="insertAttribute">
-		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
-			SELECT get_sequences('m_attribute') AS id FROM dual
-		</selectKey>
-		INSERT INTO m_attribute(id,ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
-								isactive,name, clrsize)
-	    Values(#{id},37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',#{name, javaType=String, jdbcType=VARCHAR}, #{clrSize})
+		MERGE INTO m_attribute a
+		USING (
+		    select #{attribute.name} AS attName,#{attribute.clrSize} AS atClrSize
+		    from dual
+		) b
+		ON (a.NAME = b.attName AND a.CLRSIZE = b.atClrSize)
+		WHEN NOT MATCHED THEN
+		INSERT (id,ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,isactive,name, clrsize)
+		Values(GET_SEQUENCES('m_attribute'),37, 27, 893, 893, SYSDATE, SYSDATE, 'Y',#{name, javaType=String, jdbcType=VARCHAR}, #{clrSize})
 	</insert>
 
 	<select id="callColorAc" statementType="CALLABLE">
@@ -278,10 +290,38 @@
 
 	<select id="queryASI" resultType="java.lang.Long">
 		select t.id
-		from M_ATTRIBUTESETINSTANCE t
-		where t.m_attributeset_id = #{sizeGroupId ,javaType=Long,jdbcType=BIGINT}
+		from M_ATTRIBUTESETINSTANCE t , M_ATTRIBUTESET ma
+		where t.M_ATTRIBUTESET_ID = ma.ID
+		and ma.M_SIZEGROUP_ID = #{sizeGroupId ,javaType=Long,jdbcType=BIGINT}
 		and t.VALUE1_CODE = #{colorCode ,javaType=String ,jdbcType=VARCHAR}
 		and t.VALUE2_CODE = #{sizeCode , javaType=String ,jdbcType=VARCHAR}
+	</select>
+	<select id="callSizeGroupAC" statementType="CALLABLE">
+		{call M_SIZEGROUP_AC(
+				#{attributeId, mode=IN, jdbcType=BIGINT}
+			)}
+	</select>
+	<select id="callColorGroupAC" statementType="CALLABLE">
+		{call M_SIZEGROUP_AC(
+				#{attributeId, mode=IN, jdbcType=BIGINT}
+			)}
+	</select>
+	<select id="queryAttribute" resultType="com.sungeon.bos.entity.base.AttributeEntity">
+		select * from M_ATTRIBUTE
+	</select>
+    <select id="queryAttributeValueAll" resultType="com.sungeon.bos.entity.base.AttributeValueEntity">
+		select * from XENDS3.M_ATTRIBUTEVALUE
+	</select>
+
+	<select id="queryAttributeValueByName" resultType="com.sungeon.bos.entity.base.AttributeValueEntity">
+		SELECT t.id, t.name AS code, t.value AS name, t.clrsize AS clr
+		FROM m_attributevalue t
+		WHERE t.clrsize = #{clr}
+		AND t.NAME = #{attributeValueName}
+		AND t.m_attribute_id = #{attributeId, javaType=Long, jdbcType=BIGINT}
+		<if test="brandId != null and brandId != ''">
+			AND t.m_dim1_id = #{brandId, javaType=Long, jdbcType=BIGINT}
+		</if>
 	</select>
 
 </mapper>

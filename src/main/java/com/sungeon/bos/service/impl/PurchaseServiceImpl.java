@@ -56,23 +56,27 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Integer addPurchase(PurchaseEntity purchase) {
-//		if (StringUtils.isEmpty(purchase.getSourceNo())) {
-//			throw new ParamNullException("sourceNo", "第三方平台单号不能为空");
-//		}
 		synchronizedHandler.execute("Burgeon.Bos.Purchase.Add", purchase.getDocNo(), () -> {
 			if (CollectionUtils.isEmpty(purchase.getItems())) {
 				throw new ParamNullException("items", "明细不能为空");
 			}
-//			if (!StringUtils.isEmpty(purchase.getDocNo())) {
-//				PurchaseEntity po = purchaseDao.queryPOSupplierStore(purchase.getDocNo());
-//				if (null == po) {
+			if (!StringUtils.isEmpty(purchase.getDocNo())) {
+				PurchaseEntity po = purchaseDao.queryPOSupplierStore(purchase.getDocNo());
+				if ( po != null) {
 //					throw new ParamNotMatchException("poDocno", "采购订单[" + purchase.getDocNo() + "]不存在");
-//				}
-//				purchase.setPoId(po.getId());
-//				purchase.setSupplierId(po.getSupplierId());
-//				purchase.setStoreId(po.getStoreId());
-//				purchase.setDocType("POO");
-//			}
+					purchase.setPoId(po.getId());
+					purchase.setSupplierId(po.getSupplierId());
+					purchase.setStoreId(po.getStoreId());
+					purchase.setDocType("POO");
+				}else{
+					// 采购店仓id
+					Long storeId = purchaseDao.queryStoreId(purchase.getStoreCode(),purchase.getStoreName());
+					purchase.setStoreId(storeId);
+					// 供应商id
+					Long supplierId = purchaseDao.querySupplierId(purchase.getSupplierName());
+					purchase.setSupplierId(supplierId);
+				}
+			}
 			if(StringUtils.isEmpty(purchase.getDocNo())){
 				if (StringUtils.isEmpty(purchase.getSupplierCode())) {
 					throw new ParamNullException("supplierCode", "供应商不能为空");
@@ -107,12 +111,11 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			for (ItemEntity item : purchase.getItems()) {
 				dealItem(purchase.getId(), item);
 				purchaseDao.insertPurchaseItem(item);
-				//purchaseDao.callPurchaseItemAm(item.getId());
+				purchaseDao.callPurchaseItemAm(item.getId());
 			}
 			purchaseDao.callPurchaseAm(purchase.getId());
 			purchaseDao.callPurchaseSubmit(purchase.getId());
 			if (purchase.getIsAutoIn()) {
-				// purchaseDao.callPurchaseInQtyCop(purchase.getId());
 				purchaseDao.callPurchaseInSubmit(purchase.getId());
 			}
 		});
@@ -298,8 +301,6 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			pmilaCuspurchase.setDocNo(purchase.getDocNo());
 			pmilaCuspurchase.setDocType(purchase.getDocType());
 			pmilaCuspurchase.setBillDate(purchase.getBillDate());
-			String storeId = purchase.getStoreId().toString();
-			pmilaCuspurchase.setStoreId(storeId);
 			pmilaCuspurchase.setInDate(purchase.getInDate());
 			pmilaCuspurchase.setDescription(purchase.getDescription());
 

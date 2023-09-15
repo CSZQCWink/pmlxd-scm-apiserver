@@ -62,8 +62,8 @@ public class SupplierServiceImpl implements ISupplierService {
 			log.info("获取帕米拉供应商响应：{}", pmilaSupplierList);
 			pmilaSupplierList.forEach(s -> {
 				SupplierEntity supplier = new SupplierEntity();
-				BeanUtils.copyProperties(s, supplier);
-				supplier.setId(null);
+//				BeanUtils.copyProperties(s, supplier);
+//				supplier.setId(null);
 				supplier.setSupplierType(s.getSupplierType());
 				supplier.setDescription(s.getDescription());
 				supplier.setSupplierTypeId(s.getSupplierTypeId());
@@ -75,6 +75,7 @@ public class SupplierServiceImpl implements ISupplierService {
 				supplier.setSupplierPhone(s.getSupplierPhone());
 				supplierEntityList.add(supplier);
 				supplierDao.addSupplier(supplier);
+				supplierDao.callSupplierAC(supplier.getId());
 			});
 		}
 		return supplierEntityList;

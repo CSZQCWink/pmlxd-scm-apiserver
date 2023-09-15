@@ -12,10 +12,8 @@ import com.sungeon.bos.entity.base.ItemEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.mapper.IPurchaseMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
@@ -260,6 +258,21 @@ public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 	@Override
 	public List<PurchaseReturnEntity> queryPurchaseReturn() {
 		return purchaseMapper.queryPurchaseReturn();
+	}
+
+	@Override
+	public Long queryStoreId(String storeCode, String storeName) {
+		return purchaseMapper.queryStoreId(storeCode, storeName);
+	}
+
+	@Override
+	public Long queryCustomerId(String customerCode, String customerName) {
+		return purchaseMapper.queryCustomerId(customerCode, customerName);
+	}
+
+	@Override
+	public Long querySupplierId(String supplierName) {
+		return purchaseMapper.querySupplierId(supplierName);
 	}
 
 }

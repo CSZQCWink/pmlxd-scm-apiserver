@@ -86,4 +86,10 @@ public interface IPurchaseMapper {
 	List<PurchaseReturnEntity> queryPurchaseReturn();
 
 	Long queryPurchaseIdByDocno(@Param("docNo") String docNo);
+
+	Long queryStoreId(@Param("storeCode") String storeCode, @Param("storeName") String storeName);
+
+	Long queryCustomerId(@Param("customerCode") String customerCode, @Param("customerName") String customerName);
+
+	Long querySupplierId(@Param("supplierName") String supplierName);
 }

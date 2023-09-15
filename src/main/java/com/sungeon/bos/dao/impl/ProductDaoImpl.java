@@ -148,5 +148,39 @@ public class ProductDaoImpl extends BaseDaoImpl implements IProductDao {
 		return productMapper.queryASI(sizeGroupId, sizeCode, colorCode);
 	}
 
+	@SgExceptionField(exception = ProcedureErrorException.class)
+	@Override
+	public BosResult callSizeGroupAC(Long id) {
+		productMapper.callSizeGroupAC(id);
+		BosResult result = new BosResult();
+		result.setCode(1);
+		result.setMessage("OK");
+		return result;
+	}
+	@SgExceptionField(exception = ProcedureErrorException.class)
+	@Override
+	public BosResult callColorGroupAC(Long id) {
+		productMapper.callColorGroupAC(id);
+		BosResult result = new BosResult();
+		result.setCode(1);
+		result.setMessage("OK");
+		return result;
+	}
+
+	@Override
+	public List<AttributeEntity> queryAttribute() {
+		return productMapper.queryAttribute();
+	}
+
+	@Override
+	public List<AttributeValueEntity> queryAttributeValueAll() {
+		return productMapper.queryAttributeValueAll();
+	}
+
+	@Override
+	public AttributeValueEntity queryAttributeValueByName(int clr, String attributeValueName, Long attributeId, Long brandId) {
+		return productMapper.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
+	}
+
 
 }

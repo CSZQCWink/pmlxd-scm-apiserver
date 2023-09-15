@@ -6,11 +6,15 @@ import com.burgeon.framework.restapi.request.QueryFilterCombine;
 import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
-import com.sungeon.bos.core.utils.StringUtils;
+import com.sungeon.bos.core.utils.CollectionUtils;
+import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.dao.IPurchaseDao;
+import com.sungeon.bos.entity.base.AttributeEntity;
+import com.sungeon.bos.entity.base.ProductEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
+import com.sungeon.bos.service.IProductService;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
@@ -20,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -36,6 +41,11 @@ public class JunitTest {
 	private IPurchaseDao purchaseDao;
 	@Autowired
 	private IPurchaseService purchaseService;
+	@Autowired
+	private IProductDao productDao;
+
+	@Autowired
+	private IProductService productService;
 
 	/**
 	 * @title: test
@@ -80,9 +90,10 @@ public class JunitTest {
 	@Test
 	public void testPurchase() {
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
-		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
-		filterParamList.add(new QueryFilterParam("C_DEST_ID", "445", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("C_DEST_ID", "445", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("DOCNO", "SA2308020000008", QueryFilterCombine.AND));
 //		if (StringUtils.isNotEmpty(docNo)) {
 //			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
 //		}
@@ -91,10 +102,7 @@ public class JunitTest {
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		// 获取品牌方的经销商采购单
 		List<PmilaCuspurchase> cuspurchaseList = burgeonRestClient.query(PmilaCuspurchase.class, 1, 100, filterParamList, orderByParamList);
-		for (PmilaCuspurchase pmilaCuspurchase : cuspurchaseList
-		) {
-			System.out.println(pmilaCuspurchase);
-		}
+		System.out.println(cuspurchaseList.size());
 	}
 
 	/**
@@ -109,8 +117,25 @@ public class JunitTest {
 	public void testSize() {
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
-		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, 1, 100, null, orderByParamList);
-		System.out.println(sizes);
+		List<PmilaSize> sizes = burgeonRestClient.query(PmilaSize.class, 1, 1000, null, orderByParamList);
+		if (CollectionUtils.isNotEmpty(sizes)) {
+			// 创建一个Map集合用来存储尺寸组id和尺寸组的信息
+			HashMap<Long, PmilaSizeGroup> map = new HashMap<>();
+//			log.info("获取帕米拉尺寸响应：{}", sizes);
+			for (int i = 0; i < sizes.size(); i++) {
+				if (sizes.get(i).getSizeGroup() != null) {
+					map.put(sizes.get(i).getSizeGroupId(),sizes.get(i).getSizeGroup());
+				}
+//				Set<Long> sizeGroupIdList = map.keySet();
+//				for (Long sizeGroupId : sizeGroupIdList) {
+//					PmilaSizeGroup pmilaSizeGroup = map.get(sizeGroupId);
+//					Long attributeId = productDao.queryAttributeId(2, pmilaSizeGroup.getName());
+//					AttributeValueEntity attributeValue = getAttributeValue(2, sizes.get(i).getCode(), sizes.get(i).getName(), null, attributeId);
+//					sizeList.add(attributeValue);
+//				}
+			}
+			System.out.println(map.keySet().size());
+		}
 	}
 
 	/**
@@ -123,11 +148,16 @@ public class JunitTest {
 	 **/
 	@Test
 	public void testProduct(){
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		filterParamList.add(new QueryFilterParam("NAME", "Q2333597", QueryFilterCombine.AND));
+//		if (StringUtils.isNotEmpty(productCode)) {
+//			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
+//		}
 
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, 1, 100,
-				null, orderByParamList);
+				filterParamList, orderByParamList);
 		System.out.println(pmilaProducts.size());
 	}
 
@@ -209,5 +239,52 @@ public class JunitTest {
 	public void testWbPurchaseReturn(){
 		List<PurchaseReturnEntity> purchaseReturnEntityList = purchaseDao.queryPurchaseReturn();
 		System.out.println(purchaseReturnEntityList.size());
+	}
+
+	/**
+	 * @title: testAttributes
+	 * @author: 陈苏洲
+	 * @description: 查询所有的特征值 包含尺寸组和颜色组
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/14 9:46
+	 **/
+	@Test
+	public void testAttributes(){
+		List<AttributeEntity> attributeEntities = productDao.queryAttribute();
+		System.out.println(attributeEntities.size());
+	}
+
+	/**
+	 * @title: testQueryId
+	 * @author: 陈苏洲
+	 * @description: 查找店仓id 和 供应商id
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/14 9:47
+	 **/
+	@Test
+	public void testQueryId(){
+		Long storeId = purchaseDao.queryStoreId("515200101","盐城仓库");
+		System.out.println("收货店仓id ------> "+storeId);
+		// 供应商id
+		Long supplierId = purchaseDao.querySupplierId("温州外购仓");
+		System.out.println("供应商id"+supplierId);
+	}
+
+	@Test
+	public void testQueryProductByDIM2(){
+		List<QueryFilterParam> filterParamList = new ArrayList<>();
+		filterParamList.add(new QueryFilterParam("M_DIM2_ID;ATTRIBNAME", "2023", QueryFilterCombine.AND));
+		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
+		orderByParamList.add(new QueryOrderByParam("ID", true));
+		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, 1, 2000,
+				filterParamList, orderByParamList);
+		System.out.println(pmilaProducts.size());
+	}
+
+	@Test
+	public  void testSync(){
+		List<ProductEntity> productEntities = productService.syncPmilaProduct(null, null, 1, 100);
 	}
 }

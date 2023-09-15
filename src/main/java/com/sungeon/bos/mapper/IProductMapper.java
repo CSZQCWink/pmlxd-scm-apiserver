@@ -51,10 +51,23 @@ public interface IProductMapper {
 
 	void callSizeAc(Long sizeId);
 
-	Integer insertAttribute(AttributeEntity attribute);
+	Integer insertAttribute(@Param("attribute") AttributeEntity attribute);
 
 
 	Long queryASI(@Param("sizeGroupId") Long sizeGroupId,
 	                 @Param("sizeCode") String sizeId,
 	                 @Param("colorCode") String colorId);
+
+	void callSizeGroupAC(Long attributeId);
+
+	void callColorGroupAC(Long id);
+
+	List<AttributeEntity> queryAttribute();
+
+	List<AttributeValueEntity> queryAttributeValueAll();
+
+	AttributeValueEntity queryAttributeValueByName(@Param("clr") int clr,
+	                                               @Param("attributeValueName") String attributeValueName,
+	                                               @Param("attributeId") Long attributeId,
+	                                               @Param("brandId") Long brandId);
 }

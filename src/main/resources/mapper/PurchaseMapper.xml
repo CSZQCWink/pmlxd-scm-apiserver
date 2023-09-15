@@ -20,16 +20,22 @@
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
             SELECT get_sequences('m_purchase') AS id FROM dual
         </selectKey>
-        INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,
-                               isactive, docno, billdate, suppliername,storename,description,intime,in_status)
+        INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,isactive,
+                               docno,
+                               billdate,
+                               c_supplier_id,
+                               c_store_id,
+                               c_customer_id,
+                               description)
+<!--                                in_status) -->
         VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
                 #{docNo, javaType=String, jdbcType=VARCHAR},
-                #{billDate, javaType=Integer, jdbcType=INTEGER},
-                #{supplierName, javaType=String, jdbcType=VARCHAR},
-                #{storeName, javaType=String, jdbcType=VARCHAR},
-                #{description, javaType=String, jdbcType=VARCHAR}),
-                #{inDate, javaType=Integer, jdbcType=INTEGER},
-                #{inStatus, javaType=String, jdbcType=VARCHAR}
+                #{billDate, javaType=Integer, jdbcType=BIGINT},
+                #{supplierId, javaType=Long, jdbcType=BIGINT},
+                #{storeId, javaType=Long, jdbcType=BIGINT},
+                #{customerId, javaType=Long, jdbcType=BIGINT},
+                #{description, javaType=String, jdbcType=VARCHAR})
+<!--                 #{inStatus, javaType=Integer,jdbcType=BIGINT} -->
     </insert>
 
     <insert id="insertPurchaseItem" parameterType="Item" keyProperty="id">
@@ -504,6 +510,26 @@
         where mp.DOCNO = #{docNo, javaType=String, jdbcType=VARCHAR}
           AND t.isactive = 'Y'
           AND rownum = 1
+    </select>
+    <select id="queryStoreId" resultType="java.lang.Long">
+        select cs.id
+        from C_STORE cs
+        where cs.CODE = #{storeCode, javaType=String, jdbcType=VARCHAR}
+        and cs.Name = #{storeName, javaType=String, jdbcType=VARCHAR}
+        and cs.ISACTIVE = 'Y'
+    </select>
+    <select id="queryCustomerId" resultType="java.lang.Long">
+        select cc.id
+        from C_CUSTOMER cc
+        where cc.CODE = #{customerCode, javaType=String, jdbcType=VARCHAR}
+          and cc.Name = #{customerName, javaType=String, jdbcType=VARCHAR}
+          and cc.ISACTIVE = 'Y'
+    </select>
+    <select id="querySupplierId" resultType="java.lang.Long">
+        select cs.id
+        from C_SUPPLIER cs
+        where cs.Name = #{supplierName, javaType=String, jdbcType=VARCHAR}
+          and cs.ISACTIVE = 'Y'
     </select>
 
     <update id="updatePurchaseReturnOrderSyncStatus">

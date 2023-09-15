@@ -1,6 +1,9 @@
 package com.sungeon.bos.dao.impl;
 
+import com.sungeon.bos.core.annotation.SgExceptionField;
+import com.sungeon.bos.core.exception.ProcedureErrorException;
 import com.sungeon.bos.dao.ISupplierDao;
+import com.sungeon.bos.entity.BosResult;
 import com.sungeon.bos.entity.base.SupplierEntity;
 import com.sungeon.bos.mapper.ISupplierMapper;
 import org.springframework.stereotype.Repository;
@@ -32,6 +35,16 @@ public class SupplierDaoImpl extends BaseDaoImpl implements ISupplierDao {
 	@Override
 	public Long addSupplier(SupplierEntity supplierEntity) {
 		return supplierMapper.addSupplier(supplierEntity);
+	}
+
+	@SgExceptionField(exception = ProcedureErrorException.class)
+	@Override
+	public BosResult callSupplierAC(Long supplierId) {
+		BosResult result = new BosResult();
+		supplierMapper.callSupplierAC(supplierId);
+		result.setCode(1);
+		result.setMessage("SUCCESS");
+		return result;
 	}
 
 }

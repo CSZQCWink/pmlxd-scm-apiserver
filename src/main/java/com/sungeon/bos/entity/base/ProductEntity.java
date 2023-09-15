@@ -14,54 +14,61 @@ public class ProductEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	private String productCode;
-	private String productName;
-	private String productEnName;
-//	private String unit;
+	private Long id; // id
+	private String productCode; // 款号
+	private String productName; // 品名
+	// 尺寸组
+	private Long sizeGroupId;
 	private String sizeGroupName;
+	// 供应商
+	private Long supplierId;
 	private String supplierCode;
 	private String supplierName;
-	private Double preCost;
-	private Double priceList;
-	private List<SkuEntity> skus;
+	private Double preCost; // 采购价
+	private Double priceList; // 标准价
 
+	// 品牌相关
+	private Long brandId;
 	private String brandCode;
 	private String brandName;
+	// 年份相关
+	private Long yearId;
 	private String yearCode;
 	private String yearName;
+	// 季节相关
+	private Long seasonId;
 	private String seasonCode;
 	private String seasonName;
+	// 大类相关
+	private Long bigClassId;
 	private String bigClassCode;
 	private String bigClassName;
-	private String classCode;
-	private String className;
-	private String midClassCode;
-	private String midClassName;
+	// 小类相关
+	private Long smallClassId;
 	private String smallClassCode;
 	private String smallClassName;
-	private String genderCode;
-	private String genderName;
-	private String bandCode;
-	private String bandName;
+	// 材质大类
+	private Long materialBigClassId;
+	private String materialBigClassCode;
+	private String materialBigClassName;
+	// 跟型
+	private Long HeelTypeId;
+	private String HeelTypeCode;
+	private String HeelTypeName;
+	// 产地
+	private Long originPlaceId;
+	private String originPlaceCode;
+	private String originPlaceName;
+	// 质量等级
+	private Long qualityGradeId;
+	private String qualityGradeCode;
+	private String qualityGradeName;
+	// 执行标准
+	private Long standardId;
 	private String standardCode;
 	private String standardName;
-	private String securityCategoryCode;
-	private String securityCategoryName;
 
-	private Long sizeGroupId;
-	private Long supplierId;
-	private Long brandId;
-	private Long yearId;
-	private Long seasonId;
-	private Long bigClassId;
-	private Long classId;
-	private Long midClassId;
-	private Long smallClassId;
-	private Long genderId;
-	private Long bandId;
-	private Long standardId;
-	private Long securityCategoryId;
+	private List<SkuEntity> skus;
 
 
 
