@@ -7,6 +7,7 @@ import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
 import com.sungeon.bos.core.utils.CollectionUtils;
+import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.AttributeEntity;
@@ -16,7 +17,6 @@ import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IProductService;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +94,6 @@ public class JunitTest {
 //		if (StringUtils.isNotEmpty(docNo)) {
 //			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
 //		}
-
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		// 获取品牌方的经销商采购单

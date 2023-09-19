@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,18 +41,15 @@ public class SaleServiceImpl implements ISaleService {
 	public List<PurchaseEntity> syncPmilaCuspurchase(String startTime, String docNo, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-//		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
-//		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
-//		filterParamList.add(new QueryFilterParam("C_DEST_ID","445",QueryFilterCombine.AND));
-//		if (StringUtils.isNotEmpty(docNo)) {
-//			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
-//		}
-//		if (StringUtils.isNotEmpty(startTime)) {
-//			Date date = DateTimeUtils.offsetMinute(DateTimeUtils.convert(startTime), -1);
-//			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.OUTTIME > to_date('"
-//					+ DateTimeUtils.print(date) + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
-//		}
-		filterParamList.add(new QueryFilterParam("DOCNO", "SA2309020000012", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("C_DEST_ID","445",QueryFilterCombine.AND));
+		if (StringUtils.isNotEmpty(docNo)) {
+			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
+		}
+		if (StringUtils.isNotEmpty(startTime)) {
+			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.CREATIONDATE >= to_date('" + startTime
+					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 		// 获取品牌方的经销商采购单

@@ -323,5 +323,13 @@
 			AND t.m_dim1_id = #{brandId, javaType=Long, jdbcType=BIGINT}
 		</if>
 	</select>
+    <select id="queryAttributeByCodeAndName" resultType="com.sungeon.bos.entity.base.AttributeValueEntity">
+		SELECT t.id, t.name AS code, t.value AS name, t.clrsize AS clr
+		FROM m_attributevalue t
+		WHERE t.clrsize = #{clr}
+		AND t.VALUE = #{attributeValueCode}
+		AND t.NAME = #{attributeValueName}
+		AND t.m_attribute_id = #{attributeId, javaType=Long, jdbcType=BIGINT}
+	</select>
 
 </mapper>

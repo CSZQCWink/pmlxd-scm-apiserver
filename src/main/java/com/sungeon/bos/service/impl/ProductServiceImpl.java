@@ -174,14 +174,15 @@ public class ProductServiceImpl implements IProductService {
 	private AttributeValueEntity getAttributeValue(int clr, String attributeValueCode, String attributeValueName, Long brandId,
 	                                               Long attributeId) {
 //		AttributeValueEntity attributeValue = productDao.queryAttributeValue(clr, attributeValueCode, attributeId, brandId);
-		AttributeValueEntity attributeValue = productDao.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
+//		AttributeValueEntity attributeValue = productDao.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
+		AttributeValueEntity attributeValue = productDao.queryAttributeByCodeAndName(clr,attributeValueCode,attributeValueName,attributeId);
 		if (null == attributeValue) {
 			attributeValue = new AttributeValueEntity();
 			attributeValue.setClr(clr);
 			attributeValue.setAttributeId(attributeId);
 			attributeValue.setCode(attributeValueCode);
 			attributeValue.setName(attributeValueName);
-			attributeValue.setBrandId(brandId);
+//			attributeValue.setBrandId(brandId);
 			productDao.insertAttributeValue(attributeValue);
 			if (clr == 1) {
 				productDao.callColorAc(attributeValue.getId());
@@ -318,15 +319,14 @@ public class ProductServiceImpl implements IProductService {
 	public List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-		filterParamList.add(new QueryFilterParam("M_DIM2_ID;ATTRIBNAME", "2023", QueryFilterCombine.AND));
-//		filterParamList.add(new QueryFilterParam("NAME", "MS9681", QueryFilterCombine.AND));
-//		if (StringUtils.isNotEmpty(productCode)) {
-//			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
-//		}
-//		if (StringUtils.isNotEmpty(startTime)) {
-//			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE <= to_date('" + startTime
-//					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
-//		}
+//		filterParamList.add(new QueryFilterParam("NAME", "CESHI0919", QueryFilterCombine.AND));
+		if (StringUtils.isNotEmpty(productCode)) {
+			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
+		}
+		if (StringUtils.isNotEmpty(startTime)) {
+			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE >= to_date('" + startTime
+					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 

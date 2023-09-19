@@ -61,4 +61,5 @@ public interface IProductDao {
 
 	AttributeValueEntity queryAttributeValueByName(int clr, String attributeValueName, Long attributeId, Long brandId);
 
+	AttributeValueEntity queryAttributeByCodeAndName(int clr, String attributeValueCode, String attributeValueName, Long attributeId);
 }

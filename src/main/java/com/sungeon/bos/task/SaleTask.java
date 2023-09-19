@@ -60,14 +60,14 @@ public class SaleTask extends BaseTask {
 	public void syncPmilaCuspurchase() {
 		try {
 			List<PurchaseEntity> purchases;
-			String startTime = baseService.getThirdTime("BSIJA_SALE_RETURN_SYNC_TIME");
+			String startTime = baseService.getThirdTime("PMILA_PURCHASE_SYNC_TIME");
 			Date now = new Date();
 			int page = 1;
 			int pageSize = 30;
 			do {
 				purchases = saleService.syncPmilaCuspurchase(startTime, null, page++, pageSize);
 			} while (purchases.size() == pageSize);
-			baseService.updateThirdTime("BSIJA_SALE_RETURN_SYNC_TIME", now);
+			baseService.updateThirdTime("PMILA_PURCHASE_SYNC_TIME", now);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

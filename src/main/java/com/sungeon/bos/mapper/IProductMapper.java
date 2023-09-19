@@ -70,4 +70,9 @@ public interface IProductMapper {
 	                                               @Param("attributeValueName") String attributeValueName,
 	                                               @Param("attributeId") Long attributeId,
 	                                               @Param("brandId") Long brandId);
+
+	AttributeValueEntity queryAttributeByCodeAndName(@Param("clr") int clr,
+													 @Param("attributeValueCode") String attributeValueCode,
+	                                                 @Param("attributeValueName") String attributeValueName,
+	                                                 @Param("attributeId") Long attributeId);
 }

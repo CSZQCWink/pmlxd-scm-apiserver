@@ -182,5 +182,10 @@ public class ProductDaoImpl extends BaseDaoImpl implements IProductDao {
 		return productMapper.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
 	}
 
+	@Override
+	public AttributeValueEntity queryAttributeByCodeAndName(int clr, String attributeValueCode, String attributeValueName, Long attributeId) {
+		return productMapper.queryAttributeByCodeAndName(clr,attributeValueCode, attributeValueName, attributeId);
+	}
+
 
 }
