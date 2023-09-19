@@ -10,13 +10,13 @@ import com.sungeon.bos.core.utils.CollectionUtils;
 import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.AttributeEntity;
-import com.sungeon.bos.entity.base.ProductEntity;
 import com.sungeon.bos.entity.base.PurchaseEntity;
 import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IProductService;
 import com.sungeon.bos.service.IPurchaseService;
 import com.sungeon.bos.util.BurgeonRestClient;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +76,6 @@ public class JunitTest {
 	}
 
 
-
-
-
 	/**
 	 * @title: testPurchase
 	 * @author: 陈苏洲
@@ -91,9 +88,9 @@ public class JunitTest {
 	public void testPurchase() {
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
 //		filterParamList.add(new QueryFilterParam("OUT_STATUS", "2", QueryFilterCombine.AND));
-//		filterParamList.add(new QueryFilterParam("IN_STATUS", "1", QueryFilterCombine.AND));
-//		filterParamList.add(new QueryFilterParam("C_DEST_ID", "445", QueryFilterCombine.AND));
-		filterParamList.add(new QueryFilterParam("DOCNO", "SA2308020000008", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("IN_STATUS", "2", QueryFilterCombine.AND));
+		filterParamList.add(new QueryFilterParam("C_DEST_ID", "445", QueryFilterCombine.AND));
+//		filterParamList.add(new QueryFilterParam("DOCNO", "SA2308020000008", QueryFilterCombine.AND));
 //		if (StringUtils.isNotEmpty(docNo)) {
 //			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
 //		}
@@ -272,6 +269,14 @@ public class JunitTest {
 		System.out.println("供应商id"+supplierId);
 	}
 
+	/**
+	 * @title: testQueryProductByDIM2
+	 * @author: 陈苏洲
+	 * @description: 获取所有年份为2023的款号档案
+	 * @param: []
+	 * @return: void
+	 * @date: 2023/9/18 16:45
+	 **/
 	@Test
 	public void testQueryProductByDIM2(){
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
@@ -283,8 +288,4 @@ public class JunitTest {
 		System.out.println(pmilaProducts.size());
 	}
 
-	@Test
-	public  void testSync(){
-		List<ProductEntity> productEntities = productService.syncPmilaProduct(null, null, 1, 100);
-	}
 }

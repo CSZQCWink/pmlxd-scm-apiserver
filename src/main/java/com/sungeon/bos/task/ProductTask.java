@@ -184,10 +184,10 @@ public class ProductTask extends BaseTask {
 					}
 				}
 			} while (products.size() == pageSize);
-			baseService.updateThirdTime("BSIJA_PRODUCT_SYNC_TIME", now);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		baseService.updateThirdTime("PMILA_PRODUCT_SYNC_TIME", now);
 	}
 	/**
 	 * @title: syncPmilaAttribute

@@ -128,7 +128,6 @@ public class ProductServiceImpl implements IProductService {
 				product.setSupplierId(supplierId);
 			}
 
-			//
 			if (null == pdt) {
 				// 新增款号
 				productDao.insertProduct(product);
@@ -380,11 +379,8 @@ public class ProductServiceImpl implements IProductService {
 				// 执行标准
 				product.setStandardCode(p.getStandardCode());
 				product.setStandardName(p.getStandardName());
-//				if ("均码".equals(p.getSizeGroupName()) || "00".equals(p.getSizeGroupName())) {
-//					product.setSizeGroupName("均码");
-//				} else {
+				// 尺寸组名称
 				product.setSizeGroupName(p.getSizeGroupName());
-//				}
 				product.setSupplierCode("005");
 				// 条码
 				List<SkuEntity> skus = new ArrayList<>();

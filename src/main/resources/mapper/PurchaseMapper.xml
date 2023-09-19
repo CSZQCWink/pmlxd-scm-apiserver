@@ -27,7 +27,6 @@
                                c_store_id,
                                c_customer_id,
                                description)
-<!--                                in_status) -->
         VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
                 #{docNo, javaType=String, jdbcType=VARCHAR},
                 #{billDate, javaType=Integer, jdbcType=BIGINT},
@@ -35,7 +34,6 @@
                 #{storeId, javaType=Long, jdbcType=BIGINT},
                 #{customerId, javaType=Long, jdbcType=BIGINT},
                 #{description, javaType=String, jdbcType=VARCHAR})
-<!--                 #{inStatus, javaType=Integer,jdbcType=BIGINT} -->
     </insert>
 
     <insert id="insertPurchaseItem" parameterType="Item" keyProperty="id">
