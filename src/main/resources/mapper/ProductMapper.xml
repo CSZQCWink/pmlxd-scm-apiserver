@@ -118,9 +118,11 @@
 							  m_dim10_id,
 							  imageurl,
 							  pricelist,
-							  precost)
+							  precost,
+							  description2)
 		VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
-				#{productCode}, #{productName, javaType=String, jdbcType=VARCHAR},
+				#{productCode},
+		        #{productName, javaType=String, jdbcType=VARCHAR},
 				#{sizeGroupId, javaType=Long, jdbcType=BIGINT},
 				#{supplierId, javaType=Long, jdbcType=BIGINT},
 				#{brandId, javaType=Long, jdbcType=BIGINT},
@@ -132,10 +134,10 @@
 				#{HeelTypeId, javaType=Long, jdbcType=BIGINT},
 				#{originPlaceId, javaType=Long, jdbcType=BIGINT},
 				#{qualityGradeId, javaType=Long, jdbcType=BIGINT},
-				#{standardId, javaType=Long, jdbcType=BIGINT},
-		    	'/img/' || #{productCode} || '.jpg',
+				#{standardId, javaType=Long, jdbcType=BIGINT},'/img/' || #{productCode} || '.jpg',
 				#{priceList, javaType=Double, jdbcType=DOUBLE},
-				#{priceList, javaType=Double, jdbcType=DOUBLE})
+				#{priceList, javaType=Double, jdbcType=DOUBLE},
+				#{description2, javaType=String, jdbcType=VARCHAR})
 	</insert>
 
 	<select id="callProductAc" statementType="CALLABLE">

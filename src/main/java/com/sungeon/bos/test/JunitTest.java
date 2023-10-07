@@ -7,7 +7,6 @@ import com.burgeon.framework.restapi.request.QueryFilterParam;
 import com.burgeon.framework.restapi.request.QueryOrderByParam;
 import com.burgeon.framework.restapi.response.ProcessOrderResponse;
 import com.sungeon.bos.core.utils.CollectionUtils;
-import com.sungeon.bos.core.utils.StringUtils;
 import com.sungeon.bos.dao.IProductDao;
 import com.sungeon.bos.dao.IPurchaseDao;
 import com.sungeon.bos.entity.base.AttributeEntity;
@@ -16,6 +15,7 @@ import com.sungeon.bos.entity.base.PurchaseReturnEntity;
 import com.sungeon.bos.entity.pmila.*;
 import com.sungeon.bos.service.IProductService;
 import com.sungeon.bos.service.IPurchaseService;
+import com.sungeon.bos.service.ISaleService;
 import com.sungeon.bos.util.BurgeonRestClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +46,21 @@ public class JunitTest {
 
 	@Autowired
 	private IProductService productService;
+
+	@Autowired
+	private ISaleService saleService;
+
+
+
+	@Test
+	public void syncProduct() {
+		productService.syncPmilaProduct(null,"M2333675",1,1);
+	}
+
+	@Test
+	public void syncPurchase() {
+		saleService.syncPmilaCuspurchase(null,"SA2309250000007",1,1);
+	}
 
 	/**
 	 * @title: test

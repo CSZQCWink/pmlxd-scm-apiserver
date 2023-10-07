@@ -114,7 +114,6 @@ public class ProductServiceImpl implements IProductService {
 				product.setOriginPlaceId(getDimId("DIM8", product.getOriginPlaceCode(), product.getOriginPlaceName()));
 			}
 			// 质量等级
-			// 产地
 			if (StringUtils.isNotEmpty(product.getQualityGradeName())) {
 				product.setQualityGradeId(getDimId("DIM9", product.getQualityGradeCode(), product.getQualityGradeName()));
 			}
@@ -324,7 +323,7 @@ public class ProductServiceImpl implements IProductService {
 			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
 		}
 		if (StringUtils.isNotEmpty(startTime)) {
-			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.CREATIONDATE >= to_date('" + startTime
+			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.MODIFIEDDATE >= to_date('" + startTime
 					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
 		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
@@ -349,6 +348,8 @@ public class ProductServiceImpl implements IProductService {
 				product.setProductName(p.getProductName());
 				product.setPreCost(p.getPreCost());
 				product.setPriceList(p.getPriceList());
+				// 备注同步 但是此备注使用的是品牌方的产地
+				product.setDescription2(p.getOriginPlaceName());
 				// 品牌
 				product.setBrandCode("P");
 				product.setBrandName("名典");

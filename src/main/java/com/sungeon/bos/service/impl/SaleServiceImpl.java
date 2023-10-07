@@ -47,7 +47,7 @@ public class SaleServiceImpl implements ISaleService {
 			filterParamList.add(new QueryFilterParam("DOCNO", docNo, QueryFilterCombine.AND));
 		}
 		if (StringUtils.isNotEmpty(startTime)) {
-			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.CREATIONDATE >= to_date('" + startTime
+			filterParamList.add(new QueryFilterParam("", "M_V_CUSPURCHASE.INTIME >= to_date('" + startTime
 					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
 		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();

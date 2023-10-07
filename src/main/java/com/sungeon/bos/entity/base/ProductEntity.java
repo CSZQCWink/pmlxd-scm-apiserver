@@ -17,6 +17,7 @@ public class ProductEntity implements Serializable {
 	private Long id; // id
 	private String productCode; // 款号
 	private String productName; // 品名
+	private String description2; // 备注
 	// 尺寸组
 	private Long sizeGroupId;
 	private String sizeGroupName;

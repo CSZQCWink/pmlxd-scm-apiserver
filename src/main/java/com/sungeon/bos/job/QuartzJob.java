@@ -79,6 +79,7 @@ public class QuartzJob implements InterruptableJob {
 				case "SyncPmilaCuspurchase":
 					saleTask.syncPmilaCuspurchase();
 					break;
+
 				// 同步采购退货单
 				case "SyncCuspurchaseReturn":
 					purchaseTask.syncCuspurchaseReturn();
