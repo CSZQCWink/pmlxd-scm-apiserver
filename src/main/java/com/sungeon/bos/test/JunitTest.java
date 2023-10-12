@@ -54,12 +54,12 @@ public class JunitTest {
 
 	@Test
 	public void syncProduct() {
-		productService.syncPmilaProduct(null,"M2333675",1,1);
+		productService.syncPmilaProduct(null," M2333620C",1,1);
 	}
 
 	@Test
 	public void syncPurchase() {
-		saleService.syncPmilaCuspurchase(null,"SA2309250000007",1,1);
+		saleService.syncPmilaCuspurchase(null,"SA2310080000001",1,1);
 	}
 
 	/**

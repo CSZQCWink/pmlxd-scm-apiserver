@@ -145,7 +145,7 @@ public class ProductServiceImpl implements IProductService {
 				product.getSkus().forEach(sku -> {
 					sku.setProductId(product.getId());
 					sku.setProductCode(product.getProductCode());
-					sku.setBrandId(brandId);
+//					sku.setBrandId(brandId);
 					sku.setSizeGroupId(sizeGroupId);
 					getAttributeValue(1, sku.getColorCode(), sku.getColorName(), brandId, colorGroupId);
 					getAttributeValue(2, sku.getSizeCode(), sku.getSizeName(), null, sizeGroupId);
