@@ -92,4 +92,8 @@ public interface IPurchaseMapper {
 	Long queryCustomerId(@Param("customerCode") String customerCode, @Param("customerName") String customerName);
 
 	Long querySupplierId(@Param("supplierName") String supplierName);
+
+	List<String> queryRelevancyDocno();
+
+	String queryRelevancyDocnoByDocno(@Param("docNo") String docNo);
 }

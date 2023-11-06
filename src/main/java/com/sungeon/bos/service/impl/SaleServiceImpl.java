@@ -61,6 +61,8 @@ public class SaleServiceImpl implements ISaleService {
 			for (PmilaCuspurchase pmilaCuspurchase : pmilaCuspurchaseList) {
 				PurchaseEntity purchase = new PurchaseEntity();
 				purchase.setDocNo(pmilaCuspurchase.getDocNo());
+				// 关联单号
+				purchase.setRelevancyDocno(pmilaCuspurchase.getDocNo());
 				purchase.setDocType(pmilaCuspurchase.getDocType());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
 				// 采购店仓对应供应商的收货店仓

@@ -12,6 +12,8 @@ public class PurchaseEntity  {
 
 	private Long id;
 	private String docNo;
+	// 关联单号（品牌方的单号）
+	private String relevancyDocno;
 	private String docType;
 	private Integer billDate;
 	private Long poId;

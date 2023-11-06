@@ -56,7 +56,7 @@ public class PurchaseServiceImpl implements IPurchaseService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Integer addPurchase(PurchaseEntity purchase) {
-		synchronizedHandler.execute("Burgeon.Bos.Purchase.Add", purchase.getDocNo(), () -> {
+		synchronizedHandler.run("Burgeon.Bos.Purchase.Add", purchase.getDocNo(), () -> {
 			if (CollectionUtils.isEmpty(purchase.getItems())) {
 				throw new ParamNullException("items", "明细不能为空");
 			}
@@ -105,8 +105,25 @@ public class PurchaseServiceImpl implements IPurchaseService {
 			if (null == purchase.getBillDate()) {
 				purchase.setBillDate(DateTimeUtils.todayNumber());
 			}
-			purchase.setDocNo(baseDao.getNewDocno("PU"));
-			purchaseDao.insertPurchase(purchase);
+			// 增加一个判断在品牌方获取的单号和帕米拉数据库中的关联单号做对比
+			// 若是存在则不进行新增操作 若是不存在则进行新增操作
+			//List<String> RelevancyDocnoList = purchaseDao.queryRelevancyDocnoByDocno();
+			// String RelevancyDocno = purchaseDao.queryRelevancyDocnoByDocno(purchase.getDocNo());
+//			if(RelevancyDocno != null){
+//				return ;
+//				// throw new AlreadyExistsException("单号[" + purchase.getDocNo() + "]已存在，不允许重复新增");
+//			}else{
+					purchase.setDocNo(baseDao.getNewDocno("PU"));
+					purchaseDao.insertPurchase(purchase);
+//				}
+//			for (String RelevancyDocno : RelevancyDocnoList) {
+//				if(purchase.getDocNo() != null && purchase.getDocNo().equals(RelevancyDocno)){
+//					throw new AlreadyExistsException("单号[" + purchase.getDocNo() + "]已存在，不允许重复新增");
+//				}else{
+//					purchase.setDocNo(baseDao.getNewDocno("PU"));
+//					purchaseDao.insertPurchase(purchase);
+//				}
+//			}
 
 			for (ItemEntity item : purchase.getItems()) {
 				dealItem(purchase.getId(), item);

@@ -83,4 +83,8 @@ public interface IPurchaseDao {
 	Long queryCustomerId(String customerCode, String customerName);
 
 	Long querySupplierId(String supplierName);
+
+	List<String> queryRelevancyDocnoByDocno();
+
+	String queryRelevancyDocnoByDocno(String docNo);
 }
