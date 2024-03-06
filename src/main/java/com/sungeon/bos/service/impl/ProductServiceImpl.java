@@ -50,11 +50,9 @@ public class ProductServiceImpl implements IProductService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Integer addProduct(List<ProductEntity> products) {
-		// 首先判断xe系统中的款号档案是否存在 不存在返回0
 		if (CollectionUtils.isEmpty(products)) {
 			return 0;
 		}
-		// 存在直接遍历
 		for (ProductEntity product : products) {
 			if (StringUtils.isEmpty(product.getBrandName())) {
 				throw new ParamNullException("品牌不能为空");
@@ -129,14 +127,15 @@ public class ProductServiceImpl implements IProductService {
 
 			if (null == pdt) {
 				// 新增款号
+				log.info("执行DAO添加操作");
 				productDao.insertProduct(product);
+				log.info("执行款号AC程序");
 				productDao.callProductAc(product.getId());
 			} else {
 				// 更新款号
 				product.setId(pdt.getId());
 				productDao.updateProduct(product);
 			}
-//			productDao.updateProductMedia(product.getId(), product.getProductCode());
 			if (null == colorGroupId) {
 				colorGroupId = productDao.queryAttributeId(1, "颜色");
 			}
@@ -170,12 +169,14 @@ public class ProductServiceImpl implements IProductService {
 		return dimId;
 	}
 
-
 	private AttributeValueEntity getAttributeValue(int clr, String attributeValueCode, String attributeValueName, Long brandId,
 	                                               Long attributeId) {
 //		AttributeValueEntity attributeValue = productDao.queryAttributeValue(clr, attributeValueCode, attributeId, brandId);
 //		AttributeValueEntity attributeValue = productDao.queryAttributeValueByName(clr, attributeValueName, attributeId, brandId);
+		log.info("{},{},{},{},{}",clr,attributeValueCode,attributeValueName,brandId,attributeId);
 		AttributeValueEntity attributeValue = productDao.queryAttributeByCodeAndName(clr,attributeValueCode,attributeValueName,attributeId);
+
+		log.info("商品特征{}",attributeValue);
 		if (null == attributeValue) {
 			attributeValue = new AttributeValueEntity();
 			attributeValue.setClr(clr);
@@ -319,38 +320,37 @@ public class ProductServiceImpl implements IProductService {
 	public List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<QueryFilterParam> filterParamList = new ArrayList<>();
-//		filterParamList.add(new QueryFilterParam("NAME", "CESHI0919", QueryFilterCombine.AND));
 		if (StringUtils.isNotEmpty(productCode)) {
 			filterParamList.add(new QueryFilterParam("NAME", productCode, QueryFilterCombine.AND));
 		}
 		if (StringUtils.isNotEmpty(startTime)) {
-			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.MODIFIEDDATE >= to_date('" + startTime
-					+ "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
+			filterParamList.add(new QueryFilterParam("", "M_PRODUCT.MODIFIEDDATE >= to_date('" + startTime + "', 'yyyy-mm-dd hh24:mi:ss')", QueryFilterCombine.AND));
 		}
 		List<QueryOrderByParam> orderByParamList = new ArrayList<>();
 		orderByParamList.add(new QueryOrderByParam("ID", true));
 
 		// 获取名典品牌方的款号档案并返回一个list集合
-		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, start, pageSize,
-				filterParamList, orderByParamList);
+		List<PmilaProduct> pmilaProducts = burgeonRestClient.query(PmilaProduct.class, start, pageSize, filterParamList, orderByParamList);
 		// 创建一个帕米拉XE系统的款号档案集合 用于存储抓取过来的数据
 		List<ProductEntity> productList = new ArrayList<>();
 		// 判断抓取的款号档案是否为空
 		if (CollectionUtils.isNotEmpty(pmilaProducts)) {
-//			log.info("获取帕米拉商品响应：{}", pmilaProducts);
-			// 遍历款号档案获取里面的元素
+			log.info("正确获取数据");
+			// 遍历获取到的品牌方款号档案获取里面的元素
 			pmilaProducts.forEach(p -> {
 				// 创建对象用于和元素属性对应
 				ProductEntity product = new ProductEntity();
-				//BeanUtils.copyProperties(p, product);
 				// 设置id为空 必须使用xe本地的id
 				product.setId(null);
 				product.setProductCode(p.getProductCode());
 				product.setProductName(p.getProductName());
 				product.setPreCost(p.getPreCost());
 				product.setPriceList(p.getPriceList());
-				// 备注同步 但是此备注使用的是品牌方的产地
-				product.setDescription2(p.getOriginPlaceName());
+				// 供应商
+				product.setSupplierId(p.getSupplierId());
+
+				// 备注同步
+				product.setDescription2(p.getDescription());
 				// 品牌
 				product.setBrandCode("P");
 				product.setBrandName("名典");
@@ -397,6 +397,7 @@ public class ProductServiceImpl implements IProductService {
 				// 将每一个同步好的款号添加到xe系统的款号档案中
 				productList.add(product);
 			});
+			log.info("----执行添加方法");
 			addProduct(productList);
 		}
 		return productList;

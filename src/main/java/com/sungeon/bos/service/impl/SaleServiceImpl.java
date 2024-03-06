@@ -60,7 +60,10 @@ public class SaleServiceImpl implements ISaleService {
 			log.info("获取帕米拉经销商采购单响应：{}", pmilaCuspurchaseList);
 			for (PmilaCuspurchase pmilaCuspurchase : pmilaCuspurchaseList) {
 				PurchaseEntity purchase = new PurchaseEntity();
+				// 先获取名典的单号作为零时的xe的单据编号
 				purchase.setDocNo(pmilaCuspurchase.getDocNo());
+				// 将名典的单据编号赋值给关联单号
+				purchase.setRelevancyDocno(pmilaCuspurchase.getDocNo());
 				purchase.setDocType(pmilaCuspurchase.getDocType());
 				purchase.setBillDate(pmilaCuspurchase.getBillDate());
 				// 采购店仓对应供应商的收货店仓
@@ -77,9 +80,11 @@ public class SaleServiceImpl implements ISaleService {
 				purchase.setDescription(pmilaCuspurchase.getDescription());
 				purchase.setInStatus(pmilaCuspurchase.getInStatus());
 				purchase.setStatus(pmilaCuspurchase.getStatus());
+				// 创建一个明细列表 用于存储获取品牌方的明细数据
 				List<ItemEntity> items = new ArrayList<>();
 				pmilaCuspurchase.getItems().forEach(i -> {
 					ItemEntity item = new ItemEntity();
+					// 获取品牌方的条码 一个明细只有一个条码
 					item.setSku(i.getSku());
 					item.setQty(i.getQtyOut());
 					item.setQtyIn(i.getQtyIn());
@@ -87,6 +92,7 @@ public class SaleServiceImpl implements ISaleService {
 					items.add(item);
 				});
 				purchase.setItems(items);
+				// 创建一个条码列表用于存储品牌放获取的明细中的条码
 				List<SkuEntity> skuEntities = new ArrayList<>();
 				for (ItemEntity itemSku : items) {
 					SkuEntity skuEntity = new SkuEntity();

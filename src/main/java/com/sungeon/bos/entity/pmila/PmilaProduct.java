@@ -35,6 +35,14 @@ public class PmilaProduct extends BaseRestBean {
 	@RestColumn(name = "PRICELIST", valuePraser = DoubleParser.class)
 	private Double priceList;
 
+	// 供应商id
+	@RestColumn(name = "C_SUPPLIER_ID")
+	private Long supplierId;
+
+	// 备注
+	@RestColumn(name = "DOCUMENTNOTE")
+	private String description;
+
 	// 品牌
 	@RestColumn(name = "M_DIM1_ID;ATTRIBCODE")
 	private String bandCode;
@@ -90,6 +98,7 @@ public class PmilaProduct extends BaseRestBean {
 	private String imageUrl;
 	@RestOneToMany(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductAliasItem.class)
 	private List<PmilaProductAliasItem> skus;
+
 	@RestOneToOne(fkParentColumnName = "id", fkChildColumnName = "productId", childBeanClass = PmilaProductMediaItem.class)
 	private PmilaProductMediaItem media;
 

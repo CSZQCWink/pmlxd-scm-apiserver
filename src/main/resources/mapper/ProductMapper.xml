@@ -121,7 +121,7 @@
 							  precost,
 							  description2)
 		VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
-				#{productCode},
+				#{productCode, javaType=String, jdbcType=VARCHAR},
 		        #{productName, javaType=String, jdbcType=VARCHAR},
 				#{sizeGroupId, javaType=Long, jdbcType=BIGINT},
 				#{supplierId, javaType=Long, jdbcType=BIGINT},
@@ -187,6 +187,9 @@
 		</if>
 		<if test="preCost != null">
 			,t.precost = #{preCost}
+		</if>
+		<if test="DESCRIPTION2 != null">
+			,t.DESCRIPTION2 = #{description2}
 		</if>
 		WHERE t.id = #{id}
 	</insert>
@@ -326,7 +329,7 @@
 		</if>
 	</select>
     <select id="queryAttributeByCodeAndName" resultType="com.sungeon.bos.entity.base.AttributeValueEntity">
-		SELECT t.id, t.name AS code, t.value AS name, t.clrsize AS clr
+		SELECT t.id, t.name AS code, t.value AS name, t.clrsize AS clr,t.M_DIM1_ID
 		FROM m_attributevalue t
 		WHERE t.clrsize = #{clr}
 		AND t.VALUE = #{attributeValueCode}

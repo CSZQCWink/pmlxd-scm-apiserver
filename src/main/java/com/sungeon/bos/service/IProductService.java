@@ -24,6 +24,14 @@ public interface IProductService {
 
 	List<AttributeValueEntity> syncPmilaSize(String startTime, String sizeName, int page, int pageSize);
 
+	/**
+	 * @title: syncPmilaProduct
+	 * @author: 陈苏洲
+	 * @description: 同步款号
+	 * @param: [startTime, productCode, page, pageSize]
+	 * @return: java.util.List<com.sungeon.bos.entity.base.ProductEntity>
+	 * @date: 2024/1/9 11:22
+	 **/
 	List<ProductEntity> syncPmilaProduct(String startTime, String productCode, int page, int pageSize);
 
 	List<AttributeEntity> syncPmilaAttribute(String startTime,String attributeName, int page, int pageSize);

@@ -22,6 +22,7 @@
         </selectKey>
         INSERT INTO m_purchase(id, ad_client_id, ad_org_id, ownerid, modifierid, creationdate, modifieddate,isactive,
                                docno,
+                               relevancy_docno,
                                billdate,
                                c_supplier_id,
                                c_store_id,
@@ -29,6 +30,7 @@
                                description)
         VALUES (#{id}, 37, 27, ${userId}, ${userId}, SYSDATE, SYSDATE, 'Y',
                 #{docNo, javaType=String, jdbcType=VARCHAR},
+                #{relevancyDocno, javaType=String, jdbcType=VARCHAR},
                 #{billDate, javaType=Integer, jdbcType=BIGINT},
                 #{supplierId, javaType=Long, jdbcType=BIGINT},
                 #{storeId, javaType=Long, jdbcType=BIGINT},
@@ -528,6 +530,35 @@
         from C_SUPPLIER cs
         where cs.Name = #{supplierName, javaType=String, jdbcType=VARCHAR}
           and cs.ISACTIVE = 'Y'
+    </select>
+
+    <!-- 查询所有的关联单号 -->
+    <select id="queryRelevancyDocno" resultType="java.lang.String">
+        select distinct mp.RELEVANCY_DOCNO
+        from m_purchase mp
+        where mp.ISACTIVE = 'Y'
+          and mp.STATUS = 2
+          and mp.RELEVANCY_DOCNO is not null
+    </select>
+
+    <!--  根据单据编号查询关联单据号  -->
+    <select id="queryRelevancyDocnoByDocno" resultType="java.lang.String">
+        select mp.RELEVANCY_DOCNO
+        from m_purchase mp
+        where mp.ISACTIVE = 'Y'
+          and mp.STATUS = 2
+          and mp.RELEVANCY_DOCNO = #{relevancyDocno, javaType=String, jdbcType=VARCHAR}
+    </select>
+    <!--  根据款号id获取款号的条码数量  -->
+    <select id="queryProductSku" resultType="java.lang.Integer">
+        select count(1)
+        from m_product_alias i
+        where  i.m_product_id = #{productId, javaType=Long, jdbcType=BIGINT}
+    </select>
+    <select id="queryProductCode" resultType="java.lang.String">
+        select t.NAME
+        from m_product t
+        where t.id = #{productId, javaType=Long, jdbcType=BIGINT}
     </select>
 
     <update id="updatePurchaseReturnOrderSyncStatus">

@@ -59,7 +59,13 @@ public class JunitTest {
 
 	@Test
 	public void syncPurchase() {
-		saleService.syncPmilaCuspurchase(null,"SA2310080000001",1,1);
+		saleService.syncPmilaCuspurchase(null,"SA2310230000005",1,1);
+	}
+
+	@Test
+	public void testQueryRelevancyDocno(){
+		List<String> list = purchaseDao.queryRelevancyDocno();
+		System.out.println(list);
 	}
 
 	/**

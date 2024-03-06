@@ -275,4 +275,25 @@ public class PurchaseDaoImpl extends BaseDaoImpl implements IPurchaseDao {
 		return purchaseMapper.querySupplierId(supplierName);
 	}
 
+	@Override
+	public List<String> queryRelevancyDocno() {
+		return purchaseMapper.queryRelevancyDocno();
+	}
+
+	@Override
+	public String queryRelevancyDocno(String relevancyDocno) {
+		return purchaseMapper.queryRelevancyDocnoByDocno(relevancyDocno);
+	}
+
+	@Override
+	public int queryProductSku(Long productId) {
+		return purchaseMapper.queryProductSku(productId);
+	}
+
+	@Override
+	public String queryProductCode(Long productId) {
+		return purchaseMapper.queryProductCode(productId);
+	}
+
+
 }
