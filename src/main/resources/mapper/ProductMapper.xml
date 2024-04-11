@@ -188,8 +188,8 @@
 		<if test="preCost != null">
 			,t.precost = #{preCost}
 		</if>
-		<if test="DESCRIPTION2 != null">
-			,t.DESCRIPTION2 = #{description2}
+		<if test="description2 != null">
+			,t.description2 = #{description2}
 		</if>
 		WHERE t.id = #{id}
 	</insert>
